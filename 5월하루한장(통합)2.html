@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>하루 한장 - 터치 생성형 심화 모드 결합 (수정본)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ================= 기존 5월 하루한장 스타일 원본 그대로 유지 ================= */
+        :root {
+            --main-bg: #fdfcf0;
+            --accent-color: #a8e6cf; 
+            --next-btn: #4caf50;
+            --prev-btn: #9e9e9e;
+            --subject-color: #fbc02d;
+            --location-color: #4fc3f7;
+            --puzzle-border: #7986cb;
+        }
+        body { font-family: 'Nanum Gothic', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        .progress-container { width: 100%; background: #e0e0e0; height: 12px; position: fixed; top: 0; z-index: 1000; }
+        .progress-bar { height: 100%; background: #4a90e2; width: 16.6%; transition: width 0.4s ease; } /* 6단계에 맞춰 초기 비율 수정 */
+
+        .container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 10px; margin-top: 20px; }
+        
+        .step-section { 
+            display: none; width: 95%; max-width: 1200px; height: 92vh; 
+            background: white; padding: 25px; border-radius: 25px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1); border: 2px solid #e0e0e0;
+            flex-direction: column; align-items: center; justify-content: space-between; overflow-y: auto;
+        }
+        .step-section.active { display: flex; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+        h2 { font-size: 2.5rem; color: #333; margin: 0 0 10px 0; border-bottom: 5px solid var(--accent-color); padding-bottom: 5px; }
+
+        .nav-footer { width: 100%; display: flex; justify-content: center; gap: 20px; padding: 15px 0; margin-top: auto; margin-bottom: 40px; }
+        .btn { padding: 12px 40px; font-size: 1.6rem; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; color: white; }
+        .btn-next { background: var(--next-btn); }
+        .btn-prev { background: var(--prev-btn); }
+
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; width: 100%; max-width: 800px; }
+        .day-header { background: #f5f5f5; padding: 8px; font-weight: bold; font-size: 1.2rem; border-radius: 8px; text-align: center; }
+        .day { padding: 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 1.5rem; cursor: pointer; background: white; text-align: center; }
+        .day.selected { background: var(--accent-color); font-weight: bold; border-color: #4caf50; }
+        
+        .display-text { margin-top: 10px; font-size: 2rem; font-weight: bold; color: #00796b; background: #e0f2f1; padding: 12px 30px; border-radius: 50px; text-align: center; border: 3px dashed #4dd0e1; }
+
+        .weather-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 60%; }
+        .w-item { padding: 25px; border: 4px solid #eee; border-radius: 20px; font-size: 2.2rem; cursor: pointer; text-align: center; }
+        .w-item.active { border-color: #ff8a65; background: #fff5f2; }
+
+        .table-container { width: 100%; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th, td { border: 2px solid #ccc; padding: 8px; text-align: center; font-size: 1.1rem; }
+        th { background: #f9f9f9; color: #555; }
+        .drop-zone {min-height: 55px;border: 2px dashed #b0bec5; border-radius: 8px;background: #fafafa;font-weight: bold; font-size: 1.6rem; cursor: pointer;}
+        
+        .pool-container { display: none; width: 100%; flex-direction: column; gap: 10px; background: #f1f8e9; padding: 12px; border-radius: 15px; border: 1px solid #dcedc8; }
+        .pool-group { display: flex; align-items: center; gap: 10px; }
+        .pool-label { font-weight: bold; font-size: 1rem; color: #33691e; min-width: 80px; }
+        .item-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        
+        .drag-item { padding: 6px 15px; background: white; border: 2px solid var(--subject-color); border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: grab; }
+        .drag-item.loc { border-color: var(--location-color); color: #0277bd; }
+
+        .emoji-stamp span { font-size: 1.8rem; cursor: pointer; opacity: 0.2; margin: 0 5px; }
+        .emoji-stamp span.selected { opacity: 1; transform: scale(1.2); display: inline-block; }
+
+        .meal-container { display: flex; align-items: flex-start; justify-content: center; gap: 20px; width: 100%; background: white; padding: 15px; border-radius: 20px; border: 2px solid #ffccbc; }
+        .meal-image-box { flex: 1.2; }
+        .meal-image-box img { width: 100%; border-radius: 15px; border: 4px solid #fff5f2; }
+        .meal-info-box { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+        .vote-card { width: 100%; background: #fff5f2; padding: 10px; border-radius: 12px; border: 2px solid #ffccbc; box-sizing: border-box; }
+        .vote-bar-bg { width: 100%; background: #eee; height: 16px; border-radius: 10px; margin-top: 5px; overflow: hidden; }
+        .vote-bar-fill { height: 100%; background: #ff8a65; width: 0%; transition: width 0.5s; }
+
+        .emotion-6grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
+        .student-thermometer { background: #fafafa; border: 2px solid #eee; border-radius: 20px; padding: 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .student-name { font-weight: bold; margin-bottom: 5px; }
+        .emotion-face-container { height: 100px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 15px; transition: background 0.2s; } 
+        .emotion-face-container:hover { background: #e0f2f1; }
+        .emotion-face { font-size: 3rem; transition: font-size 0.2s ease; }
+
+        .btn-think-more {
+            background: #e8eaf6; color: #3f51b5; padding: 10px 25px; font-size: 1.4rem;
+            border: 2px solid #c5cae9; border-radius: 12px; cursor: pointer; font-weight: bold;
+            margin-top: 15px; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .btn-think-more:hover { background: #c5cae9; }
+        
+        .advanced-task {
+            display: none; width: 95%; background: #f8f9fa; border: 2px dashed #7986cb;
+            border-radius: 15px; padding: 15px 20px; margin-top: 15px; align-items: flex-start;
+            flex-direction: column; gap: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02); box-sizing: border-box;
+        }
+        .advanced-task.show { display: flex; animation: fadeInDown 0.4s ease; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .adv-header { display: flex; align-items: center; gap: 12px; width: 100%; }
+        .adv-badge { background: #5c6bc0; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 1.2rem; }
+        
+        .btn-hint {
+            background: #fff9c4; border: 2px solid #fbc02d; color: #f57f17;
+            padding: 5px 15px; border-radius: 15px; cursor: pointer; font-weight: bold;
+            font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-hint:hover { background: #fff59d; transform: scale(1.05); }
+        .btn-hint:active { transform: scale(0.95); }
+
+        .adv-text { font-size: 1.3rem; color: #3949ab; font-weight: bold; margin: 0; }
+        .adv-content { width: 100%; display: flex; flex-direction: column; gap: 15px; }
+
+        .sentence-display { display: flex; flex-wrap: wrap; gap: 10px; background: white; padding: 15px; border-radius: 15px; border: 2px solid #e8eaf6; width: 100%; box-sizing: border-box; }
+        .word-slot { min-width: 90px; height: 50px; border: 3px dashed #c5cae9; border-radius: 10px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; transition: 0.2s; position: relative; }
+        .word-slot.filled { border-style: solid; border-color: var(--puzzle-border); background: #e8eaf6; }
+
+        .word-slot.show-hint::before { content: attr(data-hint); color: #9e9e9e; font-size: 1.1rem; font-weight: bold; pointer-events: none; opacity: 0.7; }
+        .word-slot.filled.show-hint::before { display: none; } 
+
+        .word-pool { display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; background: #e1f5fe; border-radius: 15px; border: 2px solid #b3e5fc; min-height: 50px; width: 100%; box-sizing: border-box; }
+        .word-chip {
+            padding: 10px 18px; background: white; border: 3px solid var(--puzzle-border);
+            border-radius: 10px; font-size: 1.4rem; font-weight: bold; color: #3949ab;
+            cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.1s;
+            user-select: none; display: flex; align-items: center; justify-content: center;
+        }
+        .word-chip:active { transform: scale(0.9); }
+
+        .dynamic-word { background-color: #fffde7; border-color: #ff9800; color: #e65100; box-shadow: 0 0 15px rgba(255, 152, 0, 0.4); }
+        .pop-animation { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+
+        /* ================= 자기점검표 스타일 수정 영역 (파란색 사각형 크기 축소) ================= */
+        .stamp-table { width: 100%; border-collapse: separate; border-spacing: 5px; margin-top: 10px; table-layout: auto; } /* 간격 줄이고 너비 자동 */
+        .stamp-table th:first-child,
+.stamp-table td:first-child {
+    width: 1%;
+    white-space: nowrap;
+}
+        .student-row-header { 
+            background-color: #e7f5ff; border-radius: 15px; 
+            padding: 5px 15px; /* 내부 간격 줄임 */
+            display: flex; align-items: center; gap: 10px; 
+            border: 2px solid #a5d8ff; 
+            width: 180px; /* ★너비 축소 (기존 250px) */
+            height: 70px; /* ★높이 축소 (기존 90px) */
+            box-sizing: border-box; /* 패딩 포함 크기 계산 */
+        }
+        
+        .student-photo { 
+            width: 50px; /* ★사진 크기 축소 (기존 60px) */
+            height: 50px; 
+            border-radius: 50%; border: 3px solid #74c0fc; object-fit: cover; background-color: #fff; 
+        }
+        
+        .student-name-stamp { 
+            font-family: 'Gaegu', cursive; 
+            font-size: 24px; /* ★글자 크기 미세 축소 (기존 30px) */
+            color: #1971c2; font-weight: 700; 
+        }
+        
+        .mission-col-header { background-color: #f8f9fa; padding: 10px 5px; border-radius: 15px; border: 2px solid #dee2e6; text-align: center; width: 12%; }
+        .mission-icon { font-size: 30px; display: block; margin-bottom: 3px; }
+        .mission-text-stamp { font-size: 16px; font-weight: 700; color: #495057; word-break: keep-all; line-height: 1.2; }
+        
+        .stamp-cell { 
+            background-color: #f1f3f5; border-radius: 15px; cursor: pointer; position: relative; 
+            height: 70px; /* ★행 높이 축소에 맞춤 (기존 90px) */
+            transition: all 0.2s; border: 2px solid transparent; 
+        }
+        
+        .stamp-cell:active { transform: scale(0.95); }
+        .empty-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 45px; height: 45px; border-radius: 50%; border: 3px dashed #ced4da; transition: opacity 0.2s; }
+        .praise-stamp { position: absolute; top: 50%; left: 50%; width: 60px; height: 60px; background-color: #ffd43b; border: 2px dashed #f59f00; border-radius: 50%; color: #d9480f; font-family: 'Gaegu', cursive; font-size: 16px; font-weight: 800; display: flex; flex-direction: column; justify-content: center; align-items: center; transform: translate(-50%, -50%) scale(0) rotate(15deg); opacity: 0; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s; pointer-events: none; box-shadow: 2px 4px 8px rgba(0,0,0,0.15); line-height: 1.1; }
+        .praise-stamp .icon { font-size: 20px; margin-bottom: 1px; }
+        .stamp-cell.stamped { background-color: #e3fafc; border: 2px solid #3bc9db; }
+        .stamp-cell.stamped .empty-circle { opacity: 0; }
+        .stamp-cell.stamped .praise-stamp { transform: translate(-50%, -50%) scale(1) rotate(-10deg); opacity: 1; }
+    </style>
+</head>
+<body>
+
+<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="container">
+    <section class="step-section active" id="step1">
+        <h2>📅 5월 달력 읽기</h2>
+        <div class="calendar-grid">
+            <div class="day-header" style="color:red">일</div><div class="day-header">월</div><div class="day-header">화</div><div class="day-header">수</div><div class="day-header">목</div><div class="day-header">금</div><div class="day-header" style="color:blue">토</div>
+            <div></div><div></div><div></div><div></div><div></div>
+            <div class="day" onclick="selectDay(this, 1)">1</div>
+            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 2)">2</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 3)">3</div>
+            <div class="day" onclick="selectDay(this, 4)">4</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 5)">5</div>
+            <div class="day" onclick="selectDay(this, 6)">6</div>
+            <div class="day" onclick="selectDay(this, 7)">7</div>
+            <div class="day" onclick="selectDay(this, 8)">8</div>
+            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 9)">9</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 10)">10</div>
+            <div class="day" onclick="selectDay(this, 11)">11</div>
+            <div class="day" onclick="selectDay(this, 12)">12</div>
+            <div class="day" onclick="selectDay(this, 13)">13</div>
+            <div class="day" onclick="selectDay(this, 14)">14</div>
+            <div class="day" onclick="selectDay(this, 15)">15</div>
+            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 16)">16</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 17)">17</div>
+            <div class="day" onclick="selectDay(this, 18)">18</div>
+            <div class="day" onclick="selectDay(this, 19)">19</div>
+            <div class="day" onclick="selectDay(this, 20)">20</div>
+            <div class="day" onclick="selectDay(this, 21)">21</div>
+            <div class="day" onclick="selectDay(this, 22)">22</div>
+            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 23)">23</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 24)">24</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 25)">25</div>
+            <div class="day" onclick="selectDay(this, 26)">26</div>
+            <div class="day" onclick="selectDay(this, 27)">27</div>
+            <div class="day" onclick="selectDay(this, 28)">28</div>
+            <div class="day" onclick="selectDay(this, 29)">29</div>
+            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 30)">30</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 31)">31</div>
+        </div>
+        <div id="dateText" class="display-text">날짜를 눌러주세요 👆</div>
+        
+        <button class="btn-think-more" onclick="toggleAdvanced(this)">🤔 더 생각하기</button>
+        <div class="advanced-task">
+            <div class="adv-header">
+                <div class="adv-badge">⭐ 심화 과제</div>
+                <button class="btn-hint" onclick="showHint(1)">💡 힌트 보기</button>
+            </div>
+            <div class="adv-content">
+                <p class="adv-text">위에 있는 달력을 터치하면 마법처럼 내 퍼즐이 생겨요!</p>
+                <div class="sentence-display" id="sentence1">
+                    <div class="word-slot" data-hint="오늘은"></div>
+                    <div class="word-slot" data-hint="5월"></div>
+                    <div class="word-slot" data-hint="O일"></div>
+                    <div class="word-slot" data-hint="O요일"></div>
+                    <div class="word-slot" data-hint="입니다."></div>
+                </div>
+                <div class="word-pool" id="pool1">
+                    <div class="word-chip" onclick="tapWord(this, 1)">오늘은</div>
+                    <div class="word-chip" onclick="tapWord(this, 1)">5월</div>
+                    <div class="word-chip" onclick="tapWord(this, 1)">입니다.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-footer"><button class="btn btn-next" onclick="move(2)">다음 활동으로 ➡️</button></div>
+    </section>
+
+    <section class="step-section" id="step2">
+        <h2>☀️ 오늘 날씨는 어떤가요?</h2>
+        <div class="weather-grid">
+            <div class="w-item" onclick="selectWeather(this, '맑음', '☀️')">☀️ 맑음</div>
+            <div class="w-item" onclick="selectWeather(this, '흐림', '☁️')">☁️ 흐림</div>
+            <div class="w-item" onclick="selectWeather(this, '비', '☔')">☔ 비</div>
+            <div class="w-item" onclick="selectWeather(this, '약간흐림', '🌤️')">🌤️ 약간흐림</div>
+        </div>
+        <div id="weatherText" class="display-text">오늘의 날씨는? 👆</div>
+
+        <button class="btn-think-more" onclick="toggleAdvanced(this)">🤔 더 생각하기</button>
+        <div class="advanced-task">
+            <div class="adv-header">
+                <div class="adv-badge">⭐ 심화 과제</div>
+                <button class="btn-hint" onclick="showHint(2)">💡 힌트 보기</button>
+            </div>
+            <div class="adv-content">
+                <p class="adv-text">날씨 그림을 누르면 내 퍼즐 조각이 나타나요!</p>
+                <div class="sentence-display" id="sentence2">
+                    <div class="word-slot" data-hint="오늘"></div>
+                    <div class="word-slot" data-hint="날씨는"></div>
+                    <div class="word-slot" data-hint="O날씨"></div>
+                    <div class="word-slot" data-hint="입니다."></div>
+                </div>
+                <div class="word-pool" id="pool2">
+                    <div class="word-chip" onclick="tapWord(this, 2)">오늘</div>
+                    <div class="word-chip" onclick="tapWord(this, 2)">날씨는</div>
+                    <div class="word-chip" onclick="tapWord(this, 2)">입니다.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-footer">
+            <button class="btn btn-prev" onclick="move(1)">⬅️ 이전</button>
+            <button class="btn btn-next" onclick="move(3)">다음 활동으로 ➡️</button>
+        </div>
+    </section>
+
+    <section class="step-section" id="step3">
+        <h2>📊 오늘의 수업과 장소</h2>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th width="10%">교시</th>
+                    <th width="18%">과목</th>
+                    <th width="18%">수업 장소</th>
+                    <th width="26%">기타</th>
+                    <th width="28%">수업이 어땠나요?</th>
+                </tr>
+                <script>
+                    for(let i=1; i<=6; i++) {
+                        document.write(`
+                        <tr>
+                            <td>${i}교시</td>
+                            <td class="drop-zone" data-type="sub" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="clearZone(this)"></td>
+                            <td class="drop-zone" data-type="loc" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="clearZone(this)"></td>
+                            <td><input type="text" placeholder="메모 입력..." style="width:90%; padding:8px; font-size:1.1rem; border:1px solid #ddd; border-radius:8px; outline:none; text-align:center;"></td>
+                            <td class="emoji-stamp"><span onclick="stamp(this)">😴</span><span onclick="stamp(this)">😐</span><span onclick="stamp(this)">😊</span><span onclick="stamp(this)">😍</span></td>
+                        </tr>`);
+                    }
+                </script>
+            </table>
+        </div>
+        
+        <button class="btn" style="background:#8bc34a; padding: 10px 20px; font-size: 1.2rem; width: 100%; margin-bottom: 10px;" onclick="togglePool()">➕ 과목 및 장소 목록 열기 / 닫기</button>
+
+        <div class="pool-container" id="itemPool">
+            <div class="pool-group">
+                <div class="pool-label">📚 과목:</div>
+                <div class="item-list">
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">미술</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">여가활동</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">자립생활</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">동아리</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">체육</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">음악</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">국어</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">수학</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">사회</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">과학</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">자치</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">진로와직업(공예)</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">진로와직업(이론)</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">진로와직업(조립)</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">보건</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">스포츠클럽</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">자율(산행)</div>
+                </div>
+            </div>
+            <div class="pool-group">
+                <div class="pool-label">📍 장소:</div>
+                <div class="item-list">
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">미술실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">노래교실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">세탁실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">강당</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">음악실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">도서관</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">중1-2반</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">감각운동실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">조리실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">직업2실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">체력단련실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">스마트교실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">와룡산</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">VR스포츠실</div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-think-more" onclick="toggleAdvanced(this)">🤔 더 생각하기</button>
+        <div class="advanced-task">
+            <div class="adv-header">
+                <div class="adv-badge">⭐ 심화 과제</div>
+                <button class="btn-hint" onclick="showHint(3)">💡 힌트 보기</button>
+            </div>
+            <div class="adv-content">
+                <p class="adv-text">목록에서 좋아하는 과목(초록색)을 누르면 퍼즐 조각이 나타나요!</p>
+                <div class="sentence-display" id="sentence3">
+                    <div class="word-slot" data-hint="내가"></div>
+                    <div class="word-slot" data-hint="가장"></div>
+                    <div class="word-slot" data-hint="기대하는"></div>
+                    <div class="word-slot" data-hint="수업은"></div>
+                    <div class="word-slot" data-hint="O과목"></div>
+                    <div class="word-slot" data-hint="입니다."></div>
+                </div>
+                <div class="word-pool" id="pool3">
+                    <div class="word-chip" onclick="tapWord(this, 3)">내가</div>
+                    <div class="word-chip" onclick="tapWord(this, 3)">가장</div>
+                    <div class="word-chip" onclick="tapWord(this, 3)">기대하는</div>
+                    <div class="word-chip" onclick="tapWord(this, 3)">수업은</div>
+                    <div class="word-chip" onclick="tapWord(this, 3)">입니다.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-footer">
+            <button class="btn btn-prev" onclick="move(2)">⬅️ 이전</button>
+            <button class="btn btn-next" onclick="move(4)">다음 활동으로 ➡️</button>
+        </div>
+    </section>
+
+    <section class="step-section" id="step4">
+        <h2>😋 오늘 급식 최고 메뉴는?</h2>
+        
+        <div class="meal-container">
+            <div class="meal-image-box">
+                <img src="1.jpg" alt="오늘의 급식 사진">
+            </div>
+
+            <div class="meal-info-box">
+                <div class="vote-card">
+                    <div style="display:flex; justify-content:space-between; font-size:1.6rem; font-weight:bold;"><span id="m0">카레하이라이스</span><span id="c0">0표</span></div>
+                    <button class="btn btn-next" style="width:100%; padding:5px; font-size:1.1rem; margin-top:5px;" onclick="vote(0)">👍 선택하기</button>
+                    <div class="vote-bar-bg"><div id="b0" class="vote-bar-fill"></div></div>
+                </div>
+                <div class="vote-card">
+                    <div style="display:flex; justify-content:space-between; font-size:1.6rem; font-weight:bold;"><span id="m1">갈릭버터감자구이</span><span id="c1">0표</span></div>
+                    <button class="btn btn-next" style="width:100%; padding:5px; font-size:1.1rem; margin-top:5px;" onclick="vote(1)">👍 선택하기</button>
+                    <div class="vote-bar-bg"><div id="b1" class="vote-bar-fill"></div></div>
+                </div>
+                <div class="vote-card">
+                    <div style="display:flex; justify-content:space-between; font-size:1.6rem; font-weight:bold;"><span id="m2">뿌링두부찰도그롤</span><span id="c2">0표</span></div>
+                    <button class="btn btn-next" style="width:100%; padding:5px; font-size:1.1rem; margin-top:5px;" onclick="vote(2)">👍 선택하기</button>
+                    <div class="vote-bar-bg"><div id="b2" class="vote-bar-fill"></div></div>
+                </div>
+                <div class="vote-card">
+                    <div style="display:flex; justify-content:space-between; font-size:1.6rem; font-weight:bold;"><span id="m3">아이스망고패션후르츠</span><span id="c3">0표</span></div>
+                    <button class="btn btn-next" style="width:100%; padding:5px; font-size:1.1rem; margin-top:5px;" onclick="vote(3)">👍 선택하기</button>
+                    <div class="vote-bar-bg"><div id="b3" class="vote-bar-fill"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-next" style="width:100%; padding: 15px; margin-top: 15px; font-size: 1.5rem; background-color: #ff9800;" onclick="showWinner()">🏆 1위 메뉴 확인하기!</button>
+        <div id="winnerText" class="display-text" style="display: none; background: #fff9c4; border-color: #fbc02d; color: #d84315; margin-top: 15px; line-height: 1.5;"></div>
+
+        <button class="btn-think-more" onclick="toggleAdvanced(this)">🤔 더 생각하기</button>
+        <div class="advanced-task">
+            <div class="adv-header">
+                <div class="adv-badge">⭐ 심화 과제</div>
+                <button class="btn-hint" onclick="showHint(4)">💡 힌트 보기</button>
+            </div>
+            <div class="adv-content">
+                <p class="adv-text">[선택하기] 투표 버튼을 누르면 내 퍼즐 조각이 나타나요!</p>
+                <div class="sentence-display" id="sentence4">
+                    <div class="word-slot" data-hint="나의"></div>
+                    <div class="word-slot" data-hint="최고"></div>
+                    <div class="word-slot" data-hint="1위 메뉴는"></div>
+                    <div class="word-slot" data-hint="O메뉴"></div>
+                    <div class="word-slot" data-hint="입니다."></div>
+                </div>
+                <div class="word-pool" id="pool4">
+                    <div class="word-chip" onclick="tapWord(this, 4)">나의</div>
+                    <div class="word-chip" onclick="tapWord(this, 4)">최고</div>
+                    <div class="word-chip" onclick="tapWord(this, 4)">1위 메뉴는</div>
+                    <div class="word-chip" onclick="tapWord(this, 4)">입니다.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-footer">
+            <button class="btn btn-prev" onclick="move(3)">⬅️ 이전</button>
+            <button class="btn btn-next" onclick="move(5)">다음 활동으로 ➡️</button>
+        </div>
+    </section>
+
+    <section class="step-section" id="step5">
+        <h2>🌡️ 우리 반 감정 온도계</h2>
+        <div class="emotion-6grid">
+            <div class="student-thermometer">
+                <div class="student-name">김민주</div>
+                <div class="emotion-face-container" onclick="generateEmoWord(this)"><div id="f1" class="emotion-face">😐</div></div>
+                <div id="t1" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.2rem;">보통이에요</div>
+                <input type="range" min="0" max="100" value="50" oninput="upEmo(this.value, 1)">
+            </div>
+            <div class="student-thermometer">
+                <div class="student-name">김현우</div>
+                <div class="emotion-face-container" onclick="generateEmoWord(this)"><div id="f2" class="emotion-face">😐</div></div>
+                <div id="t2" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.2rem;">보통이에요</div>
+                <input type="range" min="0" max="100" value="50" oninput="upEmo(this.value, 2)">
+            </div>
+            <div class="student-thermometer">
+                <div class="student-name">송민서</div>
+                <div class="emotion-face-container" onclick="generateEmoWord(this)"><div id="f3" class="emotion-face">😐</div></div>
+                <div id="t3" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.2rem;">보통이에요</div>
+                <input type="range" min="0" max="100" value="50" oninput="upEmo(this.value, 3)">
+            </div>
+            <div class="student-thermometer">
+                <div class="student-name">엽건영</div>
+                <div class="emotion-face-container" onclick="generateEmoWord(this)"><div id="f4" class="emotion-face">😐</div></div>
+                <div id="t4" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.2rem;">보통이에요</div>
+                <input type="range" min="0" max="100" value="50" oninput="upEmo(this.value, 4)">
+            </div>
+            <div class="student-thermometer">
+                <div class="student-name">이 환</div>
+                <div class="emotion-face-container" onclick="generateEmoWord(this)"><div id="f5" class="emotion-face">😐</div></div>
+                <div id="t5" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.2rem;">보통이에요</div>
+                <input type="range" min="0" max="100" value="50" oninput="upEmo(this.value, 5)">
+            </div>
+            <div class="student-thermometer">
+                <div class="student-name">임시은</div>
+                <div class="emotion-face-container" onclick="generateEmoWord(this)"><div id="f6" class="emotion-face">😐</div></div>
+                <div id="t6" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.2rem;">보통이에요</div>
+                <input type="range" min="0" max="100" value="50" oninput="upEmo(this.value, 6)">
+            </div>
+        </div>
+
+        <button class="btn-think-more" onclick="toggleAdvanced(this)">🤔 더 생각하기</button>
+        <div class="advanced-task">
+            <div class="adv-header">
+                <div class="adv-badge">⭐ 심화 과제</div>
+                <button class="btn-hint" onclick="showHint(5)">💡 힌트 보기</button>
+            </div>
+            <div class="adv-content">
+                <p class="adv-text">슬라이더를 움직여 감정을 맞추고, 위에 있는 '내 얼굴(스마일)'을 터치하면 단어가 뿅!</p>
+                <div class="sentence-display" id="sentence5">
+                    <div class="word-slot" data-hint="오늘"></div>
+                    <div class="word-slot" data-hint="나는"></div>
+                    <div class="word-slot" data-hint="기분이"></div>
+                    <div class="word-slot" data-hint="O감정"></div>
+                </div>
+                <div class="word-pool" id="pool5">
+                    <div class="word-chip" onclick="tapWord(this, 5)">오늘</div>
+                    <div class="word-chip" onclick="tapWord(this, 5)">나는</div>
+                    <div class="word-chip" onclick="tapWord(this, 5)">기분이</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-footer">
+            <button class="btn btn-prev" onclick="move(4)">⬅️ 이전</button>
+            <button class="btn btn-next" style="background:#4dabf7;" onclick="move(6)">마지막 점검하러 가기 ➡️</button>
+        </div>
+    </section>
+
+    <section class="step-section" id="step6">
+        <h2 style="font-family: 'Gaegu', cursive; font-size: 3rem; color: #1971c2; text-align: center; border-bottom: none; margin-bottom: 20px;">🌟 나를 소중히 여기는 하루 🌟</h2>
+        <div style="width: 100%; overflow-x: auto;">
+            <table class="stamp-table">
+                <thead id="board-header"></thead>
+                <tbody id="board-body"></tbody>
+            </table>
+        </div>
+        <div class="nav-footer">
+            <button class="btn btn-prev" onclick="move(5)">⬅️ 이전</button>
+            <button class="btn btn-next" style="background:#222;" onclick="location.reload()">수업 시작! (초기화)</button>
+        </div>
+    </section>
+</div>
+
+<script>
+    /* ================= 기존 스크립트 원본 동일 ================= */
+    let currentStep = 1;
+    const totalSteps = 6; 
+    let draggedData = "";
+    let draggedType = "";
+
+    document.addEventListener("DOMContentLoaded", function() {
+        for(let i=1; i<=totalSteps; i++) {
+            if(document.getElementById(`pool${i}`)) {
+                shufflePool(i);
+            }
+        }
+    });
+
+    function showHint(stepId) {
+        let slots = document.querySelectorAll(`#sentence${stepId} .word-slot`);
+        slots.forEach(slot => {
+            slot.classList.add('show-hint');
+            setTimeout(() => slot.classList.remove('show-hint'), 3000);
+        });
+    }
+
+    function shufflePool(stepId) {
+        const pool = document.getElementById(`pool${stepId}`);
+        if(!pool) return;
+        const chips = Array.from(pool.children);
+        chips.sort(() => Math.random() - 0.5);
+        chips.forEach(chip => pool.appendChild(chip));
+    }
+
+    function move(step) {
+        document.querySelectorAll('.step-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`step${step}`).classList.add('active');
+        document.getElementById('progressBar').style.width = (step / totalSteps) * 100 + "%";
+        currentStep = step;
+    }
+
+    function togglePool() {
+        const pool = document.getElementById('itemPool');
+        pool.style.display = (pool.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    function toggleAdvanced(btn) {
+        const taskDiv = btn.nextElementSibling;
+        if (taskDiv.classList.contains('show')) {
+            taskDiv.classList.remove('show');
+            btn.innerHTML = "🤔 더 생각하기";
+            btn.style.background = "#e8eaf6";
+            btn.style.color = "#3f51b5";
+        } else {
+            taskDiv.classList.add('show');
+            btn.innerHTML = "🔽 심화 과제 닫기";
+            btn.style.background = "#5c6bc0";
+            btn.style.color = "white";
+        }
+    }
+
+    function generateOrUpdateWord(stepId, type, text) {
+        const pool = document.getElementById(`pool${stepId}`);
+        let existing = document.querySelector(`#step${stepId} .dynamic-${type}`);
+        
+        if (existing) {
+            existing.innerText = text;
+            existing.classList.remove('pop-animation');
+            void existing.offsetWidth; 
+            existing.classList.add('pop-animation');
+            
+            if (existing.parentElement.classList.contains('word-slot')) {
+                pool.appendChild(existing);
+                existing.parentElement.classList.remove('filled');
+            }
+        } else {
+            const chip = document.createElement('div');
+            chip.className = `word-chip dynamic-word dynamic-${type} pop-animation`;
+            chip.innerText = text;
+            chip.onclick = function() { tapWord(this, stepId); };
+            pool.appendChild(chip);
+        }
+        shufflePool(stepId);
+    }
+
+    function tapWord(el, stepId) {
+        if (el.parentElement.classList.contains('word-pool')) {
+            let slots = document.querySelectorAll(`#sentence${stepId} .word-slot`);
+            for (let slot of slots) {
+                if (slot.children.length === 0) {
+                    slot.appendChild(el);
+                    slot.classList.add('filled');
+                    break; 
+                }
+            }
+        } else {
+            let pool = document.getElementById(`pool${stepId}`);
+            pool.appendChild(el);
+            let slots = document.querySelectorAll(`#sentence${stepId} .word-slot`);
+            slots.forEach(s => {
+                if(s.children.length === 0) s.classList.remove('filled');
+            });
+        }
+    }
+
+    function selectDay(el, day) {
+        document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
+        el.classList.add('selected');
+        const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+        const dayOfWeek = weekDays[(day + 4) % 7]; 
+        document.getElementById('dateText').innerHTML = `오늘은 <span style="color:#d32f2f; text-decoration:underline;">5월 ${day}일 ${dayOfWeek}요일</span> 입니다!`;
+        
+        generateOrUpdateWord(1, 'day', day + '일');
+        generateOrUpdateWord(1, 'weekday', dayOfWeek + '요일');
+    }
+    
+    function selectWeather(el, text, icon) {
+        document.querySelectorAll('.w-item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('weatherText').innerHTML = `오늘의 날씨는 <span style="color:#e64a19; text-decoration:underline;">${text}</span> 입니다! ${icon}`;
+        
+        generateOrUpdateWord(2, 'weather', text);
+    }
+
+    function drag(ev, type) {
+        draggedData = ev.target.innerText;
+        draggedType = type;
+        ev.dataTransfer.setData("text", draggedData);
+    }
+
+    function allowDrop(ev) { ev.preventDefault(); }
+
+    function drop(ev) {
+        ev.preventDefault();
+        const targetType = ev.target.getAttribute('data-type');
+        if (draggedType === targetType) {
+            ev.target.innerText = draggedData;
+            ev.target.style.background = (targetType === 'loc') ? "#e1f5fe" : "#f1f8e9";
+            ev.target.style.color = (targetType === 'loc') ? "#0277bd" : "#2e7d32";
+        }
+    }
+
+    function autoFill(el, type) {
+        const text = el.innerText;
+        const zones = document.querySelectorAll(`.drop-zone[data-type="${type}"]`);
+        for (let i = 0; i < zones.length; i++) {
+            if (zones[i].innerText.trim() === "") {
+                zones[i].innerText = text;
+                zones[i].style.background = (type === 'loc') ? "#e1f5fe" : "#f1f8e9";
+                zones[i].style.color = (type === 'loc') ? "#0277bd" : "#2e7d32";
+                break;
+            }
+        }
+        if(type === 'sub') {
+            generateOrUpdateWord(3, 'subject', text);
+        }
+    }
+
+    function clearZone(el) {
+        el.innerText = "";
+        el.style.background = "#fafafa";
+    }
+
+    function stamp(el) {
+        el.parentElement.querySelectorAll('span').forEach(s => s.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    let vCount = [0, 0, 0, 0];
+    
+    function vote(idx) {
+        vCount[idx]++;
+        document.getElementById(`c${idx}`).innerText = vCount[idx] + "표";
+        let total = vCount.reduce((a, b) => a + b, 0);
+        if(total > 0) {
+            vCount.forEach((v, i) => {
+                if(document.getElementById(`b${i}`))
+                    document.getElementById(`b${i}`).style.width = (v / total * 100) + "%";
+            });
+        }
+        
+        let menuName = document.getElementById('m' + idx).innerText;
+        generateOrUpdateWord(4, 'food', menuName);
+    }
+
+    function showWinner() {
+        const maxVotes = Math.max(...vCount);
+        const winnerBox = document.getElementById('winnerText');
+        if (maxVotes === 0) {
+            winnerBox.innerHTML = "아직 투표를 하지 않았어요!";
+            winnerBox.style.display = "block";
+            return;
+        }
+        const menuElements = document.querySelectorAll('.vote-card span:first-child');
+        let winners = [];
+        for(let i = 0; i < vCount.length; i++) {
+            if(vCount[i] === maxVotes) { winners.push(menuElements[i].innerText); }
+        }
+        winnerBox.innerHTML = `오늘 최고의 메뉴는<br><span style="font-size: 2.8rem; font-weight: 900; color: #d32f2f; text-decoration: underline;">${winners.join(", ")}</span><br>입니다! 다 함께 읽어볼까요? 🗣️`;
+        winnerBox.style.display = "block";
+    }
+
+    function upEmo(v, id) {
+        const face = document.getElementById(`f${id}`);
+        const text = document.getElementById(`t${id}`);
+        
+        face.style.fontSize = (2.5 + (v / 25)) + "rem";
+        
+        if(v > 80) {
+            face.innerText = "😍";
+            text.innerText = "신나요";
+            text.style.color = "#ff9800";
+        }
+        else if(v > 60) {
+            face.innerText = "😊";
+            text.innerText = "좋아요";
+            text.style.color = "#4caf50";
+        }
+        else if(v > 40) {
+            face.innerText = "😐";
+            text.innerText = "보통이에요";
+            text.style.color = "#555555";
+        }
+        else if(v > 20) {
+            face.innerText = "😢";
+            text.innerText = "슬퍼요";
+            text.style.color = "#2196f3";
+        }
+        else {
+            face.innerText = "😴";
+            text.innerText = "피곤해요";
+            text.style.color = "#9e9e9e";
+        }
+    }
+
+    function generateEmoWord(el) {
+        const textDiv = el.nextElementSibling;
+        const emotionText = textDiv.innerText;
+        generateOrUpdateWord(5, 'emotion', emotionText);
+    }
+
+    /* ================= 점검표 데이터 및 로직 동일 ================= */
+    const stampStudents = [
+        { name: "김민주", photo: "김민주.jpg" },
+        { name: "김현우", photo: "김현우.png" },
+        { name: "송민서", photo: "송민서.jpg" },
+        { name: "엽건영", photo: "엽건영.jpg" },
+        { name: "이환", photo: "이환.png" },
+        { name: "임시은", photo: "임시은.jpg" }
+    ];
+
+    const stampMissions = [
+        { icon: "🧼", text: "비누로 뽀득<br>손 씻기" },
+        { icon: "🪥", text: "점심 먹고<br>양치질" },
+        { icon: "💧", text: "스스로 물<br>챙겨 마시기" },
+        { icon: "🤸", text: "쉬는 시간<br>기지개" },
+        { icon: "😊", text: "거울 보고<br>활짝 웃기" },
+        { icon: "🙋", text: "도와주세요<br>표현하기" }
+    ];
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const boardHeader = document.getElementById('board-header');
+        if(!boardHeader) return;
+        const headerRow = document.createElement('tr');
+        headerRow.innerHTML = `<th></th>`;
+        
+        stampMissions.forEach(mission => {
+            headerRow.innerHTML += `
+                <th class="mission-col-header">
+                    <span class="mission-icon">${mission.icon}</span>
+                    <span class="mission-text-stamp">${mission.text}</span>
+                </th>
+            `;
+        });
+        boardHeader.appendChild(headerRow);
+
+        const boardBody = document.getElementById('board-body');
+        if(!boardBody) return;
+        
+        stampStudents.forEach(student => {
+            const row = document.createElement('tr');
+            
+            const studentCell = document.createElement('td');
+            studentCell.innerHTML = `
+                <div class="student-row-header">
+                    <img src="${student.photo}" class="student-photo" alt="${student.name} 얼굴">
+                    <span class="student-name-stamp">${student.name}</span>
+                </div>
+            `;
+            row.appendChild(studentCell);
+
+            stampMissions.forEach(() => {
+                const stampCell = document.createElement('td');
+                stampCell.className = 'stamp-cell';
+                
+                stampCell.innerHTML = `
+                    <div class="empty-circle"></div>
+                    <div class="praise-stamp">
+                        <div class="icon">👍</div><div>최고!</div>
+                    </div>
+                `;
+
+                stampCell.onclick = function() {
+                    this.classList.toggle('stamped');
+                };
+
+                row.appendChild(stampCell);
+            });
+
+            boardBody.appendChild(row);
+        });
+    });
+</script>
+</body>
+</html>
