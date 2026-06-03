@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 건강 습관</title>
+    <style>
+        body { font-family: 'Nanum Gothic', sans-serif; background-color: #fffde7; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .container { background: white; padding: 40px; border-radius: 25px; border: 5px solid #fff59d; box-shadow: 0 15px 30px rgba(0,0,0,0.1); text-align: center; max-width: 600px; width: 100%; box-sizing: border-box; }
+        .icon { font-size: 6rem; margin-bottom: 20px; animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .title { font-size: 2.8rem; font-weight: 900; color: #d32f2f; margin-bottom: 20px; }
+        .desc { font-size: 1.9rem; color: #333; line-height: 1.7; font-weight: bold; margin-bottom: 35px; }
+        .btn-close { background: #4caf50; color: white; padding: 15px 40px; font-size: 1.6rem; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-close:active { transform: scale(0.95); }
+        @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="habitBox">
+        </div>
+
+    <script>
+        // 메인 화면에서 배달 온 날씨 정보를 주소창에서 읽어냅니다 (?weather=맑음)
+        const urlParams = new URLSearchParams(window.location.search);
+        const weather = urlParams.get('weather');
+
+        // 각 날씨에 딱 맞는 아이콘과 대왕 글씨 정보 데이터 부대
+        const habits = {
+            '맑음': { 
+                icon: '☀️', 
+                title: '😊 기분 좋은 하루!', 
+                desc: '오늘은 특별히 조심할 건 없어요.<br>맑은 날씨를 느끼며<br>친구들과 신나게 생활해요.' 
+            },
+            '흐림': { 
+                icon: '☁️', 
+                title: '💪 평소처럼 씩씩하게!', 
+                desc: '햇님이 구름 뒤에 숨었을 뿐이에요.<br>오늘은 특별히 조심할 건 없으니<br>평소처럼 즐겁게 생활해요.' 
+            },
+            '무더위': { 
+                icon: '🥵', 
+                title: '💧 시원한 물 마시기', 
+                desc: '땀을 뻘뻘 많이 흘리는 더운 날이에요.<br>목이 마르기 전에 시원한 물을<br>자주자주 마셔요.' 
+            },
+            '소나기': { 
+                icon: '🌦️', 
+                title: '🚶 천천히 걷기', 
+                desc: '갑자기 비가 와서 바닥이 미끄러워요.<br>넘어지면 아프니까 절대 뛰지 않고<br>교실과 복도에서 천천히 걸어요.' 
+            },
+            '장마': { 
+                icon: '🧥', 
+                title: '🧥 가벼운 겉옷 걸치기', 
+                desc: '비가 오는 날 에어컨 바람을 맞으면<br>몸이 으슬으슬 차가워지기 쉬워요.<br>가벼운 겉옷을 입어서 따뜻하게 체온을 지켜요.' 
+            },
+            '태풍': { 
+                icon: '🌀', 
+                title: '🏠 교실에 머물기', 
+                desc: '밖은 비바람이 불어 아주 위험해요!<br>창문에서 멀리 떨어져서<br>안전한 교실 안에서 재미있게 놀아요.' 
+            }
+        };
+        const box = document.getElementById('habitBox');
+        
+        if (weather && habits[weather]) {
+            const data = habits[weather];
+            box.innerHTML = `
+                <div class="icon">${data.icon}</div>
+                <div class="title">${data.title}</div>
+                <div class="desc">${data.desc}</div>
+                <button class="btn-close" onclick="window.close()">❌ 확인 완료 (창 닫기)</button>
+            `;
+        } else {
+            box.innerHTML = `
+                <div class="icon">⚠️</div>
+                <div class="title">알림</div>
+                <div class="desc">오늘의 날씨를 먼저 선택해야<br>건강 습관을 확인할 수 있어요!</div>
+                <button class="btn-close" onclick="window.close()">돌아가기</button>
+            `;
+        }
+    </script>
+
+</body>
+</html>
+</html>
