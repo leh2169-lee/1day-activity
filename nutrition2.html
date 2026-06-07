@@ -156,7 +156,6 @@
             transition: transform 0.5s ease;
         }
 
-        /* 자전거 애니메이션 세트 */
         .bike-container.riding-fast {
             background-image: 
                 url('식품구성자전거.gif'),
@@ -365,9 +364,7 @@
                 font-size: 2rem !important;
                 -webkit-text-stroke: 1px #CCCCCC !important;
             }
-            .print-cutout-box.tracing .f-icon {
-                filter: grayscale(100%) opacity(0.25) !important; 
-            }
+            .print-cutout-box.tracing .f-icon { filter: grayscale(100%) opacity(0.25) !important; }
         }
     </style>
 </head>
@@ -380,7 +377,6 @@
         <span style="top: 15%; right: 30%; animation-delay: 0.5s; font-size: 7rem;">☁️</span>
     </div>
 
-    <!-- 타이틀 & 이름 쓰기 영역 (인쇄 시 모든 페이지 상단에 나타남) -->
     <div class="header-container">
         <h1>🥗 영양소 자전거 탐험대 🚲</h1>
         <div class="name-box">이름 : <input type="text" class="name-input"></div>
@@ -423,10 +419,7 @@
     </div>
 
     <div class="interaction-area">
-        <div class="lunch-box" id="food-box">
-            <!-- 자바스크립트가 알아서 메뉴를 채워줍니다 -->
-        </div>
-
+        <div class="lunch-box" id="food-box"></div>
         <div class="meal-image-container">
             <p>📸 내가 먹은 반찬을 골라보세요</p>
             <img id="passed-meal-img" src="1.jpg" alt="급식 사진">
@@ -449,7 +442,6 @@
         <button id="adv-toggle-btn" class="eval-btn" style="background-color: #9c27b0;" onclick="toggleAdvancedMode()">🧠 심화학습 켜기 (영양소 보기)</button>
     </div>
 
-    <!-- 메뉴 설정 모달창 -->
     <div id="settings-modal" class="modal-overlay">
         <div class="modal-content">
             <h2>⚙️ 식단 설정 (선생님 전용)</h2>
@@ -481,6 +473,11 @@
             return globalAudioCtx;
         }
 
+        document.body.addEventListener('click', function initAudio() {
+            getAudioCtx();
+            document.body.removeEventListener('click', initAudio);
+        }, { once: true });
+
         function triggerPrint() {
             alert("선생님! 인쇄 창이 뜨면 설정(더보기)에서 '배경 그래픽(배경색 인쇄)'을 꼭 체크해주셔야 영양소 색깔이 예쁘게 인쇄됩니다! ^^");
             window.print();
@@ -489,7 +486,6 @@
         function speakWord(word) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                
                 let pronunciation = word;
                 if (word === "밥") pronunciation = "쌀밥";
                 else if (word === "물") pronunciation = "물"; 
@@ -503,9 +499,10 @@
             }
         }
 
+        // ✨ 수정된 부분: '물' 이라는 글자 단독, 혹은 명확한 음료 이름일 때만 물로 인식하게 수정 ✨
         function guessTypeAndIcon(name) {
             const rules = [
-                { regex: /물|보리차|차|음료/, type: 'water', icon: '💧' },
+                { regex: /^물$|보리차|생수|주스|음료/, type: 'water', icon: '💧' },
                 { regex: /사과|바나나|귤|포도|오렌지|수박|딸기|과일|키위|토마토|복숭아|파인애플|자두|배|감/, type: 'fruit', icon: '🍎' },
                 { regex: /우유|치즈|요플레|요구르트|아이스크림/, type: 'dairy', icon: '🥛' },
                 { regex: /김치|나물|무침|샐러드|양파|버섯|채소|야채|브로콜리|오이|당근|상추|시금치|깻잎|배추|마늘|파|고추/, type: 'veg', icon: '🥗' },
@@ -521,7 +518,6 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            
             const imgUrl = urlParams.get('img');
             if (imgUrl) document.getElementById('passed-meal-img').src = imgUrl;
 
@@ -691,7 +687,7 @@
                 bikeContainer.classList.add('flying'); 
                 
                 messageDisplay.style.color = '#d50000';
-                messageDisplay.innerHTML = "🎉 최고예요! 골고루 다 먹어서 자전거가 하늘을 날아가요! 🌈🚀☁️";
+                messageDisplay.innerHTML = "🎉 최고예요! 골고루 다 먹어서 자전거가 하늘 날아가요! 🌈🚀☁️";
             } else if (score >= maxScore - 2 && score > 0) { 
                 playCongratulationMusic();
                 setTimeout(playBicycleSound, 200); 
@@ -747,7 +743,6 @@
 
         function saveMenuSettings() {
             const rows = document.querySelectorAll('.menu-row');
-            
             foodBox.innerHTML = ''; 
             document.getElementById('print-normal-box').innerHTML = '';
             document.getElementById('print-tracing-box').innerHTML = '';
@@ -778,11 +773,10 @@
             document.getElementById('settings-modal').style.display = 'none';
         }
 
-        // ✨ 타이밍 오차 방지: 시간을 명확히 고정(const t)하고, 0이 아닌 0.001로 안전하게 설정 ✨
         function playSuccessSound() {
             try {
                 const ctx = getAudioCtx();
-                const t = ctx.currentTime;
+                const t = ctx.currentTime + 0.05;
                 const osc = ctx.createOscillator(); const gain = ctx.createGain();
                 osc.type = 'sine'; 
                 osc.frequency.setValueAtTime(880, t); 
@@ -791,12 +785,12 @@
                 gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
                 osc.connect(gain); gain.connect(ctx.destination); 
                 osc.start(t); osc.stop(t + 0.5);
-            } catch(e) {}
+            } catch(e) { console.error(e); }
         }
         function playCongratulationMusic() {
             try {
                 const ctx = getAudioCtx();
-                const t = ctx.currentTime;
+                const t = ctx.currentTime + 0.05;
                 [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
                     const osc = ctx.createOscillator(); const gain = ctx.createGain();
                     osc.connect(gain); gain.connect(ctx.destination); osc.type = 'triangle'; osc.frequency.value = freq;
@@ -806,12 +800,12 @@
                     gain.gain.linearRampToValueAtTime(0.001, st + 0.15);
                     osc.start(st); osc.stop(st + 0.15);
                 });
-            } catch(e) {}
+            } catch(e) { console.error(e); }
         }
         function playEncouragementMusic() {
             try {
                 const ctx = getAudioCtx();
-                const t = ctx.currentTime;
+                const t = ctx.currentTime + 0.05;
                 [392.00, 329.63, 261.63].forEach((freq, i) => {
                     const osc = ctx.createOscillator(); const gain = ctx.createGain();
                     osc.connect(gain); gain.connect(ctx.destination); osc.type = 'sine'; osc.frequency.value = freq;
@@ -821,12 +815,12 @@
                     gain.gain.linearRampToValueAtTime(0.001, st + 0.4);
                     osc.start(st); osc.stop(st + 0.4);
                 });
-            } catch(e) {}
+            } catch(e) { console.error(e); }
         }
         function playAirplaneSound() {
             try {
                 const ctx = getAudioCtx();
-                const t = ctx.currentTime;
+                const t = ctx.currentTime + 0.05;
                 const bs = ctx.sampleRate * 3; const buf = ctx.createBuffer(1, bs, ctx.sampleRate);
                 const d = buf.getChannelData(0); for (let i = 0; i < bs; i++) d[i] = Math.random() * 2 - 1; 
                 const noise = ctx.createBufferSource(); noise.buffer = buf;
@@ -842,12 +836,12 @@
                 gain.gain.linearRampToValueAtTime(0.001, t + 3);   
                 noise.connect(nf); nf.connect(gain); osc.connect(gain); gain.connect(ctx.destination);
                 noise.start(t); osc.start(t); noise.stop(t + 3); osc.stop(t + 3);
-            } catch(e) {}
+            } catch(e) { console.error(e); }
         }
         function playBicycleSound() {
             try {
                 const ctx = getAudioCtx();
-                const t = ctx.currentTime;
+                const t = ctx.currentTime + 0.05;
                 const osc1 = ctx.createOscillator(); const osc2 = ctx.createOscillator();
                 osc1.type = 'sine'; osc2.type = 'sine'; osc1.frequency.value = 2000; osc2.frequency.value = 2050;
                 const bGain = ctx.createGain(); 
@@ -864,12 +858,12 @@
                     cGain.gain.linearRampToValueAtTime(0.001, st + 0.05);
                     cOsc.connect(cGain); cGain.connect(ctx.destination); cOsc.start(st); cOsc.stop(st + 0.05);
                 }
-            } catch(e) {}
+            } catch(e) { console.error(e); }
         }
         function playDeflateSound() {
             try {
                 const ctx = getAudioCtx();
-                const t = ctx.currentTime;
+                const t = ctx.currentTime + 0.05;
                 const bs = ctx.sampleRate * 1.5; const buf = ctx.createBuffer(1, bs, ctx.sampleRate);
                 const d = buf.getChannelData(0); for (let i = 0; i < bs; i++) d[i] = Math.random() * 2 - 1; 
                 const noise = ctx.createBufferSource(); noise.buffer = buf;
@@ -882,7 +876,7 @@
                 gain.gain.exponentialRampToValueAtTime(0.01, t + 1.5);
                 noise.connect(fHP); fHP.connect(fLP); fLP.connect(gain); gain.connect(ctx.destination);
                 noise.start(t); noise.stop(t + 1.5);
-            } catch(e) {}
+            } catch(e) { console.error(e); }
         }
 
         function toggleAdvancedMode() {
