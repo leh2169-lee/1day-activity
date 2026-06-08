@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영양소 자전거 탐험대</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: #fdfcf0;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 1.5s ease; 
+        }
+        
+        .header-container, .student-list-container, .desc, #message, .bike-wrapper, .interaction-area, .button-group {
+            position: relative;
+            z-index: 10;
+        }
+
+        .sky-clouds {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+        .sky-clouds.show {
+            opacity: 0.8;
+        }
+        .sky-clouds span {
+            position: absolute;
+            animation: floatCloud 4s infinite alternate ease-in-out;
+        }
+        @keyframes floatCloud {
+            from { transform: translateX(0px) translateY(0px); }
+            to { transform: translateX(30px) translateY(-10px); }
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            color: #2e7d32;
+            font-size: 2.5rem;
+            display: inline-block;
+            border-bottom: 5px solid #a8e6cf;
+            margin: 0;
+        }
+
+        .name-box {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        .name-input {
+            font-size: 1.5rem;
+            border: none;
+            border-bottom: 2px solid #333;
+            width: 150px;
+            background: transparent;
+            text-align: center;
+            font-family: inherit;
+            outline: none;
+            color: #333;
+            margin-left: 10px;
+        }
+
+        .print-btn, .settings-btn {
+            padding: 10px 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: 0.2s;
+        }
+        .print-btn { background-color: #4CAF50; }
+        .print-btn:hover { background-color: #388E3C; transform: scale(1.05); }
+        .settings-btn { background-color: #FF9800; }
+        .settings-btn:hover { background-color: #F57C00; transform: scale(1.05); }
+
+        .desc {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        #message {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #333;
+            background-color: #fffde7;
+            border: 4px dashed #ffb300;
+            border-radius: 20px;
+            margin: 0 auto 20px auto;
+            padding: 15px 20px;
+            min-height: 80px;
+            max-width: 950px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .hl-color { font-size: 1.4em; font-weight: 900; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); margin: 0 5px; }
+        .hl-nutri {
+            font-size: 1.4em; font-weight: 900; color: #d32f2f; 
+            background-color: #ffebee; padding: 2px 10px; border-radius: 10px;
+            border: 2px solid #ffcdd2; box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            display: inline-block; margin: 0 5px;
+        }
+
+        .student-list-container {
+            background-color: #e8f5e9; padding: 15px; border-radius: 20px;
+            margin: 0 auto 20px auto; max-width: 800px; border: 3px dashed #4CAF50;
+        }
+        .student-list-container h3 { margin: 0 0 15px 0; color: #2e7d32; font-size: 1.3rem; }
+        .student-list { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .student-slot {
+            width: 70px; height: 70px; border-radius: 50%; border: 3px solid #ccc;
+            background-color: #fff; overflow: hidden; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .student-slot img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        .student-slot.drag-over { border-color: #ff9800; background-color: #fff3e0; transform: scale(1.15); }
+        .student-slot:hover { border-color: #4CAF50; transform: scale(1.1); }
+
+        .bike-wrapper {
+            display: flex; align-items: center; justify-content: center; gap: 20px;
+            max-width: 1000px; margin: 0 auto 20px auto; padding: 0 10px; box-sizing: border-box;
+        }
+
+        .bike-container {
+            position: relative; flex: 1; max-width: 800px; aspect-ratio: 1.6 / 1; 
+            margin: 0; background: url('식품구성자전거.gif') no-repeat center center;
+            background-size: contain; border: 4px solid #ddd; border-radius: 20px;
+            background-color: #fff; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.5s ease;
+        }
+
+        .bike-container.riding-fast {
+            background-image: 
+                url('식품구성자전거.gif'),
+                repeating-linear-gradient(90deg, transparent 0, transparent 40px, rgba(255,255,255,0.9) 40px, rgba(255,255,255,0.9) 80px),
+                linear-gradient(to bottom, #81D4FA 0%, #81D4FA 75%, #757575 75%, #757575 100%);
+            background-position: center center, 0 92%, 0 0; background-size: contain, 100% 12px, 100% 100%;
+            background-repeat: no-repeat, no-repeat, no-repeat; background-blend-mode: multiply, normal, normal;
+            animation: rideFast 0.3s infinite linear, moveBikeRoad 0.4s linear infinite; border-color: #757575;
+        }
+        @keyframes rideFast {
+            0% { transform: translateY(0px) rotate(0deg); } 25% { transform: translateY(-4px) rotate(-1deg); }
+            50% { transform: translateY(0px) rotate(0deg); } 75% { transform: translateY(2px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        @keyframes moveBikeRoad {
+            from { background-position: center center, 0 92%, 0 0; } to { background-position: center center, -80px 92%, 0 0; }
+        }
+
+        .bike-container.flat-tire {
+            background-image: 
+                url('식품구성자전거.gif'), linear-gradient(to bottom, #B0BEC5 0%, #B0BEC5 75%, #795548 75%, #795548 100%);
+            background-position: center center, 0 0; background-size: contain, 100% 100%;
+            background-repeat: no-repeat, no-repeat; background-blend-mode: multiply, normal;
+            animation: flatTire 0.8s forwards ease-out; border-color: #795548;
+        }
+        @keyframes flatTire { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(20px) rotate(4deg); } }
+
+        .bike-container.flying {
+            background-image: 
+                url('식품구성자전거.gif'), linear-gradient(to bottom, #E1F5FE 0%, #E1F5FE 100%);
+            background-position: center center, 0 0; background-size: contain, 100% 100%;
+            background-repeat: no-repeat, no-repeat; background-blend-mode: multiply, normal;
+            border-color: #81D4FA;
+            animation: flyHigh 1.2s forwards cubic-bezier(0.25, 1, 0.5, 1), floatHigh 2.5s 1.2s infinite alternate ease-in-out;
+            z-index: 999;
+        }
+        @keyframes flyHigh {
+            0% { transform: translateY(0px) rotate(0deg); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+            20% { transform: translateY(20px) rotate(-3deg); box-shadow: 0 5px 10px rgba(0,0,0,0.05); } 
+            100% { transform: translateY(-150px) rotate(8deg); box-shadow: -30px 100px 50px rgba(0,0,0,0.25); } 
+        }
+        @keyframes floatHigh { 0% { transform: translateY(-150px) rotate(8deg); } 100% { transform: translateY(-120px) rotate(4deg); } }
+
+        .bike-container.error-shake { background-color: #ffebee; border-color: #f44336; animation: errorShake 0.5s ease-in-out; }
+        @keyframes errorShake {
+            0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-15px) rotate(-2deg); }
+            40%, 80% { transform: translateX(15px) rotate(2deg); }
+        }
+
+        .side-eval-btn {
+            padding: 20px 25px; font-size: 1.6rem; font-weight: bold; cursor: pointer;
+            background-color: #2196F3; color: white; border: none; border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2); transition: 0.2s; line-height: 1.4; white-space: nowrap;
+        }
+        .side-eval-btn:hover { background-color: #1976D2; transform: scale(1.05); }
+
+        @media (max-width: 850px) { .bike-wrapper { flex-direction: column; } }
+
+        .rider-face {
+            position: absolute; top: 5%; left: 30%; width: 7%; height: 10%; background-color: white;
+            border: 3px solid #333; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .rider-face img { width: 100%; height: 100%; object-fit: cover; }
+
+        .drop-zone {
+            position: absolute; border: none; border-radius: 20px; display: flex;
+            align-items: center; justify-content: center; flex-wrap: wrap;
+            padding: 5px; transition: 0.3s; z-index: 10; background-color: transparent; 
+        }
+
+        .zone-water { top: 53%; left: 2%; width: 17%; height: 27%; border-radius: 50%; }
+        .zone-grain, .zone-meat, .zone-veg, .zone-fruit, .zone-dairy, .zone-fat { top: 6%; left: 32%; width: 71%; height: 120%; }
+        
+        .zone-grain { clip-path: polygon(37% 0, 52% 0, 52% 35%, 19% 52%, 11% 36%, 13% 19%, 21% 6%); }
+        .zone-meat { clip-path: polygon(53% 0, 52% 35%, 85% 21%, 79% 8%, 68% 1%); }
+        .zone-dairy { clip-path: polygon(23% 62%, 52% 35%, 53% 74%, 40% 74%, 30% 70%); }
+        .zone-veg { clip-path: polygon(77% 61%, 52% 35%, 85% 21%, 91% 35%, 87% 51%); }
+        .zone-fruit { clip-path: polygon(79% 62%, 52% 35%, 53% 74%, 64% 72%, 72% 68%); }
+        .zone-fat { clip-path: polygon(23% 62%, 52% 35%, 16% 55%); }
+
+        .turtle-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.65); display: flex; align-items: center;
+            justify-content: center; flex-direction: column; opacity: 0; pointer-events: none; 
+            transition: opacity 0.5s ease-in-out; z-index: 50; 
+        }
+        .turtle-overlay.active { opacity: 1; }
+        .turtle-overlay img { width: 150px; animation: moveTurtle 4s ease-in-out infinite alternate; filter: drop-shadow(0px 0px 10px rgba(255,255,255,0.8)); }
+        @keyframes moveTurtle { from { transform: translateX(-40px); } to { transform: translateX(40px); } }
+        .turtle-text { color: #ffeb3b; font-size: 2.2rem; font-weight: bold; margin-top: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
+
+        .interaction-area {
+            display: flex; flex-direction: row; justify-content: center; align-items: stretch;
+            gap: 20px; max-width: 1300px; margin: 0 auto 30px auto; width: 100%;
+        }
+
+        .lunch-box {
+            flex: 1; display: flex; justify-content: center; align-items: center; gap: 15px;
+            flex-wrap: wrap; background-color: #fff; padding: 20px; border-radius: 20px;
+            border: 4px solid #4CAF50; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: 0; box-sizing: border-box;
+        }
+        
+        .food-item {
+            border: 4px solid #ccc; border-radius: 15px; padding: 10px 20px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); user-select: none; z-index: 100;
+            color: #222; transition: transform 0.2s; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+            min-width: 80px;
+        }
+        .food-item:active { transform: scale(0.9); }
+        
+        .f-icon { font-size: 4rem; line-height: 1; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2)); margin-bottom: 5px; }
+        .f-name { font-size: 1.4rem; word-break: keep-all; }
+
+        .drop-zone .food-item { padding: 5px 10px !important; gap: 2px !important; flex-direction: row; }
+        .drop-zone .f-icon { font-size: 1.8rem !important; filter: none; margin-bottom: 0; }
+        .drop-zone .f-name { font-size: 1.2rem !important; }
+        
+        .food-item[data-type="grain"] { background-color: #FFA726; border-color: #FB8C00; } 
+        .food-item[data-type="meat"] { background-color: #CE93D8; border-color: #AB47BC; }  
+        .food-item[data-type="veg"] { background-color: #66BB6A; border-color: #43A047; }   
+        .food-item[data-type="fruit"] { background-color: #EF5350; border-color: #E53935; } 
+        .food-item[data-type="dairy"] { background-color: #42A5F5; border-color: #1E88E5; } 
+        .food-item[data-type="fat"] { background-color: #FFEE58; border-color: #FDD835; }   
+        .food-item[data-type="water"] { background-color: #4FC3F7; border-color: #03A9F4; } 
+
+        .meal-image-container {
+            flex: 1; background: #fff; border: 4px dashed #ff9800; border-radius: 20px;
+            padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-sizing: border-box; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; margin: 0;
+        }
+        .meal-image-container p { font-size: 1.4rem; font-weight: bold; color: #d32f2f; margin-top: 0; margin-bottom: 15px; }
+        .meal-image-container img { width: 100%; max-width: 500px; border-radius: 15px; border: 3px solid #ccc; object-fit: cover; }
+
+        @media (max-width: 768px) { .interaction-area { flex-direction: column; } }
+
+        .button-group { margin-top: 20px; display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; }
+
+        .next-btn, .eval-btn {
+            padding: 12px 25px; font-size: 1.3rem; font-weight: bold; cursor: pointer; color: white;
+            border: none; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s;
+        }
+        .next-btn { background-color: #ff9800; }
+        .next-btn:hover { background-color: #f57c00; transform: scale(1.05); }
+
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #fff; padding: 25px; border-radius: 20px; width: 90%; max-width: 600px;
+            max-height: 85vh; overflow-y: auto; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .modal-content h2 { color: #2e7d32; margin-top: 0; border-bottom: 3px solid #a8e6cf; padding-bottom: 10px; }
+        .menu-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+        .menu-row input { flex: 1; padding: 10px; font-size: 1.1rem; border: 2px solid #ddd; border-radius: 8px; }
+        .menu-row select { padding: 10px; font-size: 1.1rem; border: 2px solid #ddd; border-radius: 8px; }
+        .menu-row button { background: #f44336; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 8px; font-weight: bold; }
+        .add-row-btn { background: #4CAF50; color: white; border: none; padding: 10px 20px; font-size: 1.1rem; border-radius: 8px; cursor: pointer; margin-bottom: 15px; font-weight: bold; }
+        .save-modal-btn { background: #2196F3; color: white; border: none; padding: 15px; font-size: 1.3rem; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+        .close-modal-btn { background: #9e9e9e; color: white; border: none; padding: 10px; font-size: 1.1rem; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+
+        #print-area { display: none; }
+
+        /* 완벽한 컬러 오리기 & 덧쓰기 활동지용 인쇄 CSS */
+        @media print {
+            @page { size: A4 landscape; margin: 1cm; } 
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            
+            .student-list-container, .desc, .button-group, #message, .turtle-overlay, .sky-clouds, .modal-overlay, .interaction-area, .side-eval-btn, .print-btn, .settings-btn { display: none !important; }
+            
+            body { background-color: white !important; margin: 0; padding: 0; }
+            .bike-wrapper { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            
+            .bike-container {
+                width: 90%; max-width: 1000px; margin: 0 auto; border: none !important; box-shadow: none;
+                page-break-after: always; break-after: page; animation: none !important; transform: none !important;
+                background: url('식품구성자전거.gif') no-repeat center center / contain !important;
+                background-color: transparent !important; background-blend-mode: normal !important;
+            }
+            .rider-face, .drop-zone { display: none !important; }
+            
+            #print-area { display: block !important; width: 100%; }
+            .print-page { page-break-after: always; break-after: page; padding: 20px; width: 100%; box-sizing: border-box; }
+            .print-page h2 { font-size: 1.6rem; color: #000; text-align: left; margin-bottom: 20px; font-weight: bold; border-bottom: 2px solid #000; padding-bottom: 10px; }
+
+            .print-cutout-box { display: flex; flex-direction: column; align-items: stretch; width: fit-content; min-width: 300px; max-width: 100%; margin: 0 auto; }
+
+            .print-cutout-box .food-item {
+                border: 3px dashed #333 !important; border-radius: 0 !important; box-shadow: none !important; 
+                margin: 0 0 -3px 0 !important; padding: 12px 20px !important; color: #000 !important; 
+                text-shadow: none !important; position: relative; z-index: 1 !important;
+                flex-direction: row !important; justify-content: flex-start !important; gap: 15px !important;
+            }
+            .print-cutout-box .f-icon { font-size: 2.2rem !important; filter: none !important; margin-bottom: 0 !important; }
+            .print-cutout-box .f-name { font-size: 1.8rem !important; }
+
+            .print-cutout-box .food-item::after { content: "✂️"; position: absolute; right: -40px; bottom: -15px; font-size: 1.5rem; z-index: 10; color: #000 !important; }
+            .print-cutout-box .food-item:last-child::after { display: none !important; }
+
+            .print-cutout-box.tracing .food-item { background-color: #ffffff !important; }
+            .print-cutout-box.tracing .f-name { 
+                color: #CCCCCC !important; 
+                font-size: 2rem !important;
+                -webkit-text-stroke: 1px #CCCCCC !important;
+            }
+            .print-cutout-box.tracing .f-icon { filter: grayscale(100%) opacity(0.25) !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sky-clouds" class="sky-clouds">
+        <span style="top: 10%; left: 10%; animation-delay: 0s; font-size: 6rem;">☁️</span>
+        <span style="top: 30%; right: 10%; animation-delay: 1s; font-size: 5rem;">☁️</span>
+        <span style="top: 60%; left: 5%; animation-delay: 2s; font-size: 4rem;">☁️</span>
+        <span style="top: 15%; right: 30%; animation-delay: 0.5s; font-size: 7rem;">☁️</span>
+    </div>
+
+    <div class="header-container">
+        <h1>🥗 영양소 자전거 탐험대 🚲</h1>
+        <div class="name-box">이름 : <input type="text" class="name-input"></div>
+        <button class="print-btn" onclick="triggerPrint()">🖨️ 도안 출력</button>
+        <button class="settings-btn" onclick="openMenuSettings()">⚙️ 식단 설정</button>
+    </div>
+    
+    <div class="student-list-container">
+        <h3>📸나의 사진을 눌러 자전거에 타봐요🚲</h3>
+        <div class="student-list">
+            <div class="student-slot"><img src="김민주.jpg" alt="김민주"></div>
+            <div class="student-slot"><img src="김현우.png" alt="김현우"></div>
+            <div class="student-slot"><img src="송민서.jpg" alt="송민서"></div>
+            <div class="student-slot"><img src="엽건영.jpg" alt="엽건영"></div>
+            <div class="student-slot"><img src="이환.png" alt="이환"></div>
+            <div class="student-slot"><img src="임시은.jpg" alt="임시은"></div>
+        </div>
+    </div>
+
+    <p class="desc">내가 먹은 그림 반찬을 <span style="color: #2196F3;">터치해서</span> 쏙 넣으세요! <b>반찬 이름</b>을 읽어줘요. 🔊</p>
+
+    <div id="message">나의 사진을 누르고 반찬을 채워보세요!</div>
+
+    <div class="bike-wrapper">
+        <div class="bike-container" id="bike-container">
+            <div class="rider-face" id="rider-face"><img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" alt="아이 얼굴" id="rider-img"></div>
+            <div class="drop-zone zone-water" data-target="water"></div>
+            <div class="drop-zone zone-grain" data-target="grain"></div>
+            <div class="drop-zone zone-meat" data-target="meat"></div>
+            <div class="drop-zone zone-veg" data-target="veg"></div>
+            <div class="drop-zone zone-fruit" data-target="fruit"></div>
+            <div class="drop-zone zone-dairy" data-target="dairy"></div>
+            <div class="drop-zone zone-fat" data-target="fat"></div>
+            <div class="turtle-overlay" id="turtle-overlay">
+                <img src="https://cdn-icons-png.flaticon.com/512/2809/2809808.png" alt="거북이">
+                <div class="turtle-text">앗! 골고루 먹지 않아서 바퀴에 바람이 빠졌어요 🐢</div>
+            </div>
+        </div>
+        <button class="side-eval-btn" onclick="evaluateBike()">다 올렸어요!<br>출발 🚩</button>
+    </div>
+
+    <div class="interaction-area">
+        <div class="lunch-box" id="food-box"></div>
+        <div class="meal-image-container">
+            <p>📸 내가 먹은 반찬을 골라보세요</p>
+            <img id="passed-meal-img" src="1.jpg" alt="급식 사진">
+        </div>
+    </div>
+    
+    <div id="print-area">
+        <div class="print-page">
+            <h2>✂️ 그림 오리기 자료 (점선을 따라 오려서 자전거에 붙여요)</h2>
+            <div class="print-cutout-box" id="print-normal-box"></div>
+        </div>
+        <div class="print-page">
+            <h2>✏️ 글자 덧쓰기 자료 (상자 안을 색칠하고 글자를 따라 써요)</h2>
+            <div class="print-cutout-box tracing" id="print-tracing-box"></div>
+        </div>
+    </div>
+    
+    <div class="button-group">
+        <button class="next-btn" onclick="nextStudent()">다음 친구 차례! 🔄</button>
+        <button id="adv-toggle-btn" class="eval-btn" style="background-color: #9c27b0;" onclick="toggleAdvancedMode()">🧠 심화학습 켜기 (영양소 보기)</button>
+    </div>
+
+    <div id="settings-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>⚙️ 식단 설정 (선생님 전용)</h2>
+            <p style="color:#555; margin-bottom: 20px;">반찬 이름과 영양소(색깔)를 자유롭게 수정하세요. 만점 기준은 적어주신 반찬 개수에 맞춰 자동으로 조절됩니다!</p>
+            <div id="menu-edit-list"></div>
+            <button class="add-row-btn" onclick="addMenuRow('', 'grain')">➕ 반찬 한 칸 더 추가하기</button>
+            <button class="save-modal-btn" onclick="saveMenuSettings()">💾 이대로 수업 시작하기!</button>
+            <button class="close-modal-btn" onclick="closeMenuSettings()">닫기</button>
+        </div>
+    </div>
+
+<script>
+        let score = 0;
+        let maxScore = 0; 
+        let isAdvancedMode = false;
+        const messageDisplay = document.getElementById('message');
+        const foodBox = document.getElementById('food-box');
+        const turtleOverlay = document.getElementById('turtle-overlay'); 
+        const bikeContainer = document.getElementById('bike-container');
+
+        let globalAudioCtx = null;
+        function getAudioCtx() {
+            if (!globalAudioCtx) {
+                globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (globalAudioCtx.state === 'suspended') {
+                globalAudioCtx.resume();
+            }
+            return globalAudioCtx;
+        }
+
+        document.body.addEventListener('click', function initAudio() {
+            getAudioCtx();
+            document.body.removeEventListener('click', initAudio);
+        }, { once: true });
+
+        function triggerPrint() {
+            alert("선생님! 인쇄 창이 뜨면 설정(더보기)에서 '배경 그래픽(배경색 인쇄)'을 꼭 체크해주셔야 영양소 색깔이 예쁘게 인쇄됩니다! ^^");
+            window.print();
+        }
+
+        function speakWord(word) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                let pronunciation = word;
+                if (word === "밥") pronunciation = "쌀밥";
+                else if (word === "물") pronunciation = "물"; 
+                else if (word === "국") pronunciation = "국물";
+
+                const utterance = new SpeechSynthesisUtterance(pronunciation + "!");
+                utterance.lang = 'ko-KR';
+                utterance.rate = 0.95; 
+                utterance.pitch = 1.0; 
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // ✨ 수정된 부분: '물' 이라는 글자 단독, 혹은 명확한 음료 이름일 때만 물로 인식하게 수정 ✨
+        function guessTypeAndIcon(name) {
+            const rules = [
+                { regex: /^물$|보리차|생수|주스|음료/, type: 'water', icon: '💧' },
+                { regex: /사과|바나나|귤|포도|오렌지|수박|딸기|과일|키위|토마토|복숭아|파인애플|자두|배|감/, type: 'fruit', icon: '🍎' },
+                { regex: /우유|치즈|요플레|요구르트|아이스크림/, type: 'dairy', icon: '🥛' },
+                { regex: /김치|나물|무침|샐러드|양파|버섯|채소|야채|브로콜리|오이|당근|상추|시금치|깻잎|배추|마늘|파|고추/, type: 'veg', icon: '🥗' },
+                { regex: /고기|생선|계란|알|두부|콩|오징어|새우|튀김|국|찌개|닭|소|돼지|돈까스|소시지|햄|만두|탕|갈비|치킨|조림|볶음|구이|전/, type: 'meat', icon: '🥩' },
+                { regex: /밥|면|빵|떡|감자|고구마|시리얼|죽|스파게티|우동|라면|수제비|옥수수/, type: 'grain', icon: '🍚' },
+                { regex: /버터|기름|사탕|초콜릿|과자|케이크|마카롱|잼|설탕/, type: 'fat', icon: '🍬' }
+            ];
+            for (let rule of rules) {
+                if (rule.regex.test(name)) return rule;
+            }
+            return { type: 'grain', icon: '🍽️' }; 
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const imgUrl = urlParams.get('img');
+            if (imgUrl) document.getElementById('passed-meal-img').src = imgUrl;
+
+            let paramKeys = ['m0', 'm1', 'm2', 'm3'];
+            let hasParams = paramKeys.some(k => urlParams.get(k));
+            
+            foodBox.innerHTML = '';
+            document.getElementById('print-normal-box').innerHTML = '';
+            document.getElementById('print-tracing-box').innerHTML = '';
+            
+            createFoodItem('water', '💧', '물', 0);
+            
+            if(hasParams) {
+                paramKeys.forEach((key, idx) => {
+                    const val = urlParams.get(key);
+                    if(val) {
+                        const info = guessTypeAndIcon(val);
+                        createFoodItem(info.type, info.icon, val, idx + 1);
+                    }
+                });
+            } else {
+                createFoodItem('grain', '🍚', '쌀밥', 1);
+                createFoodItem('meat', '🍲', '우거지국', 2);
+                createFoodItem('meat', '🍤', '튀김', 3);
+                createFoodItem('veg', '🥬', '김치', 4);
+                createFoodItem('dairy', '🥛', '흰우유', 5);
+            }
+            
+            maxScore = document.querySelectorAll('#food-box .food-item').length;
+            bindFoodEvents();
+        });
+
+        function createFoodItem(type, icon, name, idNum) {
+            const div = document.createElement('div');
+            div.className = 'food-item';
+            div.setAttribute('data-type', type);
+            div.setAttribute('data-name', name); 
+            div.id = 'f' + idNum;
+            div.innerHTML = `<span class="f-icon">${icon}</span><span class="f-name">${name}</span>`;
+            foodBox.appendChild(div);
+
+            const pDiv = div.cloneNode(true);
+            pDiv.id = 'pf' + idNum;
+            document.getElementById('print-normal-box').appendChild(pDiv);
+
+            const tDiv = div.cloneNode(true);
+            tDiv.id = 'pt' + idNum;
+            document.getElementById('print-tracing-box').appendChild(tDiv);
+        }
+
+        function updateZoneLayout(zone) {
+            const items = zone.querySelectorAll('.food-item');
+            items.forEach((item, index) => {
+                const offset = index * 25; 
+                item.style.transform = `translate(calc(-50% + ${offset}px), calc(-50% + ${offset}px))`;
+                item.style.zIndex = 100 + index; 
+            });
+        }
+
+        function bindFoodEvents() {
+            const currentFoods = document.querySelectorAll('#food-box .food-item, .drop-zone .food-item');
+            currentFoods.forEach(food => {
+                const newFood = food.cloneNode(true);
+                food.replaceWith(newFood);
+                
+                newFood.addEventListener('click', () => {
+                    getAudioCtx(); 
+                    
+                    const foodNameToSpeak = newFood.getAttribute('data-name');
+                    speakWord(foodNameToSpeak);
+
+                    if (newFood.parentElement.classList.contains('drop-zone')) {
+                        const oldZone = newFood.parentElement;
+                        
+                        foodBox.appendChild(newFood);
+                        newFood.style.position = '';
+                        newFood.style.transform = '';
+                        newFood.style.top = '';
+                        newFood.style.left = '';
+                        newFood.style.zIndex = ''; 
+                        
+                        updateZoneLayout(oldZone); 
+
+                        score--;
+                        messageDisplay.style.color = '#ff5722';
+                        messageDisplay.innerHTML = "<div>반찬을 다시 제자리로 가져왔어요! 🔄</div><div style='font-size: 1.5rem; color:#666; margin-top:5px;'>다른 반찬이나 위치를 다시 골라보세요.</div>";
+                        turtleOverlay.classList.remove('active');
+                        resetBike();
+                        return;
+                    }
+
+                    const foodType = newFood.getAttribute('data-type');
+                    const targetZone = document.querySelector(`.drop-zone[data-target="${foodType}"]`);
+
+                    if (targetZone) {
+                        playSuccessSound();
+                        targetZone.appendChild(newFood);
+                        
+                        if (foodType !== 'water') {
+                            newFood.style.position = 'absolute';
+                            
+                            if (foodType === 'grain') { newFood.style.top = '25%'; newFood.style.left = '25%'; }
+                            else if (foodType === 'meat') { newFood.style.top = '12%'; newFood.style.left = '68%'; } 
+                            else if (foodType === 'veg') { newFood.style.top = '35%'; newFood.style.left = '78%'; } 
+                            else if (foodType === 'fruit') { newFood.style.top = '60%'; newFood.style.left = '65%'; }
+                            else if (foodType === 'dairy') { newFood.style.top = '65%'; newFood.style.left = '40%'; }
+                            else if (foodType === 'fat') { newFood.style.top = '50%'; newFood.style.left = '30%'; }
+                            
+                            updateZoneLayout(targetZone); 
+                        }
+                        
+                        score++;
+                        showSuccessMessage(foodType);
+                        turtleOverlay.classList.remove('active');
+                    }
+                });
+            });
+        }
+
+        function showSuccessMessage(foodType) {
+            let successMsg = ""; let advMsg = "";
+            if (foodType === "grain") {
+                successMsg = "<div>딩동댕! <span class='hl-color' style='color:#FFA726;'>주황색</span> 칸에 잘 넣었어요! 🍚</div>";
+                advMsg = "<div style='margin-top:8px;'>힘이 불끈 나는 <span class='hl-nutri'>탄수화물</span> 이 들어있대요! 💪</div>";
+            } else if (foodType === "meat") {
+                successMsg = "<div>딩동댕! <span class='hl-color' style='color:#CE93D8;'>연보라색</span> 칸에 잘 넣었어요! 🥩</div>";
+                advMsg = "<div style='margin-top:8px;'>근육을 튼튼하게 해주는 <span class='hl-nutri'>단백질</span> 이 듬뿍! 🦸‍♂️</div>";
+            } else if (foodType === "veg") {
+                successMsg = "<div>딩동댕! <span class='hl-color' style='color:#66BB6A;'>초록색</span> 칸에 잘 넣었어요! 🥗</div>";
+                advMsg = "<div style='margin-top:8px;'>우리 몸을 지켜주는 <span class='hl-nutri'>비타민</span> 과 <span class='hl-nutri'>무기질</span> 이 가득! 🛡️</div>";
+            } else if (foodType === "fruit") {
+                successMsg = "<div>딩동댕! <span class='hl-color' style='color:#EF5350;'>빨간색</span> 칸에 잘 넣었어요! 🍎</div>";
+                advMsg = "<div style='margin-top:8px;'>상큼한 <span class='hl-nutri'>비타민</span> 이 들어있어 감기를 막아줘요! ✨</div>";
+            } else if (foodType === "dairy") {
+                successMsg = "<div>딩동댕! <span class='hl-color' style='color:#42A5F5;'>파란색</span> 칸에 잘 넣었어요! 🥛</div>";
+                advMsg = "<div style='margin-top:8px;'>뼈를 튼튼하게 키워주는 <span class='hl-nutri'>칼슘</span> 이 듬뿍! 🦴</div>";
+            } else if (foodType === "fat") {
+                successMsg = "<div>딩동댕! <span class='hl-color' style='color:#FFEE58;'>노란색</span> 칸에 잘 넣었어요! 🍬</div>";
+                advMsg = "<div style='margin-top:8px;'><span class='hl-nutri'>지방</span> 과 <span class='hl-nutri'>당</span> 이 들어있어 조금만 먹어야 해요! 🤏</div>";
+            } else if (foodType === "water") {
+                successMsg = "<div>딩동댕! <span class='hl-color' style='color:#4FC3F7;'>하늘색</span> 칸에 잘 넣었어요! 💧</div>";
+                advMsg = "<div style='margin-top:8px;'>우리 몸을 깨끗하게 해주는 <span class='hl-nutri'>수분</span> 보충 완료! 🌊</div>";
+            }
+            if (isAdvancedMode) successMsg += advMsg;
+            messageDisplay.style.color = '#333';
+            messageDisplay.innerHTML = successMsg;
+        }
+
+        function resetBike() {
+            bikeContainer.classList.remove('flying', 'riding-fast', 'flat-tire', 'error-shake');
+            document.body.style.backgroundColor = "#fdfcf0";
+            document.getElementById('sky-clouds').classList.remove('show');
+            void bikeContainer.offsetWidth; 
+        }
+
+        function evaluateBike() {
+            resetBike();
+            if (maxScore === 0) return; 
+
+            if (score >= maxScore) { 
+                playCongratulationMusic();
+                setTimeout(playAirplaneSound, 300); 
+                turtleOverlay.classList.remove('active');
+                
+                document.body.style.backgroundColor = "#e1f5fe"; 
+                document.getElementById('sky-clouds').classList.add('show'); 
+                bikeContainer.classList.add('flying'); 
+                
+                messageDisplay.style.color = '#d50000';
+                messageDisplay.innerHTML = "🎉 최고예요! 골고루 다 먹어서 자전거가 하늘 날아가요! 🌈🚀☁️";
+            } else if (score >= maxScore - 2 && score > 0) { 
+                playCongratulationMusic();
+                setTimeout(playBicycleSound, 200); 
+                turtleOverlay.classList.remove('active');
+                bikeContainer.classList.add('riding-fast'); 
+                messageDisplay.style.color = '#1565c0';
+                messageDisplay.innerHTML = "👍 아주 잘했어요! 자전거가 쌩쌩 달려요! 🚲💨 하나만 더 먹어볼까요?";
+            } else if (score > 0) {
+                playEncouragementMusic();
+                setTimeout(playDeflateSound, 100); 
+                turtleOverlay.classList.add('active'); 
+                bikeContainer.classList.add('flat-tire'); 
+                messageDisplay.style.color = '#f57c00';
+                messageDisplay.innerHTML = "🐢 앗! 골고루 먹지 않아서 바퀴에 바람이 빠졌어요 삐그덕... 내일은 더 채워주세요! 💦";
+            } else {
+                bikeContainer.classList.add('error-shake'); 
+                messageDisplay.style.color = '#d32f2f';
+                messageDisplay.innerHTML = "👀 아무것도 안 먹었나요? 튼튼 자전거가 출발할 수 없어요!";
+            }
+        }
+
+        function openMenuSettings() {
+            const currentFoods = document.querySelectorAll('#food-box .food-item, .drop-zone .food-item');
+            const list = document.getElementById('menu-edit-list');
+            list.innerHTML = '';
+            currentFoods.forEach(f => {
+                if(f.getAttribute('data-type') === 'water') return; 
+                const cleanName = f.querySelector('.f-name').innerText; 
+                const type = f.getAttribute('data-type');
+                addMenuRow(cleanName, type);
+            });
+            document.getElementById('settings-modal').style.display = 'flex';
+        }
+
+        function addMenuRow(name = '', type = 'grain') {
+            const div = document.createElement('div');
+            div.className = 'menu-row';
+            div.innerHTML = `
+                <input type="text" value="${name}" placeholder="반찬 이름 (예: 사과)">
+                <select>
+                    <option value="grain" ${type==='grain'?'selected':''}>주황색 (곡류)</option>
+                    <option value="meat" ${type==='meat'?'selected':''}>연보라색 (고기·생선)</option>
+                    <option value="veg" ${type==='veg'?'selected':''}>초록색 (채소)</option>
+                    <option value="fruit" ${type==='fruit'?'selected':''}>빨간색 (과일)</option>
+                    <option value="dairy" ${type==='dairy'?'selected':''}>파란색 (우유)</option>
+                    <option value="fat" ${type==='fat'?'selected':''}>노란색 (기름·단것)</option>
+                    <option value="water" ${type==='water'?'selected':''}>하늘색 (물)</option>
+                </select>
+                <button onclick="this.parentElement.remove()">삭제</button>
+            `;
+            document.getElementById('menu-edit-list').appendChild(div);
+        }
+
+        function saveMenuSettings() {
+            const rows = document.querySelectorAll('.menu-row');
+            foodBox.innerHTML = ''; 
+            document.getElementById('print-normal-box').innerHTML = '';
+            document.getElementById('print-tracing-box').innerHTML = '';
+            document.querySelectorAll('.drop-zone').forEach(zone => zone.innerHTML = ''); 
+            
+            createFoodItem('water', '💧', '물', 0); 
+            
+            const icons = {grain:'🍚', meat:'🥩', veg:'🥗', fruit:'🍎', dairy:'🥛', fat:'🍬', water:'💧'};
+            rows.forEach((row, i) => {
+                const name = row.querySelector('input').value.trim();
+                const type = row.querySelector('select').value;
+                if(name) {
+                    createFoodItem(type, icons[type], name, i + 1);
+                }
+            });
+            
+            score = 0;
+            maxScore = document.querySelectorAll('#food-box .food-item').length; 
+            bindFoodEvents();
+            closeMenuSettings();
+            resetBike();
+            turtleOverlay.classList.remove('active');
+            messageDisplay.style.color = '#333';
+            messageDisplay.innerHTML = "선생님 설정 완료! 친구 사진을 누르고 그림 반찬을 터치하세요!";
+        }
+
+        function closeMenuSettings() {
+            document.getElementById('settings-modal').style.display = 'none';
+        }
+
+        function playSuccessSound() {
+            try {
+                const ctx = getAudioCtx();
+                const t = ctx.currentTime + 0.05;
+                const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                osc.type = 'sine'; 
+                osc.frequency.setValueAtTime(880, t); 
+                osc.frequency.exponentialRampToValueAtTime(440, t + 0.1); 
+                gain.gain.setValueAtTime(0.3, t); 
+                gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+                osc.connect(gain); gain.connect(ctx.destination); 
+                osc.start(t); osc.stop(t + 0.5);
+            } catch(e) { console.error(e); }
+        }
+        function playCongratulationMusic() {
+            try {
+                const ctx = getAudioCtx();
+                const t = ctx.currentTime + 0.05;
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination); osc.type = 'triangle'; osc.frequency.value = freq;
+                    const st = t + i * 0.15; 
+                    gain.gain.setValueAtTime(0.001, st);
+                    gain.gain.linearRampToValueAtTime(0.3, st + 0.05); 
+                    gain.gain.linearRampToValueAtTime(0.001, st + 0.15);
+                    osc.start(st); osc.stop(st + 0.15);
+                });
+            } catch(e) { console.error(e); }
+        }
+        function playEncouragementMusic() {
+            try {
+                const ctx = getAudioCtx();
+                const t = ctx.currentTime + 0.05;
+                [392.00, 329.63, 261.63].forEach((freq, i) => {
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination); osc.type = 'sine'; osc.frequency.value = freq;
+                    const st = t + i * 0.4; 
+                    gain.gain.setValueAtTime(0.001, st);
+                    gain.gain.linearRampToValueAtTime(0.3, st + 0.1); 
+                    gain.gain.linearRampToValueAtTime(0.001, st + 0.4);
+                    osc.start(st); osc.stop(st + 0.4);
+                });
+            } catch(e) { console.error(e); }
+        }
+        function playAirplaneSound() {
+            try {
+                const ctx = getAudioCtx();
+                const t = ctx.currentTime + 0.05;
+                const bs = ctx.sampleRate * 3; const buf = ctx.createBuffer(1, bs, ctx.sampleRate);
+                const d = buf.getChannelData(0); for (let i = 0; i < bs; i++) d[i] = Math.random() * 2 - 1; 
+                const noise = ctx.createBufferSource(); noise.buffer = buf;
+                const nf = ctx.createBiquadFilter(); nf.type = 'lowpass'; 
+                nf.frequency.setValueAtTime(300, t); 
+                nf.frequency.exponentialRampToValueAtTime(3000, t + 2.5);
+                const osc = ctx.createOscillator(); osc.type = 'sawtooth'; 
+                osc.frequency.setValueAtTime(40, t); 
+                osc.frequency.linearRampToValueAtTime(120, t + 2.5); 
+                const gain = ctx.createGain(); 
+                gain.gain.setValueAtTime(0.001, t); 
+                gain.gain.linearRampToValueAtTime(0.4, t + 1); 
+                gain.gain.linearRampToValueAtTime(0.001, t + 3);   
+                noise.connect(nf); nf.connect(gain); osc.connect(gain); gain.connect(ctx.destination);
+                noise.start(t); osc.start(t); noise.stop(t + 3); osc.stop(t + 3);
+            } catch(e) { console.error(e); }
+        }
+        function playBicycleSound() {
+            try {
+                const ctx = getAudioCtx();
+                const t = ctx.currentTime + 0.05;
+                const osc1 = ctx.createOscillator(); const osc2 = ctx.createOscillator();
+                osc1.type = 'sine'; osc2.type = 'sine'; osc1.frequency.value = 2000; osc2.frequency.value = 2050;
+                const bGain = ctx.createGain(); 
+                bGain.gain.setValueAtTime(0.001, t); 
+                bGain.gain.linearRampToValueAtTime(0.3, t + 0.05); 
+                bGain.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
+                osc1.connect(bGain); osc2.connect(bGain); bGain.connect(ctx.destination); 
+                osc1.start(t); osc2.start(t); osc1.stop(t + 0.5); osc2.stop(t + 0.5);
+                for(let i=0; i<15; i++) {
+                    const cOsc = ctx.createOscillator(); cOsc.type = 'square'; cOsc.frequency.value = 150;
+                    const cGain = ctx.createGain(); const st = t + (i * 0.12);
+                    cGain.gain.setValueAtTime(0.001, st); 
+                    cGain.gain.linearRampToValueAtTime(0.05, st + 0.01); 
+                    cGain.gain.linearRampToValueAtTime(0.001, st + 0.05);
+                    cOsc.connect(cGain); cGain.connect(ctx.destination); cOsc.start(st); cOsc.stop(st + 0.05);
+                }
+            } catch(e) { console.error(e); }
+        }
+        function playDeflateSound() {
+            try {
+                const ctx = getAudioCtx();
+                const t = ctx.currentTime + 0.05;
+                const bs = ctx.sampleRate * 1.5; const buf = ctx.createBuffer(1, bs, ctx.sampleRate);
+                const d = buf.getChannelData(0); for (let i = 0; i < bs; i++) d[i] = Math.random() * 2 - 1; 
+                const noise = ctx.createBufferSource(); noise.buffer = buf;
+                const fHP = ctx.createBiquadFilter(); fHP.type = 'highpass'; fHP.frequency.value = 1000;
+                const fLP = ctx.createBiquadFilter(); fLP.type = 'lowpass'; 
+                fLP.frequency.setValueAtTime(8000, t); 
+                fLP.frequency.exponentialRampToValueAtTime(500, t + 1.5);
+                const gain = ctx.createGain(); 
+                gain.gain.setValueAtTime(0.6, t); 
+                gain.gain.exponentialRampToValueAtTime(0.01, t + 1.5);
+                noise.connect(fHP); fHP.connect(fLP); fLP.connect(gain); gain.connect(ctx.destination);
+                noise.start(t); noise.stop(t + 1.5);
+            } catch(e) { console.error(e); }
+        }
+
+        function toggleAdvancedMode() {
+            isAdvancedMode = !isAdvancedMode;
+            const btn = document.getElementById('adv-toggle-btn');
+            if (isAdvancedMode) {
+                btn.innerHTML = "🧠 심화학습 끄기 (영양소 숨기기)"; btn.style.backgroundColor = "#7b1fa2";
+                messageDisplay.style.color = '#7b1fa2'; messageDisplay.innerHTML = "✨ 심화학습 모드! 이제 반찬을 누르면 영양소 이름이 함께 나옵니다.";
+            } else {
+                btn.innerHTML = "🧠 심화학습 켜기 (영양소 보기)"; btn.style.backgroundColor = "#9c27b0";
+                messageDisplay.style.color = '#333'; messageDisplay.innerHTML = "기본 모드로 돌아왔습니다. (색깔만 표시)";
+            }
+        }
+
+        const studentSlots = document.querySelectorAll('.student-slot');
+        const riderImg = document.getElementById('rider-img');
+        const riderFaceZone = document.getElementById('rider-face');
+
+        studentSlots.forEach(slot => {
+            slot.addEventListener('dragover', (e) => { e.preventDefault(); slot.classList.add('drag-over'); });
+            slot.addEventListener('dragleave', () => { slot.classList.remove('drag-over'); });
+            slot.addEventListener('drop', (e) => {
+                e.preventDefault(); slot.classList.remove('drag-over');
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    const file = e.dataTransfer.files[0];
+                    if (file.type.match('image.*')) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) { slot.querySelector('img').src = event.target.result; };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+
+            slot.addEventListener('click', () => {
+                riderImg.src = slot.querySelector('img').src;
+                messageDisplay.style.color = '#333';
+                messageDisplay.innerHTML = "자전거에 탔어요! 그림 반찬을 터치해주세요 🚲";
+                turtleOverlay.classList.remove('active'); 
+                resetBike();
+            });
+        });
+
+        riderFaceZone.addEventListener('dragover', (e) => { e.preventDefault(); riderFaceZone.classList.add('drag-over'); });
+        riderFaceZone.addEventListener('dragleave', () => { riderFaceZone.classList.remove('drag-over'); });
+        riderFaceZone.addEventListener('drop', (e) => {
+            e.preventDefault(); riderFaceZone.classList.remove('drag-over');
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                const file = e.dataTransfer.files[0];
+                if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) { riderImg.src = event.target.result; };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+
+        function nextStudent() {
+            const currentFoods = document.querySelectorAll('#food-box .food-item, .drop-zone .food-item');
+            currentFoods.forEach(food => {
+                foodBox.appendChild(food);
+                food.style.position = '';
+                food.style.transform = '';
+                food.style.top = '';
+                food.style.left = '';
+                food.style.zIndex = ''; 
+            });
+            
+            score = 0;
+            turtleOverlay.classList.remove('active'); 
+            resetBike();
+            
+            messageDisplay.style.color = '#333';
+            messageDisplay.innerHTML = "새로운 친구 사진을 누르세요🙋‍♀️🙋‍♂️";
+            document.getElementById('rider-img').src = "https://cdn-icons-png.flaticon.com/512/4140/4140048.png";
+        }
+    </script>
+</body>
+</html>
