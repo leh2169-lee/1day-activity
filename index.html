@@ -55,7 +55,7 @@
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         th, td { border: 2px solid #ccc; padding: 8px; text-align: center; font-size: 1.1rem; }
         th { background: #f9f9f9; color: #555; }
-        .drop-zone {min-height: 55px;border: 2px dashed #b0bec5; border-radius: 8px;background: #fafafa;font-weight: bold; font-size: 1.6rem; cursor: pointer;}
+        .drop-zone {min-height: 55px;border: 2px dashed #b0bec5; border-radius: 8px;background: #fafafa;font-weight: bold; font-size: 1.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;}
         
         .pool-container { display: none; width: 100%; flex-direction: column; gap: 10px; background: #f1f8e9; padding: 12px; border-radius: 15px; border: 1px solid #dcedc8; }
         .pool-group { display: flex; align-items: center; gap: 10px; }
@@ -64,9 +64,25 @@
         
         .drag-item { padding: 6px 15px; background: white; border: 2px solid var(--subject-color); border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: grab; }
         .drag-item.loc { border-color: var(--location-color); color: #0277bd; }
-
+        .drag-item.special { border-color: #f44336; color: #d32f2f; background-color: #fff3e0; }
         .emoji-stamp span { font-size: 1.8rem; cursor: pointer; opacity: 0.2; margin: 0 5px; }
         .emoji-stamp span.selected { opacity: 1; transform: scale(1.2); display: inline-block; }
+
+        /* 🌟 사진 터치 돋보기 효과 (평소엔 60px, 누르면 2배 확대) 🌟 */
+        .zoom-img {
+            height: 60px;
+            width: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 10;
+        }
+        .zoom-img:hover, .zoom-img:active {
+            transform: scale(2.0); /* 2배 확대 */
+            z-index: 100;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
 
         .meal-container { display: flex; align-items: flex-start; justify-content: center; gap: 20px; width: 100%; background: white; padding: 15px; border-radius: 20px; border: 2px solid #ffccbc; }
         .meal-image-box { flex: 1.2; }
@@ -235,7 +251,7 @@
             <div><span class="day-label">8일:</span> 🎵 작은음악회</div>
             <div><span class="day-label">10일:</span> 👊 태권도</div>
             <div><span class="day-label">17일:</span> 👊 태권도</div>
-            <div><span class="day-label">24일:</span> 👊 태권도<br>🌱 친환경 음식</div>
+            <div><span class="day-label">24일:</span> 🌱 음식 만들기<br>👊 태권도</div>
             <div><span class="day-label">25일:</span> 🦷 구강검진</div>
         </div>
         <button class="close-modal" onclick="closeHintModal()">닫기 ✖️</button>
@@ -271,7 +287,7 @@
             <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 21)">21</div>
             <div class="day" onclick="selectDay(this, 22)">22</div>
             <div class="day" onclick="selectDay(this, 23)">23</div>
-            <div class="day" onclick="selectDay(this, 24)">24<br><span style="display:block; font-size:0.9rem; color:#1976d2; margin-top:4px;">👊태권도</span><span style="display:block; font-size:0.9rem; color:#4caf50; margin-top:4px;">🌱친환경 음식</span></div>
+            <div class="day" onclick="selectDay(this, 24)">24<br><span style="display:block; font-size:0.9rem; color:#4caf50; margin-top:4px;">🌱 음식 만들기</span><span style="display:block; font-size:0.9rem; color:#1976d2; margin-top:4px;">👊태권도</span></div>
             <div class="day" onclick="selectDay(this, 25)">25<br><span style="display:block; font-size:0.9rem; color:#0288d1; margin-top:4px;">🦷구강검진</span></div>
             <div class="day" onclick="selectDay(this, 26)">26</div>
             <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 27)">27</div>
@@ -322,7 +338,7 @@
                 <!-- 🌟 24일: 2개 일정이 칸 밖으로 나가지 않도록 span을 분리해서 촘촘히 묶었습니다 🌟 -->
                 <div class="cutout-item">24<br>
                     <span class="event-wrapper" style="margin-bottom: 2px !important;"><span class="emoji">👊</span><span class="text">태권도</span></span>
-                    <span class="event-wrapper"><span class="emoji">🌱</span><span class="text">친환경 음식</span></span>
+                    <span class="event-wrapper"><span class="emoji">🌱</span><span class="text">음식 만들기</span></span>
                 </div>
                 <div class="cutout-item">25<br><span class="event-wrapper"><span class="emoji">🦷</span><span class="text">구강검진</span></span></div>
 
@@ -379,16 +395,15 @@
         </div>
     </section>
 
-    <section class="step-section" id="step3">
+   <section class="step-section" id="step3">
         <h2>📊 오늘의 수업과 장소</h2>
         <div class="table-container">
             <table>
                 <tr>
-                    <th width="10%">교시</th>
-                    <th width="18%">과목</th>
-                    <th width="18%">수업 장소</th>
-                    <th width="26%">기타</th>
-                    <th width="28%">수업이 어땠나요?</th>
+                    <th width="15%">교시</th>
+                    <th width="25%">과목</th>
+                    <th width="25%">수업 장소</th>
+                    <th width="35%">기타</th>
                 </tr>
                 <script>
                     for(let i=1; i<=6; i++) {
@@ -398,7 +413,6 @@
                             <td class="drop-zone" data-type="sub" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="clearZone(this)"></td>
                             <td class="drop-zone" data-type="loc" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="clearZone(this)"></td>
                             <td><input type="text" placeholder="메모 입력..." style="width:90%; padding:8px; font-size:1.1rem; border:1px solid #ddd; border-radius:8px; outline:none; text-align:center;"></td>
-                            <td class="emoji-stamp"><span onclick="stamp(this)">😴</span><span onclick="stamp(this)">😐</span><span onclick="stamp(this)">😊</span><span onclick="stamp(this)">😍</span></td>
                         </tr>`);
                     }
                 </script>
@@ -428,27 +442,37 @@
                     <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">보건</div>
                     <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">스포츠클럽</div>
                     <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">자율(산행)</div>
-                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">작은 음악회</div>
                 </div>
             </div>
             <div class="pool-group">
                 <div class="pool-label">📍 장소:</div>
                 <div class="item-list">
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">미술실</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">노래교실</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">세탁실</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">강당</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">음악실</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">도서관</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">중1-2반</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">감각운동실</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">조리실</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">직업2실</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">체력단련실</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">상상체험교실</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">와룡산</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">잔디운동장</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">VR스포츠실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="art.jpg">미술실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="sing.jpg">노래교실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="laundry.jpg">세탁실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="gym.jpg">강당</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="music.jpg">음악실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="library.jpg">도서관</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="class.jpg">중1-2반</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="sense.jpg">감각운동실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="cook.jpg">조리실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="job.jpg">직업2실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="health.jpg">체력단련실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="imagination.jpg">상상체험교실</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="mountain.jpg">와룡산</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="grass.jpg">잔디운동장</div>
+                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')" data-img="vrsports.jpg">VR스포츠실</div>
+                </div>
+            </div>
+            <div class="pool-group">
+                <div class="pool-label" style="color: #d32f2f;">✨ 특별수업:</div>
+                <div class="item-list">
+                    <div class="drag-item special" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">성교육</div>
+                    <div class="drag-item special" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">작은음악회</div>
+                    <div class="drag-item special" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">⚽ 월드컵</div>
+                    <div class="drag-item special" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">태권도</div>
+                    <div class="drag-item special" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">친환경 음식</div>
+                    <div class="drag-item special" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">구강검진</div>
                 </div>
             </div>
         </div>
@@ -500,17 +524,17 @@
                     <div class="vote-bar-bg"><div id="b0" class="vote-bar-fill"></div></div>
                 </div>
                 <div class="vote-card">
-                    <div style="display:flex; justify-content:space-between; font-size:1.6rem; font-weight:bold;"><span id="m1">김치콩나물국</span><span id="c1">0표</span></div>
+                    <div style="display:flex; justify-content:space-between; font-size:1.6rem; font-weight:bold;"><span id="m1">콩나물국</span><span id="c1">0표</span></div>
                     <button class="btn btn-next" style="width:100%; padding:5px; font-size:1.1rem; margin-top:5px;" onclick="vote(1)">👍 선택하기</button>
                     <div class="vote-bar-bg"><div id="b1" class="vote-bar-fill"></div></div>
                 </div>
                 <div class="vote-card">
-                    <div style="display:flex; justify-content:space-between; font-size:1.6rem; font-weight:bold;"><span id="m2">소불고기</span><span id="c2">0표</span></div>
+                    <div style="display:flex; justify-content:space-between; font-size:1.6rem; font-weight:bold;"><span id="m2">돈육메추리알조림</span><span id="c2">0표</span></div>
                     <button class="btn btn-next" style="width:100%; padding:5px; font-size:1.1rem; margin-top:5px;" onclick="vote(2)">👍 선택하기</button>
                     <div class="vote-bar-bg"><div id="b2" class="vote-bar-fill"></div></div>
                 </div>
                 <div class="vote-card">
-                    <div style="display:flex; justify-content:space-between; font-size:1.6rem; font-weight:bold;"><span id="m3">배추김치</span><span id="c3">0표</span></div>
+                    <div style="display:flex; justify-content:space-between; font-size:1.6rem; font-weight:bold;"><span id="m3">오이김치</span><span id="c3">0표</span></div>
                     <button class="btn btn-next" style="width:100%; padding:5px; font-size:1.1rem; margin-top:5px;" onclick="vote(3)">👍 선택하기</button>
                     <div class="vote-bar-bg"><div id="b3" class="vote-bar-fill"></div></div>
                 </div>
@@ -648,6 +672,7 @@
     const totalSteps = 6; 
     let draggedData = "";
     let draggedType = "";
+    let draggedImg = ""; // 🌟 사진 정보를 담을 변수 추가
 
     document.addEventListener("DOMContentLoaded", function() {
         [1, 2, 3, 4, 6].forEach(i => shufflePool(i));
@@ -775,18 +800,34 @@
     function drag(ev, type) {
         draggedData = ev.target.innerText;
         draggedType = type;
+        if (type === 'loc') {
+            draggedImg = ev.target.getAttribute('data-img');
+        }
         ev.dataTransfer.setData("text", draggedData);
     }
 
     function allowDrop(ev) { ev.preventDefault(); }
 
-    function drop(ev) {
+   function drop(ev) {
         ev.preventDefault();
         const targetType = ev.target.getAttribute('data-type');
         if (draggedType === targetType) {
-            ev.target.innerText = draggedData;
-            ev.target.style.background = (targetType === 'loc') ? "#e1f5fe" : "#f1f8e9";
-            ev.target.style.color = (targetType === 'loc') ? "#0277bd" : "#2e7d32";
+            if (targetType === 'loc' && draggedImg) {
+                // 🌟 사진에 돋보기 효과를 주는 zoom-img 클래스 적용
+                ev.target.innerHTML = `<span>${draggedData}</span> <img src="${draggedImg}" class="zoom-img">`;
+            } else {
+                ev.target.innerText = draggedData;
+            }
+            
+            const specialWords = ["성교육", "작은음악회", "지진대피훈련", "태권도", "친환경 음식", "구강검진"];
+            
+            if (specialWords.includes(draggedData)) {
+                ev.target.style.background = "#ffebee";
+                ev.target.style.color = "#d32f2f";
+            } else {
+                ev.target.style.background = (targetType === 'loc') ? "#e1f5fe" : "#f1f8e9";
+                ev.target.style.color = (targetType === 'loc') ? "#0277bd" : "#2e7d32";
+            }
         }
     }
 
@@ -795,9 +836,21 @@
         const zones = document.querySelectorAll(`.drop-zone[data-type="${type}"]`);
         for (let i = 0; i < zones.length; i++) {
             if (zones[i].innerText.trim() === "") {
-                zones[i].innerText = text;
-                zones[i].style.background = (type === 'loc') ? "#e1f5fe" : "#f1f8e9";
-                zones[i].style.color = (type === 'loc') ? "#0277bd" : "#2e7d32";
+                if (type === 'loc') {
+                    const imgSrc = el.getAttribute('data-img');
+                    // 🌟 사진에 돋보기 효과를 주는 zoom-img 클래스 적용
+                    zones[i].innerHTML = `<span>${text}</span> <img src="${imgSrc}" class="zoom-img">`;
+                } else {
+                    zones[i].innerText = text;
+                }
+                
+                if (el.classList.contains('special')) {
+                    zones[i].style.background = "#ffebee";
+                    zones[i].style.color = "#d32f2f";
+                } else {
+                    zones[i].style.background = (type === 'loc') ? "#e1f5fe" : "#f1f8e9";
+                    zones[i].style.color = (type === 'loc') ? "#0277bd" : "#2e7d32";
+                }
                 break;
             }
         }
@@ -807,7 +860,7 @@
     }
 
     function clearZone(el) {
-        el.innerText = "";
+        el.innerHTML = "";
         el.style.background = "#fafafa";
     }
 
@@ -914,7 +967,7 @@
         } 
         else if (step === 3) {
             document.querySelectorAll('#step3 .drop-zone').forEach(d => {
-                d.innerText = "";
+                d.innerHTML = "";
                 d.style.background = "#fafafa";
                 d.style.color = "#333";
             });
