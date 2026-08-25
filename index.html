@@ -14,16 +14,19 @@
             --location-color: #4fc3f7;
             --puzzle-border: #7986cb;
         }
-        body { font-family: 'Nanum Gothic', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        /* 수정됨: height: 100vh -> 100dvh */
+        body { font-family: 'Nanum Gothic', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
         
         .progress-container { width: 100%; background: #e0e0e0; height: 12px; position: fixed; top: 0; z-index: 1000; }
         .progress-bar { height: 100%; background: #4a90e2; width: 20%; transition: width 0.4s ease; }
 
         .container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 10px; margin-top: 20px; }
         
+        /* 수정됨: height: 92vh -> 92dvh, padding-bottom: 60px 추가 */
         .step-section { 
-            display: none; width: 95%; max-width: 1200px; height: 92vh; 
-            background: white; padding: 25px; border-radius: 25px; 
+            display: none; width: 95%; max-width: 1200px; height: 92dvh; 
+            background: white; padding: 25px; padding-bottom: 60px; border-radius: 25px; 
             box-shadow: 0 15px 40px rgba(0,0,0,0.1); border: 2px solid #e0e0e0;
             flex-direction: column; align-items: center; justify-content: space-between; overflow-y: auto;
         }
@@ -32,7 +35,8 @@
 
         h2 { font-size: 2.5rem; color: #333; margin: 0 0 10px 0; border-bottom: 5px solid var(--accent-color); padding-bottom: 5px; }
 
-        .nav-footer { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 15px 0; margin-top: auto; margin-bottom: 40px; }
+        /* 수정됨: margin-bottom: 40px -> 80px (버튼 하단 여백 추가 확보) */
+        .nav-footer { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 15px 0; margin-top: auto; margin-bottom: 80px; }
         .btn { padding: 12px 25px; font-size: 1.4rem; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; color: white; transition: all 0.2s; }
         .btn:active { transform: scale(0.95); }
         .btn-next { background: var(--next-btn); padding: 12px 40px; font-size: 1.6rem; }
