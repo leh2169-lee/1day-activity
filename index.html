@@ -1241,7 +1241,7 @@
             
             // 글자 수가 많아도 큼직하게 유지하도록 자동 줄바꿈(Word Wrap) 적용
             let fontSize = 65; // 따라쓰기하기 좋은 넉넉한 고정 크기
-            ctx.font = "bold " + fontSize + "px 'Malgun Gothic'";
+           ctx.font = fontSize + "px 'Malgun Gothic'";
             let maxWidth = w - 60; 
             
             let words = text.split('');
@@ -1263,7 +1263,7 @@
             let startY = (h / 2) + 30 - ((lines.length - 1) * lineSpacing / 2);
             
             ctx.strokeStyle = "rgba(100, 100, 100, 0.4)"; 
-            ctx.lineWidth = 4;
+            ctx.lineWidth = 1.5;
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             
