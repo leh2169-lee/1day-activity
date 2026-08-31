@@ -15,7 +15,6 @@
             --puzzle-border: #7986cb;
         }
         
-        /* 수정됨: height: 100vh -> 100dvh */
         body { font-family: 'Nanum Gothic', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
         
         .progress-container { width: 100%; background: #e0e0e0; height: 12px; position: fixed; top: 0; z-index: 1000; }
@@ -23,7 +22,6 @@
 
         .container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 10px; margin-top: 20px; }
         
-        /* 수정됨: height: 92vh -> 92dvh, padding-bottom: 60px 추가 */
         .step-section { 
             display: none; width: 95%; max-width: 1200px; height: 92dvh; 
             background: white; padding: 25px; padding-bottom: 60px; border-radius: 25px; 
@@ -35,7 +33,6 @@
 
         h2 { font-size: 2.5rem; color: #333; margin: 0 0 10px 0; border-bottom: 5px solid var(--accent-color); padding-bottom: 5px; }
 
-        /* 수정됨: margin-bottom: 40px -> 80px (버튼 하단 여백 추가 확보) */
         .nav-footer { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 15px 0; margin-top: auto; margin-bottom: 80px; }
         .btn { padding: 12px 25px; font-size: 1.4rem; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; color: white; transition: all 0.2s; }
         .btn:active { transform: scale(0.95); }
@@ -72,11 +69,6 @@
         .emoji-stamp span { font-size: 1.8rem; cursor: pointer; opacity: 0.2; margin: 0 5px; }
         .emoji-stamp span.selected { opacity: 1; transform: scale(1.2); display: inline-block; }
 
-        .meal-container { display: flex; align-items: flex-start; justify-content: center; gap: 20px; width: 100%; background: white; padding: 15px; border-radius: 20px; border: 2px solid #ffccbc; }
-        .meal-image-box { flex: 1.2; }
-        .meal-image-box img { width: 100%; border-radius: 15px; border: 4px solid #fff5f2; }
-        .meal-info-box { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-
         .emotion-6grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
         .student-thermometer { background: #fafafa; border: 2px solid #eee; border-radius: 20px; padding: 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .student-name { font-weight: bold; margin-bottom: 5px; }
@@ -108,7 +100,6 @@
             font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .btn-hint:hover { background: #fff59d; transform: scale(1.05); }
-        .btn-hint:active { transform: scale(0.95); }
 
         .adv-text { font-size: 1.3rem; color: #3949ab; font-weight: bold; margin: 0; }
         .adv-content { width: 100%; display: flex; flex-direction: column; gap: 15px; }
@@ -169,7 +160,8 @@
             h2 { text-align: center; margin-bottom: 20px; font-size: 3rem; }
             .calendar-grid { width: 100% !important; max-width: 100% !important; display: grid !important; grid-template-columns: repeat(7, 1fr) !important; gap: 8px !important; }
             
-            #step1 .day { height: 100px !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-start !important; box-sizing: border-box !important; padding: 10px 5px !important; border: 2px solid #ddd !important; border-radius: 8px !important; font-size: 1.5rem !important; font-weight: bold !important; }
+            #step1 .day {min-height: 100px !important; 
+       overflow: hidden !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-start !important; box-sizing: border-box !important; padding: 10px 5px !important; border: 2px solid #ddd !important; border-radius: 8px !important; font-size: 1.5rem !important; font-weight: bold !important; }
             
             #step1 .day span { display: none !important; }
             #step1 .day span.keep-print { display: block !important; color: red !important; font-size: 0.9rem !important; margin-top: 4px !important; text-align: center; font-weight: normal !important; }
@@ -300,7 +292,6 @@
         @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes glow { 0% { box-shadow: 0 0 5px #9c27b0; } 50% { box-shadow: 0 0 20px #e1bee7, 0 0 30px #ce93d8; } 100% { box-shadow: 0 0 5px #9c27b0; } }
-        /* ------------------------------------- */
     </style>
 </head>
 <body>
@@ -312,16 +303,17 @@
         <h2 style="font-size: 3rem; margin-bottom: 10px; border-bottom: none; color: #e65100;">💡 달력 일정 힌트 카드</h2>
         <p style="font-size: 1.5rem; color: #555; margin-bottom: 20px;">칠판을 보고 빈칸에 알맞은 글자를 적어보세요!</p>
         <div class="hint-modal-grid">
-            <div><span class="day-label">18일:</span> 🏫 개학식</div>
-            <div><span class="day-label">19일:</span> 🗳️ 학급 회장 선거</div>
-            <div><span class="day-label">21일:</span> ☕ 카페탐방</div>
-            <div><span class="day-label">28일:</span> ☕ 카페탐방</div>
+            <div><span class="day-label">2일:</span> 🎵 정진 작은음악회</div>
+            <div><span class="day-label">4일:</span> ⛰️ 산행시작일</div>
+            <div><span class="day-label">9일:</span> 🥋 태권도 시작일</div>
+            <div><span class="day-label">17일:</span> 🏆 체육대회</div>
+            <div><span class="day-label">24~25일:</span> 🌕 추석연휴</div>
+            <div><span class="day-label">29일:</span> 🚨 소방훈련</div>
         </div>
         <button class="close-modal" onclick="closeHintModal()">닫기 ✖️</button>
     </div>
 </div>
 
-<!-- 범주형 상징 선택 모달 -->
 <div class="modal-overlay" id="categoryModal">
     <div class="modal-content2">
         <h3 style="margin-top:0; color:#333;">🍽️ 어떤 종류의 반찬인가요?</h3>
@@ -346,10 +338,8 @@
 
 <div class="container">
     <section class="step-section active" id="step1">
-        <!-- 인쇄 시 8월의 '8'이 빈칸으로 출력되도록 print-box 클래스 추가 -->
-        <h2>📅 <span class="print-box month-box">8</span>월 달력 읽기</h2>
+        <h2>📅 <span class="print-box month-box">9</span>월 달력 읽기</h2>
         <div class="calendar-grid">
-            <!-- 인쇄 시 요일이 빈칸으로 출력되도록 print-box 클래스 추가 -->
             <div class="day-header" style="color:red"><span class="print-box">일</span></div>
             <div class="day-header"><span class="print-box">월</span></div>
             <div class="day-header"><span class="print-box">화</span></div>
@@ -358,38 +348,36 @@
             <div class="day-header"><span class="print-box">금</span></div>
             <div class="day-header" style="color:blue"><span class="print-box">토</span></div>
             
-            <div></div><div></div><div></div><div></div><div></div><div></div>
-            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 1)">1</div>
-            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 2)">2</div>
+            <div></div><div></div>
+            <div class="day" onclick="selectDay(this, 1)">1</div>
+            <div class="day" onclick="selectDay(this, 2)">2<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🎵정진 작은음악회</span></div>
             <div class="day" onclick="selectDay(this, 3)">3</div>
-            <div class="day" onclick="selectDay(this, 4)">4</div>
-            <div class="day" onclick="selectDay(this, 5)">5</div>           
-	        <div class="day" onclick="selectDay(this, 6)">6</div>
+            <div class="day" onclick="selectDay(this, 4)">4<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">⛰️산행시작일</span></div>
+            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 5)">5</div>           
+	        <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 6)">6</div>
             <div class="day" onclick="selectDay(this, 7)">7</div>
-            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 8)">8</div>
-            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 9)">9</div>
+            <div class="day" onclick="selectDay(this, 8)">8</div>
+            <div class="day" onclick="selectDay(this, 9)">9<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🥋태권도 시작일</span></div>
             <div class="day" onclick="selectDay(this, 10)">10</div>
             <div class="day" onclick="selectDay(this, 11)">11</div>
-            <div class="day" onclick="selectDay(this, 12)">12</div>
-            <div class="day" onclick="selectDay(this, 13)">13</div>
+            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 12)">12</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 13)">13</div>
             <div class="day" onclick="selectDay(this, 14)">14</div>
-            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 15)">15</div>
-            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 16)">16</div>
-            <div class="day" onclick="selectDay(this, 17)">17</div>
-            <div class="day" onclick="selectDay(this, 18)">18<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🏫개학식</span></div>
-            <div class="day" onclick="selectDay(this, 19)">19<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🗳️학급 회장 선거</span></div>
-            <div class="day" onclick="selectDay(this, 20)">20</div>
-            <div class="day" onclick="selectDay(this, 21)">21<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">☕카페탐방</span></div>
-            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 22)">22</div>
-            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 23)">23</div>
-            <div class="day" onclick="selectDay(this, 24)">24</div>
-            <div class="day" onclick="selectDay(this, 25)">25</div>
-            <div class="day" onclick="selectDay(this, 26)">26</div>
-            <div class="day" onclick="selectDay(this, 27)">27</div>
-            <div class="day" onclick="selectDay(this, 28)">28<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">☕카페탐방</span></div>
-            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 29)">29</div>
-            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 30)">30</div>
-            <div class="day" onclick="selectDay(this, 31)">31</div>
+            <div class="day" onclick="selectDay(this, 15)">15</div>
+            <div class="day" onclick="selectDay(this, 16)">16</div>
+            <div class="day" onclick="selectDay(this, 17)">17<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🏆체육대회</span></div>
+            <div class="day" onclick="selectDay(this, 18)">18</div>
+            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 19)">19</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 20)">20</div>
+            <div class="day" onclick="selectDay(this, 21)">21</div>
+            <div class="day" onclick="selectDay(this, 22)">22</div>
+            <div class="day" onclick="selectDay(this, 23)">23</div>
+<div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 24)">24<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🌕추석연휴</span></div>
+<div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 25)">25<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🌕추석연휴</span></div>            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 26)">26</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 27)">27</div>
+            <div class="day" onclick="selectDay(this, 28)">28</div>
+            <div class="day" onclick="selectDay(this, 29)">29<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🚨소방훈련</span></div>
+            <div class="day" onclick="selectDay(this, 30)">30</div>
         </div>
         <div id="dateText" class="display-text">날짜를 눌러주세요 👆</div>
         
@@ -403,7 +391,7 @@
                 <p class="adv-text">위에 있는 달력을 터치하면 마법처럼 내 퍼즐이 생겨요!</p>
                 <div class="sentence-display" id="sentence1">
                     <div class="word-slot" data-hint="오늘은"></div>
-                    <div class="word-slot" data-hint="8월"></div>
+                    <div class="word-slot" data-hint="9월"></div>
                     <div class="word-slot" data-hint="O일"></div>
                     <div class="word-slot" data-hint="O요일"></div>
                     <div class="word-slot" data-hint="입니다."></div>
@@ -413,7 +401,7 @@
                 </div>
                 <div class="word-pool" id="pool1">
                     <div class="word-chip" onclick="tapWord(this, 1)">오늘은</div>
-                    <div class="word-chip" onclick="tapWord(this, 1)">8월</div>
+                    <div class="word-chip" onclick="tapWord(this, 1)">9월</div>
                     <div class="word-chip" onclick="tapWord(this, 1)">입니다.</div>
                     <div class="word-chip" onclick="tapWord(this, 1)">하는 날</div>
                     <div class="word-chip" onclick="tapWord(this, 1)">입니다.</div>
@@ -424,11 +412,10 @@
         <div class="print-cutout-section">
             <h3 style="color: #333;">✂️ 아래 조각을 점선 따라 오려서 달력의 알맞은 곳에 풀로 붙여보세요</h3>
             
-            <!-- 새롭게 추가된 월, 요일 조각 그룹 -->
             <div class="cutout-group">
                 <h4>[ 1. 월, 요일 조각 (달력의 빈칸에 맞춰 붙이거나 써보세요) ]</h4>
                 <div class="cutout-grid" style="grid-template-columns: repeat(8, 1fr); margin-bottom: 25px;">
-                    <div class="cutout-item month-cutout">8</div>
+                    <div class="cutout-item month-cutout">9</div>
                     <div class="cutout-item" style="color:red;">일</div>
                     <div class="cutout-item">월</div>
                     <div class="cutout-item">화</div>
@@ -439,25 +426,36 @@
                 </div>
             </div>
 
-            <!-- 스티커 존이 추가된 일정 조각 그룹 -->
             <div class="cutout-group">
                 <h4>[ 2. 일정 조각 (⭐ 점선 동그라미에 색칠하거나 스티커를 붙여 일정을 꾸며요!) ]</h4>
                 <div class="cutout-grid">
                     <div class="cutout-item">
                         <div class="sticker-zone"></div>
-                        18<br><span class="event-wrapper"><span class="emoji">🏫</span><span class="text">개학식</span></span>
+                        2<br><span class="event-wrapper"><span class="emoji">🎵</span><span class="text">작은음악회</span></span>
                     </div>
                     <div class="cutout-item">
                         <div class="sticker-zone"></div>
-                        19<br><span class="event-wrapper"><span class="emoji">🗳️</span><span class="text">학급 회장 선거</span></span>
+                        4<br><span class="event-wrapper"><span class="emoji">⛰️</span><span class="text">산행시작일</span></span>
                     </div>
                     <div class="cutout-item">
                         <div class="sticker-zone"></div>
-                        21<br><span class="event-wrapper"><span class="emoji">☕</span><span class="text">카페탐방</span></span>
+                        9<br><span class="event-wrapper"><span class="emoji">🥋</span><span class="text">태권도 시작</span></span>
                     </div>
                     <div class="cutout-item">
                         <div class="sticker-zone"></div>
-                        28<br><span class="event-wrapper"><span class="emoji">☕</span><span class="text">카페탐방</span></span>
+                        17<br><span class="event-wrapper"><span class="emoji">🏆</span><span class="text">체육대회</span></span>
+                    </div>
+                    <div class="cutout-item">
+                        <div class="sticker-zone"></div>
+                        24<br><span class="event-wrapper"><span class="emoji">🌕</span><span class="text">추석연휴</span></span>
+                    </div>
+                    <div class="cutout-item">
+                        <div class="sticker-zone"></div>
+                        25<br><span class="event-wrapper"><span class="emoji">🌕</span><span class="text">추석연휴</span></span>
+                    </div>
+                    <div class="cutout-item">
+                        <div class="sticker-zone"></div>
+                        29<br><span class="event-wrapper"><span class="emoji">🚨</span><span class="text">소방훈련</span></span>
                     </div>
                 </div>
             </div>
@@ -622,11 +620,9 @@
         </div>
     </section>
 
-    <!-- 완전히 교체된 Step 4: 우리가 만드는 오늘의 급식 (UDL 자동 줄바꿈 및 글씨 크기 고정) -->
     <section class="step-section" id="step4">
         <h2>😋 우리가 만드는 오늘의 급식</h2>
         
-        <!-- 1. 교사 준비 화면 -->
         <div id="mealSetupView" style="background-color: #e0e0e0; padding: 20px; border-radius: 15px; width: 100%; box-sizing: border-box; margin-bottom: 20px;">
             <p style="text-align:center; color:#555; margin-top:0; margin-bottom: 15px; font-size:1.2rem;">메뉴 이름을 적고, [선택] 버튼을 눌러 알맞은 상징 그림을 골라주세요.</p>
             
@@ -635,44 +631,43 @@
                     <span style="font-weight:bold;">🍚 밥 (좌하단):</span> 
                     <button class="btn-select-icon" id="btn_m0_icon" onclick="openCategoryModal(0)">🍚 선택</button>
                     <input type="hidden" id="m0_emoji_val" value="🍚">
-                    <input type="text" id="m0_text" class="menu-input" value="옥수수밥" placeholder="메뉴 이름">
+                    <input type="text" id="m0_text" class="menu-input" value="기장밥" placeholder="메뉴 이름">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🍲 국 (우하단):</span> 
                     <button class="btn-select-icon" id="btn_m1_icon" onclick="openCategoryModal(1)">🍲 선택</button>
                     <input type="hidden" id="m1_emoji_val" value="🍲">
-                    <input type="text" id="m1_text" class="menu-input" value="수제비국">
+                    <input type="text" id="m1_text" class="menu-input" value="소고기미역국">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🥗 반찬1(좌상단):</span> 
                     <button class="btn-select-icon" id="btn_m2_icon" onclick="openCategoryModal(2)">🌶️ 선택</button>
                     <input type="hidden" id="m2_emoji_val" value="🌶️">
-                    <input type="text" id="m2_text" class="menu-input" value="열무김치">
+                    <input type="text" id="m2_text" class="menu-input" value="배추김치">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🥢 반찬2(중좌측):</span> 
                     <button class="btn-select-icon" id="btn_m3_icon" onclick="openCategoryModal(3)">🥬 선택</button>
                     <input type="hidden" id="m3_emoji_val" value="🥬">
-                    <input type="text" id="m3_text" class="menu-input" value="베이컨아스파라거스">
+                    <input type="text" id="m3_text" class="menu-input" value="숙주나물">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🥢 반찬3(중우측):</span> 
                     <button class="btn-select-icon" id="btn_m4_icon" onclick="openCategoryModal(4)">🐟 선택</button>
                     <input type="hidden" id="m4_emoji_val" value="🐟">
-                    <input type="text" id="m4_text" class="menu-input" value="샤인머스켓">
+                    <input type="text" id="m4_text" class="menu-input" value="진미채볶음">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🍖 메인 (우상단):</span> 
                     <button class="btn-select-icon" id="btn_m5_icon" onclick="openCategoryModal(5)">🍖 선택</button>
                     <input type="hidden" id="m5_emoji_val" value="🍖">
-                    <input type="text" id="m5_text" class="menu-input" value="김치치즈함박스테이크">
+                    <input type="text" id="m5_text" class="menu-input" value="오리불고기">
                 </div>
             </div>
             
             <button class="btn" style="background-color: #3f51b5; font-size: 1.6rem; padding: 15px; width: 100%; margin-top: 15px;" onclick="startMealActivity()">🚀 수업 시작하기</button>
         </div>
 
-        <!-- 2. 학생 활동 화면 -->
         <div id="mealActivityView" class="hidden" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
             <div id="mealTabs" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 15px;"></div> 
             
@@ -685,8 +680,7 @@
                     <button class="mode-btn" id="btnModeStamp" onclick="setMealMode('stamp')">💮 콕! 찍기</button>
                     
                     <div id="brushTools" style="display:flex; gap:5px; margin-left:15px; border-left:2px solid #ccc; padding-left:15px;">
-                       <button class="brush-btn active" onclick="set
-						   (10, this)">●</button>
+                        <button class="brush-btn active" onclick="setMealBrushSize(8, this)">●</button>
 <button class="brush-btn" style="font-size:26px;" onclick="setMealBrushSize(15, this)">●</button>
                     </div>
                 </div>
@@ -712,7 +706,6 @@
             </div>
         </div>
 
-        <!-- 3. 최종 식판 출력 화면 -->
         <div id="mealFinalView" class="hidden" style="width: 100%; display:flex; flex-direction:column; align-items:center;">
             <div class="final-title">🍽️ 우리가 완성한 오늘의 급식 🍽️</div>
             
@@ -739,7 +732,6 @@
             <div class="adv-content">
                 <p class="adv-text">급식을 완성하면 아래에 반찬 조각이 생겨요! 내 입맛대로 바구니에 끌어다 나누어 담고, 조각을 한 번 터치해서 자기표현 문장을 완성해봐요.</p>
 
-                <!-- 자기결정력 바구니 분류 영역 -->
                 <div style="display: flex; gap: 15px; width: 100%; margin-bottom: 5px;">
                     <div style="flex: 1; border: 3px dashed #4caf50; border-radius: 15px; padding: 15px; background: #e8f5e9; text-align: center; display:flex; flex-direction:column;">
                         <div style="font-size: 1.4rem; font-weight: bold; color: #2e7d32; margin-bottom: 10px;">😍 좋아하는 반찬</div>
@@ -751,12 +743,10 @@
                     </div>
                 </div>
 
-                <!-- 드래그 생성 풀 -->
                 <div id="meal-drag-pool" style="display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; background: #fff; border-radius: 15px; border: 2px solid #ccc; min-height: 60px; width: 100%; box-sizing: border-box; align-items: center; justify-content: center;">
                     <span id="meal-pool-placeholder" style="color:#999; font-weight:bold;">메뉴를 완성하면 조각이 생겨요! 끌어다 바구니에 쏙! 담아보세요.</span>
                 </div>
 
-                <!-- 자기결정 문장 퍼즐 -->
                 <div class="sentence-display" id="sentence4">
                     <div class="word-slot" data-hint="오늘"></div>
                     <div class="word-slot" data-hint="내가"></div>
@@ -975,8 +965,8 @@
         document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
         el.classList.add('selected');
         const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
-        const dayOfWeek = weekDays[(day + 5) % 7]; 
-        document.getElementById('dateText').innerHTML = `오늘은 <span style="color:#d32f2f; text-decoration:underline;">8월 ${day}일 ${dayOfWeek}요일</span> 입니다!`;
+        const dayOfWeek = weekDays[(day + 2) % 7]; // 9월 1일이 화요일인 경우에 맞춘 인덱스 보정
+        document.getElementById('dateText').innerHTML = `오늘은 <span style="color:#d32f2f; text-decoration:underline;">9월 ${day}일 ${dayOfWeek}요일</span> 입니다!`;
         
         generateOrUpdateWord(1, 'day', day + '일');
         generateOrUpdateWord(1, 'weekday', dayOfWeek + '요일');
@@ -985,7 +975,7 @@
         
         const eventSpan = el.querySelector('span');
         if (eventSpan) {
-            eventText = eventSpan.innerText.replace(/[🏖️👫🚨🎵👊🌱🦷㉦🥋☕🏆🌊🏫🗳️]/g, '').trim();
+            eventText = eventSpan.innerText.replace(/[🏖️👫🚨🎵👊🌱🦷㉦🥋☕🏆🌊🏫🗳️⛰️🌕]/g, '').trim();
         } else if (el.innerText.includes('현충일')) {
             eventText = "현충일 추모";
         }
@@ -1137,9 +1127,6 @@
         } 
     }
 
-    /* -------------------------------------------------------------
-       새로 추가된 "우리가 만드는 오늘의 급식" (UDL / AAC 적용) JavaScript
-       ------------------------------------------------------------- */
     let currentTargetMenuIndex = 0;
     
     function openCategoryModal(index) {
@@ -1161,7 +1148,7 @@
     let mealStatus = [false, false, false, false, false, false];
     let currentMealIndex = 0;
     let currentMealMode = 'trace'; 
-    let mealBrushSize = 3;
+    let mealBrushSize = 15;
     let isMealDrawing = false;
 
     function startMealActivity() {
@@ -1206,7 +1193,6 @@
         if(mode === 'scratch') document.getElementById('btnModeScratch').classList.add('active');
         if(mode === 'stamp') document.getElementById('btnModeStamp').classList.add('active');
         
-        // 브러시 도구는 따라쓰기와 스스로 쓰기에서만 보임
         document.getElementById('brushTools').style.display = (mode === 'trace' || mode === 'write') ? 'flex' : 'none';
         renderMealCanvas();
     }
@@ -1240,9 +1226,8 @@
         if (currentMealMode === 'trace') {
             scContent.style.display = 'none';
             
-            // 글자 수가 많아도 큼직하게 유지하도록 자동 줄바꿈(Word Wrap) 적용
-            let fontSize = 65; // 따라쓰기하기 좋은 넉넉한 고정 크기
-           ctx.font = fontSize + "px 'Malgun Gothic'";
+            let fontSize = 65; 
+            ctx.font = "bold " + fontSize + "px 'Malgun Gothic'";
             let maxWidth = w - 60; 
             
             let words = text.split('');
@@ -1260,11 +1245,10 @@
             lines.push(currentLine);
 
             let lineSpacing = fontSize * 1.3;
-            // 여러 줄일 경우 중심을 위로 살짝 올려줍니다.
             let startY = (h / 2) + 30 - ((lines.length - 1) * lineSpacing / 2);
             
             ctx.strokeStyle = "rgba(100, 100, 100, 0.4)"; 
-            ctx.lineWidth = 1.5;
+            ctx.lineWidth = 4;
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             
@@ -1281,22 +1265,19 @@
             ctx.lineJoin = "round";
 
         } else if (currentMealMode === 'write') {
-            // [스스로 쓰기] 모드: 촉구 용암 (시각적 밑그림 제거, 상단에 모델링만 작게 제시)
             scContent.style.display = 'none';
 
-            // 모델링 텍스트 (정답을 작게 보여줌)
             ctx.font = "bold 35px 'Malgun Gothic'";
             ctx.fillStyle = "#757575";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillText("보고 써보세요: " + emoji + " " + text, w/2, 40);
 
-            // 글씨 쓰는 영역을 나타내는 연한 점선 가이드
             ctx.strokeStyle = "#e0e0e0";
             ctx.lineWidth = 3;
             ctx.setLineDash([10, 10]);
             ctx.strokeRect(w * 0.1, 80, w * 0.8, h - 100);
-            ctx.setLineDash([]); // 점선 초기화
+            ctx.setLineDash([]);
 
             ctx.strokeStyle = "#3f51b5"; 
             ctx.lineWidth = mealBrushSize;
@@ -1310,7 +1291,6 @@
             const scTextEl = document.getElementById('scText');
             scTextEl.innerText = text;
             
-            // 긴 텍스트 크기 자동 조절
             if(text.length > 7) {
                 scTextEl.style.fontSize = "30px";
             } else if(text.length > 5) {
@@ -1365,7 +1345,6 @@
     }
 
     function drawMeal(e) {
-        // 따라쓰기나 스스로 쓰기 모드일 때만 그리기 가능
         if (!isMealDrawing || currentMealMode === 'stamp') return;
         e.preventDefault();
         const ctx = document.getElementById('drawingCanvas').getContext('2d');
@@ -1392,8 +1371,7 @@
         ctx.globalCompositeOperation = 'source-over';
         ctx.clearRect(0, 0, w, h);
         
-        // 글자 수가 많아도 크게 찍히도록 자동 줄바꿈(Word Wrap) 적용
-        let fontSize = 75; // 스탬프용 크기
+        let fontSize = 75; 
         ctx.font = "bold " + fontSize + "px 'Malgun Gothic'";
         let maxWidth = w - 60;
         
@@ -1458,7 +1436,6 @@
         fireConfetti(40); 
         renderMealTabs();
         
-        // 드래그 분류를 위한 조각(퍼즐) 생성
         const mealPool = document.getElementById('meal-drag-pool');
         const placeholder = document.getElementById('meal-pool-placeholder');
         if(placeholder) placeholder.style.display = 'none';
@@ -1472,7 +1449,7 @@
         
         dragItem.ondragstart = function(ev) {
             draggedData = ev.target.innerText;
-            draggedType = 'meal'; // 바구니 드롭용 식별자
+            draggedType = 'meal'; 
             draggedElement = this; 
             ev.dataTransfer.setData("text", draggedData);
         };
