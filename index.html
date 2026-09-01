@@ -965,7 +965,7 @@
         document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
         el.classList.add('selected');
         const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
-        const dayOfWeek = weekDays[(day + 2) % 7]; // 9월 1일이 화요일인 경우에 맞춘 인덱스 보정
+        const dayOfWeek = weekDays[(day + 1) % 7]; // 9월 1일이 화요일인 경우에 맞춘 인덱스 보정
         document.getElementById('dateText').innerHTML = `오늘은 <span style="color:#d32f2f; text-decoration:underline;">9월 ${day}일 ${dayOfWeek}요일</span> 입니다!`;
         
         generateOrUpdateWord(1, 'day', day + '일');
