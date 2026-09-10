@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>하루 한장</title>
+    <title>9월 하루 한장</title>
     <style>
         :root {
             --main-bg: #fdfcf0;
@@ -292,6 +292,12 @@
         @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes glow { 0% { box-shadow: 0 0 5px #9c27b0; } 50% { box-shadow: 0 0 20px #e1bee7, 0 0 30px #ce93d8; } 100% { box-shadow: 0 0 5px #9c27b0; } }
+
+        /* --- 종합 요약판(마지막 슬라이드) 전용 CSS --- */
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; height: 100%; padding-bottom: 20px; }
+        .summary-card { background: white; border: 4px dashed #7986cb; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05); overflow-y: auto; }
+        .summary-card h3 { margin: 0 0 15px 0; color: #3949ab; font-size: 2rem; border-bottom: 3px solid #e8eaf6; padding-bottom: 10px; width: 100%; text-align: center; }
+        .summary-content { font-size: 1.5rem; font-weight: bold; color: #333; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; }
     </style>
 </head>
 <body>
@@ -473,12 +479,12 @@
     <section class="step-section" id="step2">
         <h2>☀️ 오늘 날씨는 어떤가요?</h2>
 <div class="weather-grid">
-    <div class="w-item" onclick="selectWeather(this, '맑음', '☀️')">☀️ 맑음<br><span style="font-size:1.3rem; color:#757575;">(햇님이 반짝반짝 빛나요)</span></div>
-    <div class="w-item" onclick="selectWeather(this, '흐림', '☁️')">☁️ 흐림<br><span style="font-size:1.3rem; color:#757575;">(구름이 잔뜩, 햇님이 숨었어요)</span></div>
-    <div class="w-item" onclick="selectWeather(this, '무더위', '🥵')">🥵 무더위<br><span style="font-size:1.3rem; color:#757575;">(땀이 뻘뻘! 너무 더운 날이에요)</span></div>
-    <div class="w-item" onclick="selectWeather(this, '소나기', '🌦️')">🌦️ 소나기<br><span style="font-size:1.3rem; color:#757575;">(갑자기 비가 쏴아아 쏟아져요)</span></div>
-    <div class="w-item" onclick="selectWeather(this, '장마', '🌧️')">🌧️ 장마<br><span style="font-size:1.3rem; color:#757575;">(며칠째 비가 주룩주룩 와요)</span></div>
-    <div class="w-item" onclick="selectWeather(this, '태풍', '🌀')">🌀 태풍<br><span style="font-size:1.3rem; color:#757575;">(바람이 쌩쌩, 비바람이 쳐요)</span></div>
+    <div class="w-item" onclick="selectWeather(this, '맑음', '☀️')">☀️ 맑음<br><span style="font-size:1.3rem; color:#757575;">(햇빛이 반짝! 창밖이 환해요)</span></div>
+    <div class="w-item" onclick="selectWeather(this, '흐림', '☁️')">☁️ 흐림<br><span style="font-size:1.3rem; color:#757575;">(구름이 잔뜩! 해님이 숨었어요)</span></div>
+    <div class="w-item" onclick="selectWeather(this, '비', '🌧️')">🌧️ 비<br><span style="font-size:1.3rem; color:#757575;">(주룩주룩! 밖에서는 우산을 써요)</span></div>
+    <div class="w-item" onclick="selectWeather(this, '눈', '❄️')">❄️ 눈<br><span style="font-size:1.3rem; color:#757575;">(펑펑! 하얀 눈이 오고 바닥이 미끄러워요)</span></div>
+    <div class="w-item" onclick="selectWeather(this, '바람', '🌬️')">🌬️ 바람<br><span style="font-size:1.3rem; color:#757575;">(쌩쌩! 나뭇가지가 크게 흔들려요)</span></div>
+    <div class="w-item" onclick="selectWeather(this, '공기나쁨', '😷')">😷 공기 나쁨<br><span style="font-size:1.3rem; color:#757575;">(하늘이 뿌얘요! 오늘은 교실에서 놀아요)</span></div>
 </div>
         <div id="weatherText" class="display-text">오늘의 날씨는? 👆</div>
 <button class="btn" style="background:#ff9800; width:100%; margin-top:15px; font-size:1.5rem;" onclick="let active = document.querySelector('.w-item.active'); if(active){ let w = active.innerText.match(/[가-힣]+/)[0]; window.open('health.html?weather=' + encodeURIComponent(w), '_blank'); } else { alert('오늘의 날씨를 먼저 선택해주세요! 👇'); }">💡 오늘의 건강 습관 확인하기</button>
@@ -631,37 +637,37 @@
                     <span style="font-weight:bold;">🍚 밥 (좌하단):</span> 
                     <button class="btn-select-icon" id="btn_m0_icon" onclick="openCategoryModal(0)">🍚 선택</button>
                     <input type="hidden" id="m0_emoji_val" value="🍚">
-                    <input type="text" id="m0_text" class="menu-input" value="달걀볶음밥" placeholder="메뉴 이름">
+                    <input type="text" id="m0_text" class="menu-input" value="기장밥" placeholder="메뉴 이름">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🍲 국 (우하단):</span> 
                     <button class="btn-select-icon" id="btn_m1_icon" onclick="openCategoryModal(1)">🍲 선택</button>
                     <input type="hidden" id="m1_emoji_val" value="🍲">
-                    <input type="text" id="m1_text" class="menu-input" value="짬뽕국">
+                    <input type="text" id="m1_text" class="menu-input" value="소고기미역국">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🥗 반찬1(좌상단):</span> 
                     <button class="btn-select-icon" id="btn_m2_icon" onclick="openCategoryModal(2)">🌶️ 선택</button>
                     <input type="hidden" id="m2_emoji_val" value="🌶️">
-                    <input type="text" id="m2_text" class="menu-input" value="깍두기">
+                    <input type="text" id="m2_text" class="menu-input" value="배추김치">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🥢 반찬2(중좌측):</span> 
                     <button class="btn-select-icon" id="btn_m3_icon" onclick="openCategoryModal(3)">🥬 선택</button>
                     <input type="hidden" id="m3_emoji_val" value="🥬">
-                    <input type="text" id="m3_text" class="menu-input" value="단무지무침">
+                    <input type="text" id="m3_text" class="menu-input" value="숙주나물">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🥢 반찬3(중우측):</span> 
                     <button class="btn-select-icon" id="btn_m4_icon" onclick="openCategoryModal(4)">🐟 선택</button>
                     <input type="hidden" id="m4_emoji_val" value="🐟">
-                    <input type="text" id="m4_text" class="menu-input" value="짜장소스">
+                    <input type="text" id="m4_text" class="menu-input" value="진미채볶음">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🍖 메인 (우상단):</span> 
                     <button class="btn-select-icon" id="btn_m5_icon" onclick="openCategoryModal(5)">🍖 선택</button>
                     <input type="hidden" id="m5_emoji_val" value="🍖">
-                    <input type="text" id="m5_text" class="menu-input" value="탕수육">
+                    <input type="text" id="m5_text" class="menu-input" value="오리불고기">
                 </div>
             </div>
             
@@ -838,7 +844,33 @@
 
         <div class="nav-footer">
             <button class="btn btn-prev" onclick="move(4)">⬅️ 이전</button>
-            <button class="btn btn-next" style="background:#222;" onclick="location.reload()">수업 시작! (전체 초기화)</button>
+            <button class="btn btn-next" onclick="move(7)">오늘의 정보 한눈에 보기 ➡️</button>
+        </div>
+    </section>
+
+    <section class="step-section" id="step7">
+        <h2>🌟 오늘의 알림판 (한눈에 보기)</h2>
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>📅 오늘 날짜</h3>
+                <div id="res-date" class="summary-content"></div>
+            </div>
+            <div class="summary-card">
+                <h3>☀️ 오늘 날씨</h3>
+                <div id="res-weather" class="summary-content"></div>
+            </div>
+            <div class="summary-card">
+                <h3>📊 오늘의 수업</h3>
+                <div id="res-timetable" class="summary-content" style="justify-content: flex-start;"></div>
+            </div>
+            <div class="summary-card">
+                <h3>😋 오늘의 급식</h3>
+                <div id="res-meal" class="summary-content" style="transform: scale(0.65); transform-origin: top center; height: 100%;"></div>
+            </div>
+        </div>
+        <div class="nav-footer">
+            <button class="btn btn-prev" onclick="move(6)">⬅️ 이전</button>
+            <button class="btn btn-next" style="background:#222;" onclick="location.reload()">새로운 하루 시작하기 (전체 초기화)</button>
         </div>
     </section>
 </div>
@@ -858,7 +890,7 @@
     }
 
     let currentStep = 1;
-    const totalSteps = 6; 
+    const totalSteps = 7; 
     let draggedData = "";
     let draggedType = "";
     let draggedElement = null;
@@ -892,6 +924,11 @@
         
         if(step === 4 && document.getElementById('mealActivityView').classList.contains('hidden') === false) {
             renderMealCanvas();
+        }
+        
+        // 7단계 종합 알림판으로 진입할 때 데이터 모으기
+        if(step === 7) {
+            updateSummaryBoard();
         }
     }
 
@@ -1527,6 +1564,51 @@
             confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
             document.body.appendChild(confetti);
             setTimeout(() => confetti.remove(), 4000);
+        }
+    }
+
+    function updateSummaryBoard() {
+        // 1. 날짜 가져오기
+        let dateHtml = document.getElementById('dateText').innerHTML;
+        if(dateHtml.includes("눌러주세요")) dateHtml = "아직 날짜를 선택하지 않았어요!";
+        document.getElementById('res-date').innerHTML = `<div class="display-text" style="border:none; background:transparent;">${dateHtml}</div>`;
+
+        // 2. 날씨 가져오기
+        let weatherHtml = document.getElementById('weatherText').innerHTML;
+        if(weatherHtml.includes("오늘의 날씨는?")) weatherHtml = "아직 날씨를 선택하지 않았어요!";
+        document.getElementById('res-weather').innerHTML = `<div class="display-text" style="border:none; background:transparent;">${weatherHtml}</div>`;
+
+        // 3. 시간표 가져오기
+        let tableHTML = '<table style="width:100%; border-collapse: collapse; font-size:1.2rem; margin-top:10px;"><tr><th style="background:#f9f9f9; padding:8px; border:2px solid #ccc;">교시</th><th style="background:#f9f9f9; padding:8px; border:2px solid #ccc;">과목</th><th style="background:#f9f9f9; padding:8px; border:2px solid #ccc;">장소</th></tr>';
+        let rows = document.querySelectorAll('#step3 table tr');
+        for(let i=1; i<rows.length; i++) {
+            let cols = rows[i].querySelectorAll('td');
+            if(cols.length >= 3) {
+                let period = cols[0].innerText;
+                let subject = cols[1].innerText || "-";
+                let location = cols[2].innerText || "-";
+                tableHTML += `<tr>
+                    <td style="border:2px solid #ccc; padding:8px; text-align:center;">${period}</td>
+                    <td style="border:2px solid #ccc; padding:8px; text-align:center; color:#2e7d32; font-weight:bold;">${subject}</td>
+                    <td style="border:2px solid #ccc; padding:8px; text-align:center; color:#0277bd; font-weight:bold;">${location}</td>
+                </tr>`;
+            }
+        }
+        tableHTML += '</table>';
+        document.getElementById('res-timetable').innerHTML = tableHTML;
+
+        // 4. 급식판 가져오기
+        let mealContainer = document.getElementById('trayContainer');
+        // 반찬을 하나라도 완성했다면 급식판 표시
+        if(mealStatus.some(s => s === true)) { 
+            let clonedTray = mealContainer.cloneNode(true);
+            clonedTray.id = "summaryTray";
+            clonedTray.style.width = "100%";
+            clonedTray.style.maxWidth = "800px";
+            document.getElementById('res-meal').innerHTML = "";
+            document.getElementById('res-meal').appendChild(clonedTray);
+        } else {
+            document.getElementById('res-meal').innerHTML = "<div style='color:#999; margin-top:20px;'>아직 급식을 완성하지 않았어요!</div>";
         }
     }
 </script>
