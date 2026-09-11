@@ -294,10 +294,19 @@
         @keyframes glow { 0% { box-shadow: 0 0 5px #9c27b0; } 50% { box-shadow: 0 0 20px #e1bee7, 0 0 30px #ce93d8; } 100% { box-shadow: 0 0 5px #9c27b0; } }
 
         /* --- 종합 요약판(마지막 슬라이드) 전용 CSS --- */
-        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; height: 100%; padding-bottom: 20px; }
-        .summary-card { background: white; border: 4px dashed #7986cb; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05); overflow-y: auto; }
-        .summary-card h3 { margin: 0 0 15px 0; color: #3949ab; font-size: 2rem; border-bottom: 3px solid #e8eaf6; padding-bottom: 10px; width: 100%; text-align: center; }
-        .summary-content { font-size: 1.5rem; font-weight: bold; color: #333; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; }
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; height: 100%; padding-bottom: 10px; }
+        .summary-card { background: white; border: 4px dashed #7986cb; border-radius: 20px; padding: 15px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05); overflow-y: auto; }
+        .summary-card h3 { margin: 0 0 10px 0; color: #3949ab; font-size: 1.8rem; border-bottom: 3px solid #e8eaf6; padding-bottom: 8px; width: 100%; text-align: center; }
+        .summary-content { font-size: 1.3rem; font-weight: bold; color: #333; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; }
+        
+        /* 교시별 행동 유도 타임라인 바 스타일 */
+        .action-timeline { display: flex; gap: 8px; width: 100%; overflow-x: auto; padding: 5px 0; }
+        .action-chip { flex: 1; background: #fff3e0; border: 2px solid #ffb74d; border-radius: 12px; padding: 10px 5px; text-align: center; cursor: pointer; transition: 0.2s; min-width: 90px; }
+        .action-chip:hover { transform: scale(1.03); background: #ffe0b2; }
+        .action-chip.active-period { background: #ff9800; color: white; border-color: #e65100; box-shadow: 0 4px 10px rgba(255,152,0,0.4); transform: scale(1.05); }
+        .action-chip .p-num { font-size: 1rem; font-weight: bold; display: block; color: #d84315; }
+        .action-chip.active-period .p-num { color: #fffde7; }
+        .action-chip .p-subj { font-size: 1.2rem; font-weight: 900; display: block; margin-top: 3px; }
     </style>
 </head>
 <body>
@@ -343,7 +352,7 @@
 </div>
 
 <div class="container">
-    <section class="step-section active" id="step1">
+<section class="step-section active" id="step1">
         <h2>📅 <span class="print-box month-box">9</span>월 달력 읽기</h2>
         <div class="calendar-grid">
             <div class="day-header" style="color:red"><span class="print-box">일</span></div>
@@ -415,58 +424,6 @@
             </div>
         </div>
 
-        <div class="print-cutout-section">
-            <h3 style="color: #333;">✂️ 아래 조각을 점선 따라 오려서 달력의 알맞은 곳에 풀로 붙여보세요</h3>
-            
-            <div class="cutout-group">
-                <h4>[ 1. 월, 요일 조각 (달력의 빈칸에 맞춰 붙이거나 써보세요) ]</h4>
-                <div class="cutout-grid" style="grid-template-columns: repeat(8, 1fr); margin-bottom: 25px;">
-                    <div class="cutout-item month-cutout">9</div>
-                    <div class="cutout-item" style="color:red;">일</div>
-                    <div class="cutout-item">월</div>
-                    <div class="cutout-item">화</div>
-                    <div class="cutout-item">수</div>
-                    <div class="cutout-item">목</div>
-                    <div class="cutout-item">금</div>
-                    <div class="cutout-item" style="color:blue;">토</div>
-                </div>
-            </div>
-
-            <div class="cutout-group">
-                <h4>[ 2. 일정 조각 (⭐ 점선 동그라미에 색칠하거나 스티커를 붙여 일정을 꾸며요!) ]</h4>
-                <div class="cutout-grid">
-                    <div class="cutout-item">
-                        <div class="sticker-zone"></div>
-                        2<br><span class="event-wrapper"><span class="emoji">🎵</span><span class="text">작은음악회</span></span>
-                    </div>
-                    <div class="cutout-item">
-                        <div class="sticker-zone"></div>
-                        4<br><span class="event-wrapper"><span class="emoji">⛰️</span><span class="text">산행시작일</span></span>
-                    </div>
-                    <div class="cutout-item">
-                        <div class="sticker-zone"></div>
-                        9<br><span class="event-wrapper"><span class="emoji">🥋</span><span class="text">태권도 시작</span></span>
-                    </div>
-                    <div class="cutout-item">
-                        <div class="sticker-zone"></div>
-                        17<br><span class="event-wrapper"><span class="emoji">🏆</span><span class="text">체육대회</span></span>
-                    </div>
-                    <div class="cutout-item">
-                        <div class="sticker-zone"></div>
-                        24<br><span class="event-wrapper"><span class="emoji">🌕</span><span class="text">추석연휴</span></span>
-                    </div>
-                    <div class="cutout-item">
-                        <div class="sticker-zone"></div>
-                        25<br><span class="event-wrapper"><span class="emoji">🌕</span><span class="text">추석연휴</span></span>
-                    </div>
-                    <div class="cutout-item">
-                        <div class="sticker-zone"></div>
-                        29<br><span class="event-wrapper"><span class="emoji">🚨</span><span class="text">소방훈련</span></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="nav-footer">
             <button class="btn" style="background:#4db6ac;" onclick="printLevel('a')">🖨️ [가] 오려붙이기</button>
             <button class="btn" style="background:#26a69a;" onclick="printLevel('b')">🖨️ [나] 따라쓰기</button>
@@ -478,16 +435,15 @@
 
     <section class="step-section" id="step2">
         <h2>☀️ 오늘 날씨는 어떤가요?</h2>
-<div class="weather-grid">
-    <div class="w-item" onclick="selectWeather(this, '맑음', '☀️')">☀️ 맑음<br><span style="font-size:1.3rem; color:#757575;">(햇빛이 반짝! 창밖이 환해요)</span></div>
-    <div class="w-item" onclick="selectWeather(this, '흐림', '☁️')">☁️ 흐림<br><span style="font-size:1.3rem; color:#757575;">(구름이 잔뜩! 해님이 숨었어요)</span></div>
-    <div class="w-item" onclick="selectWeather(this, '비', '🌧️')">🌧️ 비<br><span style="font-size:1.3rem; color:#757575;">(주룩주룩! 밖에서는 우산을 써요)</span></div>
-    <div class="w-item" onclick="selectWeather(this, '눈', '❄️')">❄️ 눈<br><span style="font-size:1.3rem; color:#757575;">(펑펑! 하얀 눈이 오고 바닥이 미끄러워요)</span></div>
-    <div class="w-item" onclick="selectWeather(this, '바람', '🌬️')">🌬️ 바람<br><span style="font-size:1.3rem; color:#757575;">(쌩쌩! 나뭇가지가 크게 흔들려요)</span></div>
-    <div class="w-item" onclick="selectWeather(this, '공기나쁨', '😷')">😷 공기 나쁨<br><span style="font-size:1.3rem; color:#757575;">(하늘이 뿌얘요! 오늘은 교실에서 놀아요)</span></div>
-</div>
+        <div class="weather-grid">
+            <div class="w-item" onclick="selectWeather(this, '맑음', '☀️')">☀️ 맑음<br><span style="font-size:1.3rem; color:#757575;">(햇빛이 반짝! 창밖이 환해요)</span></div>
+            <div class="w-item" onclick="selectWeather(this, '흐림', '☁️')">☁️ 흐림<br><span style="font-size:1.3rem; color:#757575;">(구름이 잔뜩! 해님이 숨었어요)</span></div>
+            <div class="w-item" onclick="selectWeather(this, '비', '🌧️')">🌧️ 비<br><span style="font-size:1.3rem; color:#757575;">(주룩주룩! 밖에서는 우산을 써요)</span></div>
+            <div class="w-item" onclick="selectWeather(this, '눈', '❄️')">❄️ 눈<br><span style="font-size:1.3rem; color:#757575;">(펑펑! 하얀 눈이 오고 바닥이 미끄러워요)</span></div>
+            <div class="w-item" onclick="selectWeather(this, '바람', '🌬️')">🌬️ 바람<br><span style="font-size:1.3rem; color:#757575;">(쌩쌩! 나뭇가지가 크게 흔들려요)</span></div>
+            <div class="w-item" onclick="selectWeather(this, '공기나쁨', '😷')">😷 공기 나쁨<br><span style="font-size:1.3rem; color:#757575;">(하늘이 뿌얘요! 오늘은 교실에서 놀아요)</span></div>
+        </div>
         <div id="weatherText" class="display-text">오늘의 날씨는? 👆</div>
-<button class="btn" style="background:#ff9800; width:100%; margin-top:15px; font-size:1.5rem;" onclick="let active = document.querySelector('.w-item.active'); if(active){ let w = active.innerText.match(/[가-힣]+/)[0]; window.open('health.html?weather=' + encodeURIComponent(w), '_blank'); } else { alert('오늘의 날씨를 먼저 선택해주세요! 👇'); }">💡 오늘의 건강 습관 확인하기</button>
         <button class="btn-think-more" onclick="toggleAdvanced(this)">🤔 더 생각하기</button>
         <div class="advanced-task">
             <div class="adv-header">
@@ -516,7 +472,7 @@
         </div>
     </section>
 
-   <section class="step-section" id="step3">
+<section class="step-section" id="step3">
         <h2>📊 오늘의 수업과 장소</h2>
         <div class="table-container">
             <table>
@@ -535,6 +491,17 @@
                             <td class="drop-zone" data-type="loc" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="clearZone(this)"></td>
                             <td><input type="text" placeholder=" " style="width:90%; padding:8px; font-size:1.1rem; border:1px solid #ddd; border-radius:8px; outline:none; text-align:center;"></td>
                         </tr>`);
+                        
+                        // 3교시 뒤에 점심시간 행 추가
+                        if (i === 3) {
+                            document.write(`
+                            <tr style="background-color: #fff9c4;">
+                                <td style="font-weight:bold; color:#f57f17; font-size:1.1rem;">점심시간</td>
+                                <td style="font-weight:bold; color:#e65100; font-size:1.1rem;">😋 맛있는 급식</td>
+                                <td style="font-weight:bold; color:#0277bd; font-size:1.1rem;">급식실</td>
+                                <td style="color:#555; font-weight:bold;">손 씻고 줄 서기</td>
+                            </tr>`);
+                        }
                     }
                 </script>
             </table>
@@ -546,7 +513,7 @@
             <div class="pool-group">
                 <div class="pool-label">📚 과목:</div>
                 <div class="item-list">
- <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🎨미술</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🎨미술</div>
                     <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🎤🪩여가활동</div>
                     <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🧹🚮자립생활</div>
                     <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🎶👯동아리</div>
@@ -563,7 +530,6 @@
                     <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">💊보건</div>
                     <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🏃‍♂️스포츠클럽</div>
                     <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🥾자율(산행)</div>
-
                 </div>
             </div>
             <div class="pool-group">
@@ -687,7 +653,7 @@
                     
                     <div id="brushTools" style="display:flex; gap:5px; margin-left:15px; border-left:2px solid #ccc; padding-left:15px;">
                         <button class="brush-btn active" onclick="setMealBrushSize(8, this)">●</button>
-<button class="brush-btn" style="font-size:26px;" onclick="setMealBrushSize(15, this)">●</button>
+                        <button class="brush-btn" style="font-size:26px;" onclick="setMealBrushSize(15, this)">●</button>
                     </div>
                 </div>
                 
@@ -849,7 +815,7 @@
     </section>
 
     <section class="step-section" id="step7">
-        <h2>🌟 오늘의 알림판</h2>
+        <h2>🌟 오늘의 알림판 🌟</h2>
         <div class="summary-grid">
             <div class="summary-card">
                 <h3>📅 오늘 날짜</h3>
@@ -868,6 +834,18 @@
                 <div id="res-meal" class="summary-content" style="transform: scale(0.65); transform-origin: top center; height: 100%;"></div>
             </div>
         </div>
+        
+        <!-- ⭐ 1~6교시 전환형 행동 유도 타임라인 배너 -->
+        <div style="width: 100%; background: #fff3e0; border: 3px solid #ff9800; border-radius: 15px; padding: 12px 15px; box-sizing: border-box; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-weight: bold; font-size: 1.3rem; color: #e65100;">🔔 교시별 행동 목표 (터치해서 확인하세요)</span>
+                <span id="active-period-title" style="font-weight: 900; font-size: 1.4rem; color: #d84315;">1교시를 준비해요!</span>
+            </div>
+            <div class="action-timeline" id="actionTimelineBar">
+                <!-- 자바스크립트로 1~6교시 버튼이 동적 생성됩니다 -->
+            </div>
+        </div>
+
         <div class="nav-footer">
             <button class="btn btn-prev" onclick="move(6)">⬅️ 이전</button>
             <button class="btn btn-next" style="background:#222;" onclick="location.reload()">새로운 하루 시작하기 (전체 초기화)</button>
@@ -926,7 +904,6 @@
             renderMealCanvas();
         }
         
-        // 7단계 종합 알림판으로 진입할 때 데이터 모으기
         if(step === 7) {
             updateSummaryBoard();
         }
@@ -1002,7 +979,7 @@
         document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
         el.classList.add('selected');
         const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
-        const dayOfWeek = weekDays[(day + 1) % 7]; // 9월 1일이 화요일인 경우에 맞춘 인덱스 보정
+        const dayOfWeek = weekDays[(day + 1) % 7]; 
         document.getElementById('dateText').innerHTML = `오늘은 <span style="color:#d32f2f; text-decoration:underline;">9월 ${day}일 ${dayOfWeek}요일</span> 입니다!`;
         
         generateOrUpdateWord(1, 'day', day + '일');
@@ -1460,7 +1437,9 @@
     function speakMealMenu() {
         if ('speechSynthesis' in window && mealMenus[currentMealIndex]) {
             window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(mealMenus[currentMealIndex].text);
+            // TTS가 읽을 때 이모지나 특수기호를 제외하고 한글/숫자/영어만 깔끔하게 읽도록 처리
+            let cleanMenu = mealMenus[currentMealIndex].text.replace(/[^가-힣a-zA-Z0-9\s]/g, '').trim();
+            const utterance = new SpeechSynthesisUtterance(cleanMenu);
             utterance.lang = 'ko-KR';
             utterance.rate = 0.8;
             utterance.pitch = 1.2;
@@ -1567,6 +1546,9 @@
         }
     }
 
+    // 전역 저장용 배열
+    let currentDaySubjects = [];
+
     function updateSummaryBoard() {
         // 1. 날짜 가져오기
         let dateHtml = document.getElementById('dateText').innerHTML;
@@ -1579,17 +1561,22 @@
         document.getElementById('res-weather').innerHTML = `<div class="display-text" style="border:none; background:transparent;">${weatherHtml}</div>`;
 
         // 3. 시간표 가져오기
+        currentDaySubjects = [];
         let tableHTML = '<table style="width:100%; border-collapse: collapse; font-size:1.2rem; margin-top:10px;"><tr><th style="background:#f9f9f9; padding:8px; border:2px solid #ccc;">교시</th><th style="background:#f9f9f9; padding:8px; border:2px solid #ccc;">과목</th><th style="background:#f9f9f9; padding:8px; border:2px solid #ccc;">장소</th></tr>';
         let rows = document.querySelectorAll('#step3 table tr');
         for(let i=1; i<rows.length; i++) {
             let cols = rows[i].querySelectorAll('td');
             if(cols.length >= 3) {
                 let period = cols[0].innerText;
-                let subject = cols[1].innerText || "-";
-                let location = cols[2].innerText || "-";
-                tableHTML += `<tr>
-                    <td style="border:2px solid #ccc; padding:8px; text-align:center;">${period}</td>
-                    <td style="border:2px solid #ccc; padding:8px; text-align:center; color:#2e7d32; font-weight:bold;">${subject}</td>
+                let subject = cols[1].innerText.trim() || "-";
+                let location = cols[2].innerText.trim() || "-";
+                
+                currentDaySubjects.push({ period: period, subject: subject, location: location });
+
+                let rowBg = period.includes("점심") ? 'background-color: #fff9c4;' : '';
+                tableHTML += `<tr style="${rowBg}">
+                    <td style="border:2px solid #ccc; padding:8px; text-align:center; font-weight:${period.includes('점심')?'bold':'normal'}; color:${period.includes('점심')?'#f57f17':''}">${period}</td>
+                    <td style="border:2px solid #ccc; padding:8px; text-align:center; color:${period.includes('점심')?'#e65100':'#2e7d32'}; font-weight:bold;">${subject}</td>
                     <td style="border:2px solid #ccc; padding:8px; text-align:center; color:#0277bd; font-weight:bold;">${location}</td>
                 </tr>`;
             }
@@ -1599,7 +1586,6 @@
 
         // 4. 급식판 가져오기
         let mealContainer = document.getElementById('trayContainer');
-        // 반찬을 하나라도 완성했다면 급식판 표시
         if(mealStatus.some(s => s === true)) { 
             let clonedTray = mealContainer.cloneNode(true);
             clonedTray.id = "summaryTray";
@@ -1609,6 +1595,94 @@
             document.getElementById('res-meal').appendChild(clonedTray);
         } else {
             document.getElementById('res-meal').innerHTML = "<div style='color:#999; margin-top:20px;'>아직 급식을 완성하지 않았어요!</div>";
+        }
+
+        // 5. 1~6교시 전환형 행동 유도 타임라인 바 생성
+        buildActionTimelineBar();
+    }
+
+    function buildActionTimelineBar() {
+        const barContainer = document.getElementById('actionTimelineBar');
+        barContainer.innerHTML = '';
+        
+        currentDaySubjects.forEach((item, index) => {
+            let chip = document.createElement('div');
+            chip.className = 'action-chip' + (index === 0 ? ' active-period' : '');
+            chip.innerHTML = `<span class="p-num">${item.period}</span><span class="p-subj">${item.subject}</span>`;
+            
+            // 교시 버튼을 터치/클릭했을 때 해당 교시의 행동 목표로 전환
+            chip.onclick = function() {
+                document.querySelectorAll('.action-chip').forEach(c => c.classList.remove('active-period'));
+                chip.classList.add('active-period');
+                
+                let locStr = "";
+                if (item.location !== "-" && item.location !== "") {
+                    // ★ 장소가 '1-2반'일 경우 안내 문구 변경
+                    if (item.location.includes("1-2반")) {
+                        locStr = " (교실에서 준비해요)"; 
+                    } else {
+                        locStr = ` (${item.location}로 이동)`;
+                    }
+                }
+
+                // 점심시간일 때와 일반 수업일 때 안내 문구 및 음성을 다르게 설정
+                if (item.period.includes("점심")) {
+                    document.getElementById('active-period-title').innerText = `😋 즐거운 점심시간이에요!${locStr}`;
+                    
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                        const utterance = new SpeechSynthesisUtterance(`이제 즐거운 점심시간이에요. 손을 씻고 급식실로 이동하세요.`);
+                        utterance.lang = 'ko-KR';
+                        window.speechSynthesis.speak(utterance);
+                    }
+                } else {
+                    document.getElementById('active-period-title').innerText = `${item.period} [ ${item.subject} ] 수업 시간이에요!${locStr}`;
+                    
+                    // 음성 합성 지원 (TTS 기능)
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                        
+                        // TTS가 읽을 때 이모지나 특수기호를 제외하고 글자만 깔끔하게 읽도록 처리
+                        let cleanSubject = item.subject.replace(/[^가-힣a-zA-Z0-9\s]/g, '').trim();
+                        let cleanLocation = item.location.replace(/[^가-힣a-zA-Z0-9\s]/g, '').trim();
+                        
+                        let speakText = `이제 ${item.period}, ${cleanSubject} 수업을 시작해요.`;
+                        
+                        if (item.location !== "-" && item.location !== "") {
+                            if (item.location.includes("1-2반")) {
+                                speakText = `이제 ${item.period}, ${cleanSubject} 수업을 시작해요. 교실에서 준비하세요.`;
+                            } else {
+                                speakText = `이제 ${item.period}, ${cleanSubject} 수업을 시작해요. ${cleanLocation}로 이동하세요.`;
+                            }
+                        }
+                        
+                        const utterance = new SpeechSynthesisUtterance(speakText);
+                        utterance.lang = 'ko-KR';
+                        window.speechSynthesis.speak(utterance);
+                    }
+                }
+            };
+            barContainer.appendChild(chip);
+        });
+
+        // 초기값은 가장 첫 번째 항목(1교시)으로 세팅
+        if(currentDaySubjects.length > 0) {
+            let first = currentDaySubjects[0];
+            
+            let locStr = "";
+            if (first.location !== "-" && first.location !== "") {
+                if (first.location.includes("1-2반")) {
+                    locStr = " (교실에서 준비해요)";
+                } else {
+                    locStr = ` (${first.location}로 이동)`;
+                }
+            }
+            
+            if (first.period.includes("점심")) {
+                 document.getElementById('active-period-title').innerText = `😋 즐거운 점심시간이에요!${locStr}`;
+            } else {
+                 document.getElementById('active-period-title').innerText = `${first.period} [ ${first.subject} ] 수업 시간이에요!${locStr}`;
+            }
         }
     }
 </script>
