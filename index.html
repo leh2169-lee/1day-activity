@@ -307,6 +307,26 @@
         .action-chip .p-num { font-size: 1rem; font-weight: bold; display: block; color: #d84315; }
         .action-chip.active-period .p-num { color: #fffde7; }
         .action-chip .p-subj { font-size: 1.2rem; font-weight: 900; display: block; margin-top: 3px; }
+
+        /* --- 실제 장소 사진 모달 전용 CSS --- */
+        .photo-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 3000; justify-content: center; align-items: center; flex-direction: column;
+        }
+        .photo-modal.show { display: flex; animation: fadeIn 0.3s; }
+        .photo-content {
+            background: #fff; padding: 25px; border-radius: 20px; text-align: center; width: 90%; max-width: 900px;
+        }
+        .photo-image {
+            width: 100%; max-height: 55vh; object-fit: contain; border-radius: 15px; border: 4px dashed #ff9800; margin-bottom: 20px; background: #eee;
+        }
+        .photo-title {
+            font-size: 2.2rem; font-weight: bold; color: #333; margin-bottom: 15px;
+        }
+        .close-photo-modal {
+            background: #4caf50; padding: 15px 40px; font-size: 1.8rem; font-weight: bold; color: white; border: none; border-radius: 15px; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .close-photo-modal:hover { background: #388e3c; transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -348,6 +368,15 @@
             <div class="cat-btn" onclick="selectMealCategory('🍰')">🍰<span>빵/간식</span></div>
         </div>
         <button class="close-modal" style="background:#d32f2f;" onclick="closeCategoryModal()">닫기</button>
+    </div>
+</div>
+
+<!-- 실제 장소 사진 모달 -->
+<div class="photo-modal" id="locationPhotoModal">
+    <div class="photo-content">
+        <div class="photo-title" id="photoModalTitle">장소 이름</div>
+        <img src="" id="photoModalImage" class="photo-image" alt="장소 사진" onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22400%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2235%22 font-weight=%22bold%22 fill=%22%23999%22 text-anchor=%22middle%22 alignment-baseline=%22middle%22%3E%F0%9F%93%B7 %EC%8B%A4%EC%A0%9C %EC%82%AC%EC%A7%84(%EC%98%88: %EB%AF%B8%EC%88%A0%EC%8B%A4.jpg)%EC%9D%84 %ED%8F%B4%EB%8D%94%EC%97%90 %EB%84%A3%EC%96%B4%EC%A3%BC%EC%84%B8%EC%9A%94!%3C/text%3E%3C/svg%3E'">
+        <button class="close-photo-modal" onclick="closePhotoModal()">확인했어요! (닫기)</button>
     </div>
 </div>
 
@@ -603,37 +632,37 @@
                     <span style="font-weight:bold;">🍚 밥 (좌하단):</span> 
                     <button class="btn-select-icon" id="btn_m0_icon" onclick="openCategoryModal(0)">🍚 선택</button>
                     <input type="hidden" id="m0_emoji_val" value="🍚">
-                    <input type="text" id="m0_text" class="menu-input" value="보리밥" placeholder="메뉴 이름">
+                    <input type="text" id="m0_text" class="menu-input" value="차조밥" placeholder="메뉴 이름">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🍲 국 (우하단):</span> 
                     <button class="btn-select-icon" id="btn_m1_icon" onclick="openCategoryModal(1)">🍲 선택</button>
                     <input type="hidden" id="m1_emoji_val" value="🍲">
-                    <input type="text" id="m1_text" class="menu-input" value="쇠고기미역국">
+                    <input type="text" id="m1_text" class="menu-input" value="아욱된장국">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🥗 반찬1(좌상단):</span> 
                     <button class="btn-select-icon" id="btn_m2_icon" onclick="openCategoryModal(2)">🌶️ 선택</button>
                     <input type="hidden" id="m2_emoji_val" value="🌶️">
-                    <input type="text" id="m2_text" class="menu-input" value="깍두기">
+                    <input type="text" id="m2_text" class="menu-input" value="배추김치">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🥢 반찬2(중좌측):</span> 
                     <button class="btn-select-icon" id="btn_m3_icon" onclick="openCategoryModal(3)">🥬 선택</button>
                     <input type="hidden" id="m3_emoji_val" value="🥬">
-                    <input type="text" id="m3_text" class="menu-input" value="건파래볶음">
+                    <input type="text" id="m3_text" class="menu-input" value="참나물들기름나물">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🥢 반찬3(중우측):</span> 
                     <button class="btn-select-icon" id="btn_m4_icon" onclick="openCategoryModal(4)">🐟 선택</button>
                     <input type="hidden" id="m4_emoji_val" value="🐟">
-                    <input type="text" id="m4_text" class="menu-input" value="양배추사과샐러드">
+                    <input type="text" id="m4_text" class="menu-input" value="청포묵무침">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🍖 메인 (우상단):</span> 
                     <button class="btn-select-icon" id="btn_m5_icon" onclick="openCategoryModal(5)">🍖 선택</button>
                     <input type="hidden" id="m5_emoji_val" value="🍖">
-                    <input type="text" id="m5_text" class="menu-input" value="임연수고추장구이">
+                    <input type="text" id="m5_text" class="menu-input" value="닭갈비">
                 </div>
             </div>
             
@@ -854,6 +883,54 @@
 </div>
 
 <script>
+    // 장소 사진 파일명 매핑 (선택한 장소 이름과 매칭하여 실제 이미지 파일을 불러옵니다)
+    const locationPhotoMap = {
+        "미술실": "미술실.jpg",
+        "노래교실": "노래교실.jpg",
+        "세탁실": "세탁실.jpg",
+        "강당": "강당.jpg",
+        "음악실": "음악실.jpg",
+        "도서관": "도서관.jpg",
+        "중1-2반": "중1-2반.jpg",
+        "감각운동실": "감각운동실.jpg",
+        "조리실": "조리실.jpg",
+        "직업2실": "직업2실.jpg",
+        "체력단련실": "체력단련실.jpg",
+        "상상체험교실": "상상체험교실.jpg",
+        "와룡산": "와룡산.jpg",
+        "잔디운동장": "잔디운동장.jpg",
+        "VR스포츠실": "VR스포츠실.jpg",
+        "급식실": "급식실.jpg"
+    };
+
+    function openLocationPhoto(locationName, titleHtml) {
+        const modal = document.getElementById('locationPhotoModal');
+        const img = document.getElementById('photoModalImage');
+        const title = document.getElementById('photoModalTitle');
+
+        // 상단 타이틀 설정 (이모지와 문구)
+        title.innerHTML = titleHtml;
+
+        // 장소 이름으로 파일명 찾기 (기본값 설정)
+        let fileName = "기본이미지.jpg"; 
+        for(let key in locationPhotoMap) {
+            if(locationName.includes(key)) {
+                fileName = locationPhotoMap[key];
+                break;
+            }
+        }
+        
+        // 이미지 경로 적용 (같은 폴더 내에 해당 사진이 있어야 합니다)
+        img.src = fileName;
+        
+        // 모달 띄우기
+        modal.classList.add('show');
+    }
+
+    function closePhotoModal() {
+        document.getElementById('locationPhotoModal').classList.remove('show');
+    }
+
     function printLevel(level) {
         document.body.classList.remove('print-level-a', 'print-level-b', 'print-level-c');
         document.body.classList.add('print-level-' + level);
@@ -1437,7 +1514,6 @@
     function speakMealMenu() {
         if ('speechSynthesis' in window && mealMenus[currentMealIndex]) {
             window.speechSynthesis.cancel();
-            // TTS가 읽을 때 이모지나 특수기호를 제외하고 한글/숫자/영어만 깔끔하게 읽도록 처리
             let cleanMenu = mealMenus[currentMealIndex].text.replace(/[^가-힣a-zA-Z0-9\s]/g, '').trim();
             const utterance = new SpeechSynthesisUtterance(cleanMenu);
             utterance.lang = 'ko-KR';
@@ -1546,21 +1622,17 @@
         }
     }
 
-    // 전역 저장용 배열
     let currentDaySubjects = [];
 
     function updateSummaryBoard() {
-        // 1. 날짜 가져오기
         let dateHtml = document.getElementById('dateText').innerHTML;
         if(dateHtml.includes("눌러주세요")) dateHtml = "아직 날짜를 선택하지 않았어요!";
         document.getElementById('res-date').innerHTML = `<div class="display-text" style="border:none; background:transparent;">${dateHtml}</div>`;
 
-        // 2. 날씨 가져오기
         let weatherHtml = document.getElementById('weatherText').innerHTML;
         if(weatherHtml.includes("오늘의 날씨는?")) weatherHtml = "아직 날씨를 선택하지 않았어요!";
         document.getElementById('res-weather').innerHTML = `<div class="display-text" style="border:none; background:transparent;">${weatherHtml}</div>`;
 
-        // 3. 시간표 가져오기
         currentDaySubjects = [];
         let tableHTML = '<table style="width:100%; border-collapse: collapse; font-size:1.2rem; margin-top:10px;"><tr><th style="background:#f9f9f9; padding:8px; border:2px solid #ccc;">교시</th><th style="background:#f9f9f9; padding:8px; border:2px solid #ccc;">과목</th><th style="background:#f9f9f9; padding:8px; border:2px solid #ccc;">장소</th></tr>';
         let rows = document.querySelectorAll('#step3 table tr');
@@ -1584,7 +1656,6 @@
         tableHTML += '</table>';
         document.getElementById('res-timetable').innerHTML = tableHTML;
 
-        // 4. 급식판 가져오기
         let mealContainer = document.getElementById('trayContainer');
         if(mealStatus.some(s => s === true)) { 
             let clonedTray = mealContainer.cloneNode(true);
@@ -1597,7 +1668,6 @@
             document.getElementById('res-meal').innerHTML = "<div style='color:#999; margin-top:20px;'>아직 급식을 완성하지 않았어요!</div>";
         }
 
-        // 5. 1~6교시 전환형 행동 유도 타임라인 바 생성
         buildActionTimelineBar();
     }
 
@@ -1607,82 +1677,83 @@
         
         currentDaySubjects.forEach((item, index) => {
             let chip = document.createElement('div');
-            chip.className = 'action-chip' + (index === 0 ? ' active-period' : '');
-            chip.innerHTML = `<span class="p-num">${item.period}</span><span class="p-subj">${item.subject}</span>`;
+            // 초기 화면 렌더링 시에는 어떤 버튼도 active 시키지 않고 사용자의 첫 클릭을 기다립니다.
+            chip.className = 'action-chip';
             
-            // 교시 버튼을 터치/클릭했을 때 해당 교시의 행동 목표로 전환
+            // ★ 글자를 모르는 아이들을 위해 과목 텍스트에서 이모지만 추출해서 크게 보여주기
+            let emojiOnly = item.subject.match(/[\p{Emoji}\u200d]+/gu) || ["⭐"]; 
+            let textOnly = item.subject.replace(/[\p{Emoji}\u200d]+/gu, '').trim();
+            
+            if (item.period.includes("점심")) {
+                emojiOnly = ["😋"];
+                textOnly = "점심시간";
+            }
+            
+            chip.innerHTML = `
+                <span class="p-num">${item.period}</span>
+                <span style="font-size: 2.5rem; display: block; margin: 5px 0;">${emojiOnly[0]}</span>
+                <span style="font-size: 0.9rem; color: #555; font-weight:bold;">${textOnly}</span>
+            `;
+            
+            // 교시 버튼을 터치/클릭했을 때 사진 모달창 열기 및 음성 안내 실행
             chip.onclick = function() {
                 document.querySelectorAll('.action-chip').forEach(c => c.classList.remove('active-period'));
                 chip.classList.add('active-period');
                 
                 let locStr = "";
+                let actionEmoji = "🚶‍♂️"; 
+                let cleanLocation = item.location.replace(/[^가-힣a-zA-Z0-9\s]/g, '').trim();
+
                 if (item.location !== "-" && item.location !== "") {
-                    // ★ 장소가 '1-2반'일 경우 안내 문구 변경
                     if (item.location.includes("1-2반")) {
-                        locStr = " (교실에서 준비해요)"; 
+                        locStr = " (자리에서 준비해요)"; 
+                        actionEmoji = "🪑"; 
                     } else {
                         locStr = ` (${item.location}로 이동)`;
                     }
                 }
 
-                // 점심시간일 때와 일반 수업일 때 안내 문구 및 음성을 다르게 설정
+                let titleHtml = "";
+                let speakText = "";
+
                 if (item.period.includes("점심")) {
-                    document.getElementById('active-period-title').innerText = `😋 즐거운 점심시간이에요!${locStr}`;
+                    titleHtml = `<span style="font-size: 3rem;">😋🚶‍♂️</span><br>즐거운 점심시간이에요! (급식실로 이동)`;
+                    speakText = `이제 즐거운 점심시간이에요. 손을 씻고 급식실로 이동하세요.`;
                     
-                    if ('speechSynthesis' in window) {
-                        window.speechSynthesis.cancel();
-                        const utterance = new SpeechSynthesisUtterance(`이제 즐거운 점심시간이에요. 손을 씻고 급식실로 이동하세요.`);
-                        utterance.lang = 'ko-KR';
-                        window.speechSynthesis.speak(utterance);
-                    }
+                    document.getElementById('active-period-title').innerText = "사진을 보고 급식실로 이동해요!";
+                    openLocationPhoto("급식실", titleHtml);
                 } else {
-                    document.getElementById('active-period-title').innerText = `${item.period} [ ${item.subject} ] 수업 시간이에요!${locStr}`;
+                    titleHtml = `<span style="font-size: 3rem;">${emojiOnly[0]}${actionEmoji}</span><br>${item.period} 수업을 시작해요!${locStr}`;
                     
-                    // 음성 합성 지원 (TTS 기능)
-                    if ('speechSynthesis' in window) {
-                        window.speechSynthesis.cancel();
-                        
-                        // TTS가 읽을 때 이모지나 특수기호를 제외하고 글자만 깔끔하게 읽도록 처리
-                        let cleanSubject = item.subject.replace(/[^가-힣a-zA-Z0-9\s]/g, '').trim();
-                        let cleanLocation = item.location.replace(/[^가-힣a-zA-Z0-9\s]/g, '').trim();
-                        
-                        let speakText = `이제 ${item.period}, ${cleanSubject} 수업을 시작해요.`;
-                        
-                        if (item.location !== "-" && item.location !== "") {
-                            if (item.location.includes("1-2반")) {
-                                speakText = `이제 ${item.period}, ${cleanSubject} 수업을 시작해요. 교실에서 준비하세요.`;
-                            } else {
-                                speakText = `이제 ${item.period}, ${cleanSubject} 수업을 시작해요. ${cleanLocation}로 이동하세요.`;
-                            }
+                    let cleanSubject = item.subject.replace(/[^가-힣a-zA-Z0-9\s]/g, '').trim();
+                    speakText = `이제 ${item.period}, ${cleanSubject} 수업을 시작해요.`;
+                    
+                    if (item.location !== "-" && item.location !== "") {
+                        if (item.location.includes("1-2반")) {
+                            speakText += ` 자리에 앉아서 준비하세요.`;
+                        } else {
+                            speakText += ` ${cleanLocation}로 이동하세요.`;
                         }
-                        
-                        const utterance = new SpeechSynthesisUtterance(speakText);
-                        utterance.lang = 'ko-KR';
-                        window.speechSynthesis.speak(utterance);
                     }
+                    
+                    document.getElementById('active-period-title').innerText = "사진을 보고 수업 장소로 이동해요!";
+                    openLocationPhoto(item.location, titleHtml);
+                }
+                
+                // 음성 안내 실행
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(speakText);
+                    utterance.lang = 'ko-KR';
+                    window.speechSynthesis.speak(utterance);
                 }
             };
             barContainer.appendChild(chip);
         });
 
-        // 초기값은 가장 첫 번째 항목(1교시)으로 세팅
+        // 7단계 최초 진입 시 안내 문구 설정 (클릭은 하지 않음)
         if(currentDaySubjects.length > 0) {
-            let first = currentDaySubjects[0];
-            
-            let locStr = "";
-            if (first.location !== "-" && first.location !== "") {
-                if (first.location.includes("1-2반")) {
-                    locStr = " (교실에서 준비해요)";
-                } else {
-                    locStr = ` (${first.location}로 이동)`;
-                }
-            }
-            
-            if (first.period.includes("점심")) {
-                 document.getElementById('active-period-title').innerText = `😋 즐거운 점심시간이에요!${locStr}`;
-            } else {
-                 document.getElementById('active-period-title').innerText = `${first.period} [ ${first.subject} ] 수업 시간이에요!${locStr}`;
-            }
+            document.getElementById('active-period-title').innerText = "👈 준비할 교시의 그림을 콕! 눌러보세요";
         }
     }
 </script>
