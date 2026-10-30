@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>10월 하루 한장</title>
+    <title>11월 하루 한장 (보완 완성본)</title>
     <style>
         :root {
             --main-bg: #fdfcf0;
@@ -15,7 +15,7 @@
             --puzzle-border: #7986cb;
         }
         
-        body { font-family: 'Nanum Gothic', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
+        body { font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; height: 100dvh; overflow: hidden; user-select: none; }
         
         .progress-container { width: 100%; background: #e0e0e0; height: 12px; position: fixed; top: 0; z-index: 1000; }
         .progress-bar { height: 100%; background: #4a90e2; width: 20%; transition: width 0.4s ease; }
@@ -28,12 +28,12 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.1); border: 2px solid #e0e0e0;
             flex-direction: column; align-items: center; justify-content: space-between; overflow-y: auto;
         }
-        .step-section.active { display: flex; animation: fadeIn 0.5s; }
+        .step-section.active { display: flex; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
         h2 { font-size: 2.5rem; color: #333; margin: 0 0 10px 0; border-bottom: 5px solid var(--accent-color); padding-bottom: 5px; }
 
-        .nav-footer { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 15px 0; margin-top: auto; margin-bottom: 80px; }
+        .nav-footer { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 15px 0; margin-top: auto; margin-bottom: 40px; }
         .btn { padding: 12px 25px; font-size: 1.4rem; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; color: white; transition: all 0.2s; }
         .btn:active { transform: scale(0.95); }
         .btn-next { background: var(--next-btn); padding: 12px 40px; font-size: 1.6rem; }
@@ -43,38 +43,38 @@
         .day-header { background: #f5f5f5; padding: 8px; font-weight: bold; font-size: 1.2rem; border-radius: 8px; text-align: center; }
         
         .day { padding: 10px 5px; border: 1px solid #ddd; border-radius: 10px; font-size: 1.5rem; cursor: pointer; background: white; text-align: center; height: 110px; box-sizing: border-box; overflow: hidden; }
-        
-        .day.selected { background: var(--accent-color); font-weight: bold; border-color: #4caf50; }
+        .day.selected { background: var(--accent-color); font-weight: bold; border: 3px solid #4caf50; }
         
         .display-text { margin-top: 10px; font-size: 2rem; font-weight: bold; color: #00796b; background: #e0f2f1; padding: 12px 30px; border-radius: 50px; text-align: center; border: 3px dashed #4dd0e1; }
 
-        .weather-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 60%; }
-        .w-item { padding: 25px; border: 4px solid #eee; border-radius: 20px; font-size: 2.2rem; cursor: pointer; text-align: center; }
-        .w-item.active { border-color: #ff8a65; background: #fff5f2; }
+        .weather-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 70%; max-width: 850px; }
+        .w-item { padding: 22px; border: 4px solid #eee; border-radius: 20px; font-size: 2.1rem; cursor: pointer; text-align: center; transition: 0.2s; }
+        .w-item.active { border-color: #ff8a65; background: #fff5f2; transform: scale(1.02); }
 
         .table-container { width: 100%; margin-bottom: 10px; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         th, td { border: 2px solid #ccc; padding: 8px; text-align: center; font-size: 1.1rem; }
         th { background: #f9f9f9; color: #555; }
-        .drop-zone {min-height: 55px;border: 2px dashed #b0bec5; border-radius: 8px;background: #fafafa;font-weight: bold; font-size: 1.6rem; cursor: pointer;}
+        .drop-zone { min-height: 55px; border: 2px dashed #b0bec5; border-radius: 8px; background: #fafafa; font-weight: bold; font-size: 1.4rem; cursor: pointer; transition: 0.2s; }
+        /* 원하는 교시 칸을 먼저 터치해 선택했을 때의 하이라이트 효과 */
+        .drop-zone.target-active { border: 3px solid #ff9800 !important; background: #fff8e1 !important; box-shadow: 0 0 10px rgba(255, 152, 0, 0.35); }
         
         .pool-container { display: none; width: 100%; flex-direction: column; gap: 10px; background: #f1f8e9; padding: 12px; border-radius: 15px; border: 1px solid #dcedc8; }
         .pool-group { display: flex; align-items: center; gap: 10px; }
-        .pool-label { font-weight: bold; font-size: 1rem; color: #33691e; min-width: 80px; }
+        .pool-label { font-weight: bold; font-size: 1rem; color: #33691e; min-width: 85px; }
         .item-list { display: flex; gap: 8px; flex-wrap: wrap; }
         
-        .drag-item { padding: 6px 15px; background: white; border: 2px solid var(--subject-color); border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: grab; }
+        .drag-item { padding: 8px 15px; background: white; border: 2px solid var(--subject-color); border-radius: 8px; font-size: 1.05rem; font-weight: bold; cursor: pointer; transition: 0.15s; }
+        .drag-item:active { transform: scale(0.95); }
         .drag-item.loc { border-color: var(--location-color); color: #0277bd; }
         .drag-item.special { border-color: #f44336; color: #d32f2f; background-color: #fff3e0; }
-        .emoji-stamp span { font-size: 1.8rem; cursor: pointer; opacity: 0.2; margin: 0 5px; }
-        .emoji-stamp span.selected { opacity: 1; transform: scale(1.2); display: inline-block; }
 
         .emotion-6grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
         .student-thermometer { background: #fafafa; border: 2px solid #eee; border-radius: 20px; padding: 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .student-name { font-weight: bold; margin-bottom: 5px; }
-        .emotion-face-container { height: 100px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 15px; transition: background 0.2s; } 
-        .emotion-face-container:hover { background: #e0f2f1; }
-        .emotion-face { font-size: 3rem; transition: font-size 0.2s ease; }
+        .student-name { font-weight: bold; font-size: 1.3rem; margin-bottom: 5px; color: #222; }
+        .emotion-face-container { width: 100%; height: 105px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 15px; transition: background 0.2s; border: 2px dashed transparent; } 
+        .emotion-face-container:hover { background: #e0f2f1; border-color: #4db6ac; }
+        .emotion-face { font-size: 3.5rem; transition: transform 0.2s ease, font-size 0.2s ease; }
 
         .btn-think-more {
             background: #e8eaf6; color: #3f51b5; padding: 10px 25px; font-size: 1.4rem;
@@ -91,7 +91,7 @@
         .advanced-task.show { display: flex; animation: fadeInDown 0.4s ease; }
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .adv-header { display: flex; align-items: center; gap: 12px; width: 100%; }
+        .adv-header { display: flex; align-items: center; gap: 12px; width: 100%; flex-wrap: wrap; }
         .adv-badge { background: #5c6bc0; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 1.2rem; }
         
         .btn-hint {
@@ -104,14 +104,14 @@
         .adv-text { font-size: 1.3rem; color: #3949ab; font-weight: bold; margin: 0; }
         .adv-content { width: 100%; display: flex; flex-direction: column; gap: 15px; }
 
-        .sentence-display { display: flex; flex-wrap: wrap; gap: 10px; background: white; padding: 15px; border-radius: 15px; border: 2px solid #e8eaf6; width: 100%; box-sizing: border-box; }
-        .word-slot { min-width: 90px; height: 50px; border: 3px dashed #c5cae9; border-radius: 10px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; transition: 0.2s; position: relative; }
+        .sentence-display { display: flex; flex-wrap: wrap; gap: 10px; background: white; padding: 15px; border-radius: 15px; border: 2px solid #e8eaf6; width: 100%; box-sizing: border-box; align-items: center; }
+        .word-slot { min-width: 95px; height: 54px; border: 3px dashed #c5cae9; border-radius: 10px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; transition: 0.2s; position: relative; padding: 0 6px; }
         .word-slot.filled { border-style: solid; border-color: var(--puzzle-border); background: #e8eaf6; }
 
-        .word-slot.show-hint::before { content: attr(data-hint); color: #9e9e9e; font-size: 1.1rem; font-weight: bold; pointer-events: none; opacity: 0.7; }
+        .word-slot.show-hint::before { content: attr(data-hint); color: #9e9e9e; font-size: 1.1rem; font-weight: bold; pointer-events: none; opacity: 0.75; }
         .word-slot.filled.show-hint::before { display: none; }
 
-        .word-pool { display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; background: #e1f5fe; border-radius: 15px; border: 2px solid #b3e5fc; min-height: 50px; width: 100%; box-sizing: border-box; }
+        .word-pool { display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; background: #e1f5fe; border-radius: 15px; border: 2px solid #b3e5fc; min-height: 54px; width: 100%; box-sizing: border-box; }
         .word-chip {
             padding: 10px 18px; background: white; border: 3px solid var(--puzzle-border);
             border-radius: 10px; font-size: 1.4rem; font-weight: bold; color: #3949ab;
@@ -124,6 +124,7 @@
         .pop-animation { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
 
+        /* 인쇄용 부록 섹션 (화면에서는 숨김, 인쇄 시 2페이지에 출력) */
         .print-cutout-section { display: none; }
 
         .hint-modal { 
@@ -160,27 +161,27 @@
             h2 { text-align: center; margin-bottom: 20px; font-size: 3rem; }
             .calendar-grid { width: 100% !important; max-width: 100% !important; display: grid !important; grid-template-columns: repeat(7, 1fr) !important; gap: 8px !important; }
             
-            #step1 .day {min-height: 100px !important; 
-       overflow: hidden !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-start !important; box-sizing: border-box !important; padding: 10px 5px !important; border: 2px solid #ddd !important; border-radius: 8px !important; font-size: 1.5rem !important; font-weight: bold !important; }
+            #step1 .day {
+                min-height: 95px !important; 
+                overflow: hidden !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: flex-start !important; box-sizing: border-box !important; padding: 8px 5px !important; border: 2px solid #ddd !important; border-radius: 8px !important; font-size: 1.5rem !important; font-weight: bold !important;
+            }
             
             #step1 .day span { display: none !important; }
             #step1 .day span.keep-print { display: block !important; color: red !important; font-size: 0.9rem !important; margin-top: 4px !important; text-align: center; font-weight: normal !important; }
-            #step1 .day span.keep-print * { color: red !important; font-weight: bold !important; }
 
-            .print-cutout-section { display: block !important; width: 100%; page-break-before: always !important; break-before: page !important; padding-top: 20px; }
-            .print-cutout-section h3 { border-top: none !important; text-align: center; font-size: 2.2rem; margin-bottom: 40px; color: #333 !important; }
-            .cutout-grid { width: 100% !important; max-width: 100% !important; display: grid !important; grid-template-columns: repeat(7, 1fr) !important; gap: 0 !important; border: 2px dashed #999999 !important; }
+            .print-cutout-section { display: block !important; width: 100%; page-break-before: always !important; break-before: page !important; padding-top: 10px; }
+            .print-cutout-section h3 { border-top: none !important; text-align: center; font-size: 2rem; margin-bottom: 15px; color: #333 !important; }
+            .cutout-grid { width: 100% !important; max-width: 100% !important; display: grid !important; grid-template-columns: repeat(7, 1fr) !important; gap: 0 !important; border: 2px dashed #999999 !important; margin-bottom: 15px; }
             
             .cutout-item { 
-                height: 100px !important; 
+                height: 82px !important; 
                 display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; 
-                box-sizing: border-box !important; padding: 10px 5px !important; 
-                border: none !important; border-right: 2px dashed #999999 !important; border-radius: 0 !important; 
-                font-size: 1.5rem !important; font-weight: bold !important; background: white !important;
+                box-sizing: border-box !important; padding: 6px 4px !important; 
+                border-right: 2px dashed #999999 !important; border-bottom: 2px dashed #999999 !important;
+                font-size: 1.4rem !important; font-weight: bold !important; background: white !important;
             }
-            .cutout-item:last-child { border-right: none !important; }
             
-            .cutout-item span.event-wrapper { display: flex !important; align-items: center !important; justify-content: center !important; font-size: 0.9rem !important; margin-top: 2px !important; text-align: center !important; line-height: 1 !important;}
+            .cutout-item span.event-wrapper { display: flex !important; align-items: center !important; justify-content: center !important; font-size: 0.85rem !important; margin-top: 4px !important; text-align: center !important; line-height: 1.1 !important;}
             .cutout-item .emoji { font-style: normal !important; margin-right: 2px !important; }
             .cutout-item .text { font-weight: bold !important; }
 
@@ -221,25 +222,12 @@
 
             .cutout-group h4 {
                 text-align: center;
-                font-size: 1.4rem;
-                margin: 20px 0 10px 0;
+                font-size: 1.2rem;
+                margin: 10px 0 6px 0;
                 color: #424242;
                 background: #eeeeee;
-                padding: 10px;
+                padding: 6px;
                 border-radius: 8px;
-            }
-            .month-cutout {
-                font-size: 2rem !important;
-                background: #e3f2fd !important;
-            }
-            
-            .sticker-zone {
-                width: 25px;
-                height: 25px;
-                border: 2px dashed #ff9800;
-                border-radius: 50%;
-                margin: 0 auto 5px auto;
-                background-color: #fff9c4 !important;
             }
 
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -338,15 +326,10 @@
         <h2 style="font-size: 3rem; margin-bottom: 10px; border-bottom: none; color: #e65100;">💡 달력 일정 힌트 카드</h2>
         <p style="font-size: 1.5rem; color: #555; margin-bottom: 20px;">칠판을 보고 빈칸에 알맞은 글자를 적어보세요!</p>
         <div class="hint-modal-grid">
-            <div><span class="day-label">2일:</span> ⛰️ 10월 산행 시작</div>
-            <div><span class="day-label">3일:</span> 🇰🇷 개천절</div>
-            <div><span class="day-label">5일:</span> 🔴 대체공휴일</div>
-            <div><span class="day-label">7일:</span> 🥋 10월 태권도 시작</div>
-            <div><span class="day-label">9일:</span> 🇰🇷 한글날</div>
-            <div><span class="day-label">13일:</span> 🩺 건강검진</div>
-            <div><span class="day-label">15일:</span> 🛍️ 비즈쿨 플리마켓</div>
-            <div><span class="day-label">30일:</span> 🏛️ 찾아오는 박물관</div>
-
+            <div><span class="day-label">4일:</span> 🥋 태권도 수업 시작일</div>
+            <div><span class="day-label">19일:</span> 🏠 재량휴업일</div>
+            <div><span class="day-label">23일:</span> 🎭 예술(연극) 수업</div>
+            <div><span class="day-label">25~26일:</span> 🩺 결핵검진</div>
         </div>
         <button class="close-modal" onclick="closeHintModal()">닫기 ✖️</button>
     </div>
@@ -384,8 +367,9 @@
 </div>
 
 <div class="container">
-<section class="step-section active" id="step1">
-        <h2>📅 <span class="print-box month-box">10</span>월 달력 읽기</h2>
+    <!-- STEP 1: 달력 읽기 -->
+    <section class="step-section active" id="step1">
+        <h2>📅 <span class="print-box month-box">11</span>월 달력 읽기</h2>
         <div class="calendar-grid">
             <div class="day-header" style="color:red"><span class="print-box">일</span></div>
             <div class="day-header"><span class="print-box">월</span></div>
@@ -395,39 +379,37 @@
             <div class="day-header"><span class="print-box">금</span></div>
             <div class="day-header" style="color:blue"><span class="print-box">토</span></div>
             
-            <!-- 10월 1일 목요일 시작 (빈칸 4개) -->
-            <div></div><div></div><div></div><div></div>
-            <div class="day" onclick="selectDay(this, 1)">1</div>
-            <div class="day" onclick="selectDay(this, 2)">2<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">⛰️10월 산행 시작</span></div>
-            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 3)">3<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🇰🇷개천절</span></div>
-            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 4)">4</div>
-            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 5)">5<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🔴대체공휴일</span></div>           
-	        <div class="day" onclick="selectDay(this, 6)">6</div>
-            <div class="day" onclick="selectDay(this, 7)">7<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🥋10월 태권도 시작</span></div>
-            <div class="day" onclick="selectDay(this, 8)">8</div>
-            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 9)">9<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🇰🇷한글날</span></div>
-            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 10)">10</div>
-            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 11)">11</div>
+            <!-- 2026년 11월 1일 일요일 시작 (빈칸 없음, 30일까지) -->
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 1)">1</div>
+            <div class="day" onclick="selectDay(this, 2)">2</div>
+            <div class="day" onclick="selectDay(this, 3)">3</div>
+            <div class="day" onclick="selectDay(this, 4)">4<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🥋태권도 수업 시작일</span></div>
+            <div class="day" onclick="selectDay(this, 5)">5</div>           
+            <div class="day" onclick="selectDay(this, 6)">6</div>
+            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 7)">7</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 8)">8</div>
+            <div class="day" onclick="selectDay(this, 9)">9</div>
+            <div class="day" onclick="selectDay(this, 10)">10</div>
+            <div class="day" onclick="selectDay(this, 11)">11</div>
             <div class="day" onclick="selectDay(this, 12)">12</div>
-            <div class="day" onclick="selectDay(this, 13)">13<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🩺건강검진</span></div>
-            <div class="day" onclick="selectDay(this, 14)">14</div>
-            <div class="day" onclick="selectDay(this, 15)">15<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🛍️비즈쿨 플리마켓</span></div>
+            <div class="day" onclick="selectDay(this, 13)">13</div>
+            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 14)">14</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 15)">15</div>
             <div class="day" onclick="selectDay(this, 16)">16</div>
-            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 17)">17</div>
-            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 18)">18</div>
-            <div class="day" onclick="selectDay(this, 19)">19</div>
+            <div class="day" onclick="selectDay(this, 17)">17</div>
+            <div class="day" onclick="selectDay(this, 18)">18</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 19)">19<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🏠재량휴업일</span></div>
             <div class="day" onclick="selectDay(this, 20)">20</div>
-            <div class="day" onclick="selectDay(this, 21)">21</div>
-            <div class="day" onclick="selectDay(this, 22)">22</div>
-            <div class="day" onclick="selectDay(this, 23)">23</div>
-            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 24)">24</div>
-            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 25)">25</div>            
-            <div class="day" onclick="selectDay(this, 26)">26</div>
+            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 21)">21</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 22)">22</div>
+            <div class="day" onclick="selectDay(this, 23)">23<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🎭예술(연극) 수업</span></div>
+            <div class="day" onclick="selectDay(this, 24)">24</div>
+            <div class="day" onclick="selectDay(this, 25)">25<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🩺결핵검진</span></div>            
+            <div class="day" onclick="selectDay(this, 26)">26<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🩺결핵검진</span></div>
             <div class="day" onclick="selectDay(this, 27)">27</div>
-            <div class="day" onclick="selectDay(this, 28)">28</div>
-            <div class="day" onclick="selectDay(this, 29)">29</div>
-            <div class="day" onclick="selectDay(this, 30)">30<br><span style="display:block; font-size:0.9rem; color:#d32f2f; margin-top:4px;">🏛️찾아오는 박물관</span></div>
-            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 31)">31</div>
+            <div class="day" style="color:blue; font-weight:bold;" onclick="selectDay(this, 28)">28</div>
+            <div class="day" style="color:red; font-weight:bold;" onclick="selectDay(this, 29)">29</div>
+            <div class="day" onclick="selectDay(this, 30)">30</div>
         </div>
         <div id="dateText" class="display-text">날짜를 눌러주세요 👆</div>
         
@@ -436,22 +418,23 @@
             <div class="adv-header">
                 <div class="adv-badge">⭐ 심화 과제</div>
                 <button class="btn-hint" onclick="showHint(1)">💡 힌트 보기</button>
+                <button class="btn-hint" style="background:#e8f5e9; border-color:#4caf50; color:#2e7d32;" onclick="speakSentence(1)">🔊 문장 읽기</button>
             </div>
             <div class="adv-content">
-                <p class="adv-text">위에 있는 달력을 터치하면 마법처럼 내 퍼즐이 생겨요!</p>
+                <p class="adv-text">위에 있는 달력을 터치하면 마법처럼 내 퍼즐이 생겨요! (단어를 누르면 알맞은 칸에 쏙 들어가요)</p>
                 <div class="sentence-display" id="sentence1">
-                    <div class="word-slot" data-hint="오늘은"></div>
-                    <div class="word-slot" data-hint="10월"></div>
-                    <div class="word-slot" data-hint="O일"></div>
-                    <div class="word-slot" data-hint="O요일"></div>
-                    <div class="word-slot" data-hint="입니다."></div>
-                    <div class="word-slot" data-hint="O일정"></div>
-                    <div class="word-slot" data-hint="하는 날"></div>
-                    <div class="word-slot" data-hint="입니다."></div>
+                    <div class="word-slot" data-hint="오늘은" data-expect="오늘은"></div>
+                    <div class="word-slot" data-hint="11월" data-expect="11월"></div>
+                    <div class="word-slot" data-hint="O일" data-role="day"></div>
+                    <div class="word-slot" data-hint="O요일" data-role="weekday"></div>
+                    <div class="word-slot" data-hint="입니다." data-expect="입니다."></div>
+                    <div class="word-slot" data-hint="O일정" data-role="event"></div>
+                    <div class="word-slot" data-hint="하는 날" data-expect="하는 날"></div>
+                    <div class="word-slot" data-hint="입니다." data-expect="입니다."></div>
                 </div>
                 <div class="word-pool" id="pool1">
                     <div class="word-chip" onclick="tapWord(this, 1)">오늘은</div>
-                    <div class="word-chip" onclick="tapWord(this, 1)">10월</div>
+                    <div class="word-chip" onclick="tapWord(this, 1)">11월</div>
                     <div class="word-chip" onclick="tapWord(this, 1)">입니다.</div>
                     <div class="word-chip" onclick="tapWord(this, 1)">하는 날</div>
                     <div class="word-chip" onclick="tapWord(this, 1)">입니다.</div>
@@ -466,8 +449,12 @@
             <button class="btn" style="background:#ff9800; color: white;" onclick="openHintModal()">💡 칠판 힌트 보기</button>
             <button class="btn btn-next" onclick="move(2)">다음 활동으로 ➡️</button>
         </div>
+
+        <!-- 인쇄 시 2페이지에 자동 출력되는 오려붙이기 부록 섹션 -->
+        <div class="print-cutout-section" id="printCutoutSection"></div>
     </section>
 
+    <!-- STEP 2: 날씨 -->
     <section class="step-section" id="step2">
         <h2>☀️ 오늘 날씨는 어떤가요?</h2>
         <div class="weather-grid">
@@ -484,14 +471,15 @@
             <div class="adv-header">
                 <div class="adv-badge">⭐ 심화 과제</div>
                 <button class="btn-hint" onclick="showHint(2)">💡 힌트 보기</button>
+                <button class="btn-hint" style="background:#e8f5e9; border-color:#4caf50; color:#2e7d32;" onclick="speakSentence(2)">🔊 문장 읽기</button>
             </div>
             <div class="adv-content">
                 <p class="adv-text">날씨 그림을 누르면 내 퍼즐 조각이 나타나요!</p>
                 <div class="sentence-display" id="sentence2">
-                    <div class="word-slot" data-hint="오늘"></div>
-                    <div class="word-slot" data-hint="날씨는"></div>
-                    <div class="word-slot" data-hint="O날씨"></div>
-                    <div class="word-slot" data-hint="입니다."></div>
+                    <div class="word-slot" data-hint="오늘" data-expect="오늘"></div>
+                    <div class="word-slot" data-hint="날씨는" data-expect="날씨는"></div>
+                    <div class="word-slot" data-hint="O날씨" data-role="weather"></div>
+                    <div class="word-slot" data-hint="입니다." data-expect="입니다."></div>
                 </div>
                 <div class="word-pool" id="pool2">
                     <div class="word-chip" onclick="tapWord(this, 2)">오늘</div>
@@ -507,8 +495,12 @@
         </div>
     </section>
 
-<section class="step-section" id="step3">
+    <!-- STEP 3: 수업과 장소 -->
+    <section class="step-section" id="step3">
         <h2>📊 오늘의 수업과 장소</h2>
+        <p style="margin:0 0 8px 0; color:#555; font-size:1.05rem; font-weight:bold;">
+            💡 넣을 빈칸을 먼저 터치해 선택(주황색 테두리)하거나, 아래 과목/장소 카드를 바로 눌러 순서대로 채워보세요! (다시 누르면 지워집니다)
+        </p>
         <div class="table-container">
             <table>
                 <tr>
@@ -522,12 +514,11 @@
                         document.write(`
                         <tr>
                             <td>${i}교시</td>
-                            <td class="drop-zone" data-type="sub" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="clearZone(this)"></td>
-                            <td class="drop-zone" data-type="loc" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="clearZone(this)"></td>
-                            <td><input type="text" placeholder=" " style="width:90%; padding:8px; font-size:1.1rem; border:1px solid #ddd; border-radius:8px; outline:none; text-align:center;"></td>
+                            <td class="drop-zone" data-type="sub" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="handleZoneClick(this)"></td>
+                            <td class="drop-zone" data-type="loc" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="handleZoneClick(this)"></td>
+                            <td><input type="text" class="tt-note-input" oninput="saveAppState()" placeholder="활동 내용 메모" style="width:90%; padding:8px; font-size:1.1rem; border:1px solid #ddd; border-radius:8px; outline:none; text-align:center;"></td>
                         </tr>`);
                         
-                        // 3교시 뒤에 점심시간 행 추가
                         if (i === 3) {
                             document.write(`
                             <tr style="background-color: #fff9c4;">
@@ -544,7 +535,7 @@
         
         <button class="btn" style="background:#8bc34a; padding: 10px 20px; font-size: 1.2rem; width: 100%; margin-bottom: 10px;" onclick="togglePool()">➕ 과목 및 장소 목록 열기 / 닫기</button>
 
-        <div class="pool-container" id="itemPool">
+        <div class="pool-container" id="itemPool" style="display:flex;">
             <div class="pool-group">
                 <div class="pool-label">📚 과목:</div>
                 <div class="item-list">
@@ -564,7 +555,7 @@
                     <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🔧진로와직업(조립)</div>
                     <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">💊보건</div>
                     <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🏃‍♂️스포츠클럽</div>
-                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">⛰️자율(산행)</div>
+                    <div class="drag-item" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🥾자율(산행)</div>
                 </div>
             </div>
             <div class="pool-group">
@@ -585,21 +576,13 @@
                     <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">와룡산</div>
                     <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">잔디운동장</div>
                     <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">VR스포츠실</div>
-                    <div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">구름동 체육실</div>
-					<div class="drag-item loc" draggable="true" ondragstart="drag(event, 'loc')" onclick="autoFill(this, 'loc')">정드림카페</div>
-
-
                 </div>
             </div>
             <div class="pool-group">
                 <div class="pool-label" style="color: #d32f2f;">✨ 특별수업:</div>
                 <div class="item-list">
-                    <div class="drag-item special" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🏛️ 찾아오는 박물관</div>
-					<div class="drag-item special" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🩺 건강검진</div>
-					<div class="drag-item special" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">👩‍🏫 공개수업</div>
-					<div class="drag-item special" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🛍️ 비즈쿨 플리마켓</div>
-					<div class="drag-item special" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🧋 카페탐방</div>
-
+                    <div class="drag-item special" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🎭 예술(연극) 수업</div>
+                    <div class="drag-item special" draggable="true" ondragstart="drag(event, 'sub')" onclick="autoFill(this, 'sub')">🩺 결핵검진</div>
                 </div>
             </div>
         </div>
@@ -609,16 +592,17 @@
             <div class="adv-header">
                 <div class="adv-badge">⭐ 심화 과제</div>
                 <button class="btn-hint" onclick="showHint(3)">💡 힌트 보기</button>
+                <button class="btn-hint" style="background:#e8f5e9; border-color:#4caf50; color:#2e7d32;" onclick="speakSentence(3)">🔊 문장 읽기</button>
             </div>
             <div class="adv-content">
-                <p class="adv-text">목록에서 좋아하는 과목(초록색)을 누르면 퍼즐 조각이 나타나요!</p>
+                <p class="adv-text">목록에서 좋아하는 과목을 누르면 퍼즐 조각이 나타나요!</p>
                 <div class="sentence-display" id="sentence3">
-                    <div class="word-slot" data-hint="내가"></div>
-                    <div class="word-slot" data-hint="가장"></div>
-                    <div class="word-slot" data-hint="기대하는"></div>
-                    <div class="word-slot" data-hint="수업은"></div>
-                    <div class="word-slot" data-hint="O과목"></div>
-                    <div class="word-slot" data-hint="입니다."></div>
+                    <div class="word-slot" data-hint="내가" data-expect="내가"></div>
+                    <div class="word-slot" data-hint="가장" data-expect="가장"></div>
+                    <div class="word-slot" data-hint="기대하는" data-expect="기대하는"></div>
+                    <div class="word-slot" data-hint="수업은" data-expect="수업은"></div>
+                    <div class="word-slot" data-hint="O과목" data-role="subject"></div>
+                    <div class="word-slot" data-hint="입니다." data-expect="입니다."></div>
                 </div>
                 <div class="word-pool" id="pool3">
                     <div class="word-chip" onclick="tapWord(this, 3)">내가</div>
@@ -631,11 +615,12 @@
         </div>
 
         <div class="nav-footer">
-            <button class="btn btn-prev" onclick="move(2)">⬅️️ 이전</button>
+            <button class="btn btn-prev" onclick="move(2)">⬅ 이전</button>
             <button class="btn btn-next" onclick="move(4)">다음 활동으로 ➡️</button>
         </div>
     </section>
 
+    <!-- STEP 4: 급식 활동 -->
     <section class="step-section" id="step4">
         <h2>😋 우리가 만드는 오늘의 급식</h2>
         
@@ -647,37 +632,37 @@
                     <span style="font-weight:bold;">🍚 밥 (좌하단):</span> 
                     <button class="btn-select-icon" id="btn_m0_icon" onclick="openCategoryModal(0)">🍚 선택</button>
                     <input type="hidden" id="m0_emoji_val" value="🍚">
-                    <input type="text" id="m0_text" class="menu-input" value="차수수밥" placeholder="메뉴 이름">
+                    <input type="text" id="m0_text" class="menu-input" oninput="saveAppState()" value="흑미밥" placeholder="메뉴 이름">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🍲 국 (우하단):</span> 
                     <button class="btn-select-icon" id="btn_m1_icon" onclick="openCategoryModal(1)">🍲 선택</button>
                     <input type="hidden" id="m1_emoji_val" value="🍲">
-                    <input type="text" id="m1_text" class="menu-input" value="참치김치찌개">
+                    <input type="text" id="m1_text" class="menu-input" oninput="saveAppState()" value="쇠고기무국">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🥗 반찬1(좌상단):</span> 
                     <button class="btn-select-icon" id="btn_m2_icon" onclick="openCategoryModal(2)">🌶️ 선택</button>
                     <input type="hidden" id="m2_emoji_val" value="🌶️">
-                    <input type="text" id="m2_text" class="menu-input" value="오이김치">
+                    <input type="text" id="m2_text" class="menu-input" oninput="saveAppState()" value="배추김치">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🥢 반찬2(중좌측):</span> 
                     <button class="btn-select-icon" id="btn_m3_icon" onclick="openCategoryModal(3)">🥬 선택</button>
                     <input type="hidden" id="m3_emoji_val" value="🥬">
-                    <input type="text" id="m3_text" class="menu-input" value="탕평채">
+                    <input type="text" id="m3_text" class="menu-input" oninput="saveAppState()" value="삼색나물무침">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🥢 반찬3(중우측):</span> 
-                    <button class="btn-select-icon" id="btn_m4_icon" onclick="openCategoryModal(4)">🐟 선택</button>
-                    <input type="hidden" id="m4_emoji_val" value="🐟">
-                    <input type="text" id="m4_text" class="menu-input" value="골드키위">
+                    <button class="btn-select-icon" id="btn_m4_icon" onclick="openCategoryModal(4)">🍎 선택</button>
+                    <input type="hidden" id="m4_emoji_val" value="🍎">
+                    <input type="text" id="m4_text" class="menu-input" oninput="saveAppState()" value="사과">
                 </div>
                 <div class="menu-input-group" style="display:flex; align-items:center; gap:5px; background:white; padding:10px; border-radius:10px;">
                     <span style="font-weight:bold;">🍖 메인 (우상단):</span> 
                     <button class="btn-select-icon" id="btn_m5_icon" onclick="openCategoryModal(5)">🍖 선택</button>
                     <input type="hidden" id="m5_emoji_val" value="🍖">
-                    <input type="text" id="m5_text" class="menu-input" value="돈육버섯불고기">
+                    <input type="text" id="m5_text" class="menu-input" oninput="saveAppState()" value="소시지채소오븐구이">
                 </div>
             </div>
             
@@ -744,9 +729,10 @@
             <div class="adv-header">
                 <div class="adv-badge">⭐ 심화 과제: 호불호 표현하기</div>
                 <button class="btn-hint" onclick="showHint(4)">💡 힌트 보기</button>
+                <button class="btn-hint" style="background:#e8f5e9; border-color:#4caf50; color:#2e7d32;" onclick="speakSentence(4)">🔊 문장 읽기</button>
             </div>
             <div class="adv-content">
-                <p class="adv-text">급식을 완성하면 아래에 반찬 조각이 생겨요! 내 입맛대로 바구니에 끌어다 나누어 담고, 조각을 한 번 터치해서 자기표현 문장을 완성해봐요.</p>
+                <p class="adv-text">반찬 조각을 터치하면 바구니(좋아하는 반찬 ↔ 조금만 먹을 반찬)로 이동하고, 아래 문장 퍼즐 조각도 생겨요!</p>
 
                 <div style="display: flex; gap: 15px; width: 100%; margin-bottom: 5px;">
                     <div style="flex: 1; border: 3px dashed #4caf50; border-radius: 15px; padding: 15px; background: #e8f5e9; text-align: center; display:flex; flex-direction:column;">
@@ -760,17 +746,17 @@
                 </div>
 
                 <div id="meal-drag-pool" style="display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; background: #fff; border-radius: 15px; border: 2px solid #ccc; min-height: 60px; width: 100%; box-sizing: border-box; align-items: center; justify-content: center;">
-                    <span id="meal-pool-placeholder" style="color:#999; font-weight:bold;">메뉴를 완성하면 조각이 생겨요! 끌어다 바구니에 쏙! 담아보세요.</span>
+                    <span id="meal-pool-placeholder" style="color:#999; font-weight:bold;">메뉴를 완성하면 조각이 생겨요! 터치하거나 끌어다 바구니에 담아보세요.</span>
                 </div>
 
                 <div class="sentence-display" id="sentence4">
-                    <div class="word-slot" data-hint="오늘"></div>
-                    <div class="word-slot" data-hint="내가"></div>
-                    <div class="word-slot" data-hint="가장"></div>
-                    <div class="word-slot" data-hint="좋아하는"></div>
-                    <div class="word-slot" data-hint="반찬은"></div>
-                    <div class="word-slot" data-hint="O메뉴"></div>
-                    <div class="word-slot" data-hint="입니다."></div>
+                    <div class="word-slot" data-hint="오늘" data-expect="오늘"></div>
+                    <div class="word-slot" data-hint="내가" data-expect="내가"></div>
+                    <div class="word-slot" data-hint="가장" data-expect="가장"></div>
+                    <div class="word-slot" data-hint="좋아하는" data-expect="좋아하는"></div>
+                    <div class="word-slot" data-hint="반찬은" data-expect="반찬은"></div>
+                    <div class="word-slot" data-hint="O메뉴" data-role="food"></div>
+                    <div class="word-slot" data-hint="입니다." data-expect="입니다."></div>
                 </div>
                 <div class="word-pool" id="pool4">
                     <div class="word-chip" onclick="tapWord(this, 4)">오늘</div>
@@ -789,44 +775,48 @@
         </div>
     </section>
 
+    <!-- STEP 6: 감정 온도계 -->
     <section class="step-section" id="step6">
         <h2>🌡️ 우리 반 감정 온도계</h2>
+        <p style="margin:0 0 8px 0; color:#555; font-size:1.1rem; font-weight:bold;">
+            💡 얼굴 그림을 직접 콕콕 터치하거나 아래 막대를 움직여 오늘 내 기분을 표현해 보세요!
+        </p>
         <div class="emotion-6grid">
             <div class="student-thermometer">
                 <div class="student-name">김민주</div>
-                <div class="emotion-face-container" onclick="generateEmoWord(this)"><div id="f1" class="emotion-face">😐</div></div>
-                <div id="t1" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.2rem;">보통이에요</div>
-                <input type="range" min="0" max="100" value="50" oninput="upEmo(this.value, 1)">
+                <div class="emotion-face-container" onclick="cycleEmo(1)"><div id="f1" class="emotion-face">😐</div></div>
+                <div id="t1" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.25rem;">보통이에요</div>
+                <input type="range" id="r1" min="0" max="100" value="50" oninput="upEmo(this.value, 1)">
             </div>
             <div class="student-thermometer">
                 <div class="student-name">김현우</div>
-                <div class="emotion-face-container" onclick="generateEmoWord(this)"><div id="f2" class="emotion-face">😐</div></div>
-                <div id="t2" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.2rem;">보통이에요</div>
-                <input type="range" min="0" max="100" value="50" oninput="upEmo(this.value, 2)">
+                <div class="emotion-face-container" onclick="cycleEmo(2)"><div id="f2" class="emotion-face">😐</div></div>
+                <div id="t2" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.25rem;">보통이에요</div>
+                <input type="range" id="r2" min="0" max="100" value="50" oninput="upEmo(this.value, 2)">
             </div>
             <div class="student-thermometer">
                 <div class="student-name">송민서</div>
-                <div class="emotion-face-container" onclick="generateEmoWord(this)"><div id="f3" class="emotion-face">😐</div></div>
-                <div id="t3" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.2rem;">보통이에요</div>
-                <input type="range" min="0" max="100" value="50" oninput="upEmo(this.value, 3)">
+                <div class="emotion-face-container" onclick="cycleEmo(3)"><div id="f3" class="emotion-face">😐</div></div>
+                <div id="t3" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.25rem;">보통이에요</div>
+                <input type="range" id="r3" min="0" max="100" value="50" oninput="upEmo(this.value, 3)">
             </div>
             <div class="student-thermometer">
                 <div class="student-name">엽건영</div>
-                <div class="emotion-face-container" onclick="generateEmoWord(this)"><div id="f4" class="emotion-face">😐</div></div>
-                <div id="t4" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.2rem;">보통이에요</div>
-                <input type="range" min="0" max="100" value="50" oninput="upEmo(this.value, 4)">
+                <div class="emotion-face-container" onclick="cycleEmo(4)"><div id="f4" class="emotion-face">😐</div></div>
+                <div id="t4" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.25rem;">보통이에요</div>
+                <input type="range" id="r4" min="0" max="100" value="50" oninput="upEmo(this.value, 4)">
             </div>
             <div class="student-thermometer">
                 <div class="student-name">이 환</div>
-                <div class="emotion-face-container" onclick="generateEmoWord(this)"><div id="f5" class="emotion-face">😐</div></div>
-                <div id="t5" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.2rem;">보통이에요</div>
-                <input type="range" min="0" max="100" value="50" oninput="upEmo(this.value, 5)">
+                <div class="emotion-face-container" onclick="cycleEmo(5)"><div id="f5" class="emotion-face">😐</div></div>
+                <div id="t5" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.25rem;">보통이에요</div>
+                <input type="range" id="r5" min="0" max="100" value="50" oninput="upEmo(this.value, 5)">
             </div>
             <div class="student-thermometer">
                 <div class="student-name">임시은</div>
-                <div class="emotion-face-container" onclick="generateEmoWord(this)"><div id="f6" class="emotion-face">😐</div></div>
-                <div id="t6" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.2rem;">보통이에요</div>
-                <input type="range" min="0" max="100" value="50" oninput="upEmo(this.value, 6)">
+                <div class="emotion-face-container" onclick="cycleEmo(6)"><div id="f6" class="emotion-face">😐</div></div>
+                <div id="t6" style="font-weight: bold; margin-bottom: 8px; color: #555; font-size: 1.25rem;">보통이에요</div>
+                <input type="range" id="r6" min="0" max="100" value="50" oninput="upEmo(this.value, 6)">
             </div>
         </div>
 
@@ -835,14 +825,15 @@
             <div class="adv-header">
                 <div class="adv-badge">⭐ 심화 과제</div>
                 <button class="btn-hint" onclick="showHint(6)">💡 힌트 보기</button>
+                <button class="btn-hint" style="background:#e8f5e9; border-color:#4caf50; color:#2e7d32;" onclick="speakSentence(6)">🔊 문장 읽기</button>
             </div>
             <div class="adv-content">
-                <p class="adv-text">슬라이더를 움직여 감정을 맞추고, 위에 있는 '내 얼굴(스마일)'을 터치하면 단어가 뿅!</p>
+                <p class="adv-text">위에 있는 '내 얼굴(이모지)'을 터치하면 감정 단어가 뿅 나타나요!</p>
                 <div class="sentence-display" id="sentence6">
-                    <div class="word-slot" data-hint="오늘"></div>
-                    <div class="word-slot" data-hint="나는"></div>
-                    <div class="word-slot" data-hint="기분이"></div>
-                    <div class="word-slot" data-hint="O감정"></div>
+                    <div class="word-slot" data-hint="오늘" data-expect="오늘"></div>
+                    <div class="word-slot" data-hint="나는" data-expect="나는"></div>
+                    <div class="word-slot" data-hint="기분이" data-expect="기분이"></div>
+                    <div class="word-slot" data-hint="O감정" data-role="emotion"></div>
                 </div>
                 <div class="word-pool" id="pool6">
                     <div class="word-chip" onclick="tapWord(this, 6)">오늘</div>
@@ -858,6 +849,7 @@
         </div>
     </section>
 
+    <!-- STEP 7: 종합 알림판 -->
     <section class="step-section" id="step7">
         <h2>🌟 오늘의 알림판 🌟</h2>
         <div class="summary-grid">
@@ -879,26 +871,29 @@
             </div>
         </div>
         
-        <!-- ⭐ 1~6교시 전환형 행동 유도 타임라인 배너 -->
         <div style="width: 100%; background: #fff3e0; border: 3px solid #ff9800; border-radius: 15px; padding: 12px 15px; box-sizing: border-box; margin-bottom: 15px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <span style="font-weight: bold; font-size: 1.3rem; color: #e65100;">🔔 교시별 행동 목표 (터치해서 확인하세요)</span>
                 <span id="active-period-title" style="font-weight: 900; font-size: 1.4rem; color: #d84315;">1교시를 준비해요!</span>
             </div>
-            <div class="action-timeline" id="actionTimelineBar">
-                <!-- 자바스크립트로 1~6교시 버튼이 동적 생성됩니다 -->
-            </div>
+            <div class="action-timeline" id="actionTimelineBar"></div>
         </div>
 
         <div class="nav-footer">
             <button class="btn btn-prev" onclick="move(6)">⬅️ 이전</button>
-            <button class="btn btn-next" style="background:#222;" onclick="location.reload()">새로운 하루 시작하기 (전체 초기화)</button>
+            <button class="btn btn-next" style="background:#222;" onclick="clearSavedStateAndReload()">새로운 하루 시작하기 (전체 초기화)</button>
         </div>
     </section>
 </div>
 
 <script>
-    // 장소 사진 파일명 매핑 (선택한 장소 이름과 매칭하여 실제 이미지 파일을 불러옵니다)
+    // 로컬 스토리지 저장 키 (새로고침 시 유지용)
+    const STORAGE_KEY = 'haru_hanjang_november_state_v1';
+    let isRestoringState = false;
+    let selectedCalendarDay = null;
+    let selectedWeatherInfo = null;
+
+    // 장소 사진 파일명 매핑
     const locationPhotoMap = {
         "미술실": "미술실.jpg",
         "노래교실": "노래교실.jpg",
@@ -914,20 +909,70 @@
         "상상체험교실": "상상체험교실.jpg",
         "와룡산": "와룡산.jpg",
         "잔디운동장": "잔디운동장.jpg",
-        "구름동 체육실": "구름동 체육실.jpg",
         "VR스포츠실": "VR스포츠실.jpg",
         "급식실": "급식실.jpg"
     };
+
+    // 11월 주요 일정 데이터 (인쇄용 부록 및 달력 공유)
+    const novemberEvents = {
+        4: { emoji: '🥋', text: '태권도 수업 시작일' },
+        19: { emoji: '🏠', text: '재량휴업일' },
+        23: { emoji: '🎭', text: '예술(연극) 수업' },
+        25: { emoji: '🩺', text: '결핵검진' },
+        26: { emoji: '🩺', text: '결핵검진' }
+    };
+
+    // 인쇄용 [가] 오려붙이기 조각 페이지 자동 생성 (11월 1일 ~ 30일)
+    function buildPrintCutoutSection() {
+        const container = document.getElementById('printCutoutSection');
+        if (!container) return;
+
+        const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+        let html = `
+            <h3>✂️ 점선을 따라 오려서 달력의 빈칸에 알맞게 붙여보세요!</h3>
+            <div class="cutout-group">
+                <h4>[월 / 요일 조각]</h4>
+                <div class="cutout-grid" style="grid-template-columns: repeat(8, 1fr) !important;">
+                    <div class="cutout-item month-cutout">11</div>
+                    ${weekDays.map(w => `<div class="cutout-item">${w}</div>`).join('')}
+                </div>
+            </div>
+            <div class="cutout-group">
+                <h4>[날짜 및 행사 조각 (1일 ~ 30일)]</h4>
+                <div class="cutout-grid">
+        `;
+
+        for (let d = 1; d <= 30; d++) {
+            const ev = novemberEvents[d];
+            const evHtml = ev
+                ? `<span class="event-wrapper"><i class="emoji">${ev.emoji}</i><span class="text">${ev.text}</span></span>`
+                : '';
+            html += `<div class="cutout-item">${d}${evHtml}</div>`;
+        }
+
+        html += `</div></div>`;
+        container.innerHTML = html;
+    }
+
+    // 공통 음성 출력 (TTS)
+    function speakText(text) {
+        if (isRestoringState) return; // 새로고침 복원 중에는 소리가 나지 않도록 처리
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'ko-KR';
+            utter.rate = 0.92;
+            window.speechSynthesis.speak(utter);
+        }
+    }
 
     function openLocationPhoto(locationName, titleHtml) {
         const modal = document.getElementById('locationPhotoModal');
         const img = document.getElementById('photoModalImage');
         const title = document.getElementById('photoModalTitle');
 
-        // 상단 타이틀 설정 (이모지와 문구)
         title.innerHTML = titleHtml;
 
-        // 장소 이름으로 파일명 찾기 (기본값 설정)
         let fileName = "기본이미지.jpg"; 
         for(let key in locationPhotoMap) {
             if(locationName.includes(key)) {
@@ -935,11 +980,7 @@
                 break;
             }
         }
-        
-        // 이미지 경로 적용 (같은 폴더 내에 해당 사진이 있어야 합니다)
         img.src = fileName;
-        
-        // 모달 띄우기
         modal.classList.add('show');
     }
 
@@ -965,17 +1006,20 @@
     let draggedData = "";
     let draggedType = "";
     let draggedElement = null;
+    let activeTimetableZone = null;
 
     document.addEventListener("DOMContentLoaded", function() {
+        buildPrintCutoutSection();
         [1, 2, 3, 4, 6].forEach(i => shufflePool(i));
-        initMealCanvasEvents(); 
+        initMealCanvasEvents();
+        loadAppState(); // 새로고침 시 이전 작성 데이터 자동 복원
     });
 
     function showHint(stepId) {
         let slots = document.querySelectorAll(`#sentence${stepId} .word-slot`);
         slots.forEach(slot => {
             slot.classList.add('show-hint');
-            setTimeout(() => slot.classList.remove('show-hint'), 3000);
+            setTimeout(() => slot.classList.remove('show-hint'), 3500);
         });
     }
 
@@ -1000,6 +1044,7 @@
         if(step === 7) {
             updateSummaryBoard();
         }
+        saveAppState();
     }
 
     function togglePool() {
@@ -1022,24 +1067,28 @@
         }
     }
 
-    function generateOrUpdateWord(stepId, type, text) {
+    // 무오류 문장 퍼즐 (동적 단어 역할 매칭 및 정답 슬롯 자동 찾아가기)
+    function generateOrUpdateWord(stepId, roleType, text) {
         const pool = document.getElementById(`pool${stepId}`);
         if(!pool) return;
-        let existing = document.querySelector(`#step${stepId} .dynamic-${type}`);
+        let existing = document.querySelector(`#step${stepId} .dynamic-${roleType}`);
         
         if (existing) {
             existing.innerText = text;
+            existing.setAttribute('data-role', roleType);
             existing.classList.remove('pop-animation');
             void existing.offsetWidth; 
             existing.classList.add('pop-animation');
             
             if (existing.parentElement.classList.contains('word-slot')) {
+                const parentSlot = existing.parentElement;
                 pool.appendChild(existing);
-                existing.parentElement.classList.remove('filled');
+                parentSlot.classList.remove('filled');
             }
         } else {
             const chip = document.createElement('div');
-            chip.className = `word-chip dynamic-word dynamic-${type} pop-animation`;
+            chip.className = `word-chip dynamic-word dynamic-${roleType} pop-animation`;
+            chip.setAttribute('data-role', roleType);
             chip.innerText = text;
             chip.onclick = function() { tapWord(this, stepId); };
             pool.appendChild(chip);
@@ -1049,53 +1098,116 @@
     }
 
     function tapWord(el, stepId) {
+        const slots = Array.from(document.querySelectorAll(`#sentence${stepId} .word-slot`));
+        const pool = document.getElementById(`pool${stepId}`);
+
         if (el.parentElement.classList.contains('word-pool')) {
-            let slots = document.querySelectorAll(`#sentence${stepId} .word-slot`);
-            for (let slot of slots) {
-                if (slot.children.length === 0) {
-                    slot.appendChild(el);
-                    slot.classList.add('filled');
-                    break; 
+            const chipRole = el.getAttribute('data-role');
+            const chipText = el.innerText.trim();
+
+            let targetSlot = slots.find(slot => {
+                if (slot.children.length > 0) return false;
+                if (chipRole && slot.getAttribute('data-role') === chipRole) return true;
+                if (!chipRole && slot.getAttribute('data-expect') === chipText) return true;
+                return false;
+            });
+
+            if (!targetSlot) {
+                targetSlot = slots.find(slot => slot.children.length === 0);
+            }
+
+            if (targetSlot) {
+                targetSlot.appendChild(el);
+                targetSlot.classList.add('filled');
+                speakText(chipText.replace(/[^가-힣0-9\s]/g, ''));
+
+                if (!isRestoringState && slots.every(s => s.children.length > 0)) {
+                    fireConfetti(25);
+                    setTimeout(() => speakSentence(stepId), 600);
                 }
             }
         } else {
-            let pool = document.getElementById(`pool${stepId}`);
+            const parentSlot = el.parentElement;
             pool.appendChild(el);
-            let slots = document.querySelectorAll(`#sentence${stepId} .word-slot`);
-            slots.forEach(s => {
-                if(s.children.length === 0) s.classList.remove('filled');
-            });
+            parentSlot.classList.remove('filled');
+        }
+        saveAppState();
+    }
+
+    function speakSentence(stepId) {
+        const slots = Array.from(document.querySelectorAll(`#sentence${stepId} .word-slot`));
+        const words = slots.map(s => s.innerText.replace(/[\p{Emoji}\u200d]/gu, '').trim()).filter(Boolean);
+        if (words.length > 0) {
+            speakText(words.join(' '));
+        } else {
+            speakText('단어 카드를 눌러 문장을 먼저 완성해 보세요.');
         }
     }
 
     function selectDay(el, day) {
         document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
         el.classList.add('selected');
+        selectedCalendarDay = day;
+
         const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
-        const dayOfWeek = weekDays[(day + 3) % 7]; // 10월 1일 목요일 시작 기준 (1+3=4 -> 목요일)
-        document.getElementById('dateText').innerHTML = `오늘은 <span style="color:#d32f2f; text-decoration:underline;">10월 ${day}일 ${dayOfWeek}요일</span> 입니다!`;
+        const dayOfWeek = weekDays[(day - 1) % 7]; // 2026년 11월 1일 일요일 시작 기준
+        document.getElementById('dateText').innerHTML = `오늘은 <span style="color:#d32f2f; text-decoration:underline;">11월 ${day}일 ${dayOfWeek}요일</span> 입니다!`;
         
+        speakText(`11월 ${day}일 ${dayOfWeek}요일`);
+
         generateOrUpdateWord(1, 'day', day + '일');
         generateOrUpdateWord(1, 'weekday', dayOfWeek + '요일');
 
         let eventText = "열심히 공부"; 
-        
         const eventSpan = el.querySelector('span');
         if (eventSpan) {
-            eventText = eventSpan.innerText.replace(/[🏖️👫🚨🎵👊🌱🦷㉦🥋☕🏆🌊🏫🗳️⛰️🌕🔴🇰🇷🧯🩺🛍️]/g, '').trim();
-        } else if (el.innerText.includes('현충일')) {
-            eventText = "현충일 추모";
+            eventText = eventSpan.innerText.replace(/[🏖️👫🚨🎵👊🌱🦷㉦🥋☕🏆🌊🏫🗳️⛰️🌕🔴🇰🇷🧯🩺🛍️🏛️🏠🎭]/g, '').trim();
         }
-        
         generateOrUpdateWord(1, 'event', eventText + '(을)를');
+        saveAppState();
     }
     
     function selectWeather(el, text, icon) {
         document.querySelectorAll('.w-item').forEach(i => i.classList.remove('active'));
         el.classList.add('active');
+        selectedWeatherInfo = { text, icon };
+
         document.getElementById('weatherText').innerHTML = `오늘의 날씨는 <span style="color:#e64a19; text-decoration:underline;">${text}</span> 입니다! ${icon}`;
-        
+        speakText(`오늘 날씨는 ${text}입니다.`);
         generateOrUpdateWord(2, 'weather', text);
+        saveAppState();
+    }
+
+    // 시간표 빈칸 터치 선택 및 해제 로직
+    function handleZoneClick(el) {
+        if (el.getAttribute('data-type') === 'meal') return;
+
+        if (el.innerText.trim() !== "") {
+            el.innerText = "";
+            el.style.background = "#fafafa";
+            el.style.color = "#333";
+        }
+
+        if (activeTimetableZone === el) {
+            el.classList.remove('target-active');
+            activeTimetableZone = null;
+        } else {
+            document.querySelectorAll('#step3 .drop-zone').forEach(z => z.classList.remove('target-active'));
+            el.classList.add('target-active');
+            activeTimetableZone = el;
+        }
+        saveAppState();
+    }
+
+    function applyZoneStyle(zone, text, type, isSpecial) {
+        zone.innerText = text;
+        if (isSpecial) {
+            zone.style.background = "#ffebee";
+            zone.style.color = "#d32f2f";
+        } else {
+            zone.style.background = (type === 'loc') ? "#e1f5fe" : "#f1f8e9";
+            zone.style.color = (type === 'loc') ? "#0277bd" : "#2e7d32";
+        }
     }
 
     function drag(ev, type) {
@@ -1106,95 +1218,79 @@
 
     function allowDrop(ev) { ev.preventDefault(); }
 
-   function drop(ev) {
+    function drop(ev) {
         ev.preventDefault();
         const targetType = ev.target.getAttribute('data-type');
         if (draggedType === targetType && targetType !== 'meal') {
-            ev.target.innerText = draggedData;
-            
-            const specialWords = ["🧋 카페탐방", "카페탐방"];
-            
-            if (specialWords.some(word => draggedData.includes(word))) {
-                ev.target.style.background = "#ffebee";
-                ev.target.style.color = "#d32f2f";
-            } else {
-                ev.target.style.background = (targetType === 'loc') ? "#e1f5fe" : "#f1f8e9";
-                ev.target.style.color = (targetType === 'loc') ? "#0277bd" : "#2e7d32";
-            }
+            const isSpecial = ["박물관", "건강검진", "플리마켓", "카페탐방", "연극", "결핵검진"].some(w => draggedData.includes(w));
+            applyZoneStyle(ev.target, draggedData, targetType, isSpecial);
+            saveAppState();
         }
     }
 
     function autoFill(el, type) {
         const text = el.innerText;
-        const zones = document.querySelectorAll(`.drop-zone[data-type="${type}"]`);
-        for (let i = 0; i < zones.length; i++) {
-            if (zones[i].innerText.trim() === "") {
-                zones[i].innerText = text;
-                
-                if (el.classList.contains('special')) {
-                    zones[i].style.background = "#ffebee";
-                    zones[i].style.color = "#d32f2f";
-                } else {
-                    zones[i].style.background = (type === 'loc') ? "#e1f5fe" : "#f1f8e9";
-                    zones[i].style.color = (type === 'loc') ? "#0277bd" : "#2e7d32";
+        const isSpecial = el.classList.contains('special');
+
+        if (activeTimetableZone && activeTimetableZone.getAttribute('data-type') === type) {
+            applyZoneStyle(activeTimetableZone, text, type, isSpecial);
+            activeTimetableZone.classList.remove('target-active');
+            activeTimetableZone = null;
+        } else {
+            const zones = document.querySelectorAll(`#step3 .drop-zone[data-type="${type}"]`);
+            for (let i = 0; i < zones.length; i++) {
+                if (zones[i].innerText.trim() === "") {
+                    applyZoneStyle(zones[i], text, type, isSpecial);
+                    break;
                 }
-                break;
             }
         }
+
         if(type === 'sub') {
             generateOrUpdateWord(3, 'subject', text);
         }
+        saveAppState();
     }
 
-    function clearZone(el) {
-        if(el.getAttribute('data-type') !== 'meal') {
-            el.innerText = "";
-            el.style.background = "#fafafa";
-        }
-    }
+    // 감정 온도계 원터치 순환 + 자연스러운 감정 어휘 5단계
+    const EMO_STATES = [
+        { val: 95, face: "😍", text: "신나요!", color: "#ff9800" },
+        { val: 75, face: "😊", text: "좋아요.", color: "#4caf50" },
+        { val: 50, face: "😐", text: "보통이에요.", color: "#555555" },
+        { val: 25, face: "😢", text: "속상해요.", color: "#42a5f5" },
+        { val: 10, face: "😴", text: "피곤해요.", color: "#9e9e9e" }
+    ];
+    let studentEmoIndex = { 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2 };
 
-    function stamp(el) {
-        el.parentElement.querySelectorAll('span').forEach(s => s.classList.remove('selected'));
-        el.classList.add('selected');
+    function cycleEmo(id) {
+        studentEmoIndex[id] = (studentEmoIndex[id] + 1) % EMO_STATES.length;
+        const st = EMO_STATES[studentEmoIndex[id]];
+        const rangeInput = document.getElementById(`r${id}`);
+        if (rangeInput) rangeInput.value = st.val;
+        upEmo(st.val, id);
+        generateOrUpdateWord(6, 'emotion', st.text);
+        speakText(st.text);
+        saveAppState();
     }
 
     function upEmo(v, id) {
         const face = document.getElementById(`f${id}`);
         const text = document.getElementById(`t${id}`);
         
-        face.style.fontSize = (2.5 + (v / 25)) + "rem";
+        face.style.fontSize = (2.7 + (v / 35)) + "rem";
         
-        if(v > 80) {
-            face.innerText = "😍";
-            text.innerText = "신나요";
-            text.style.color = "#ff9800";
-        }
-        else if(v > 60) {
-            face.innerText = "😊";
-            text.innerText = "좋아요";
-            text.style.color = "#4caf50";
-        }
-        else if(v > 40) {
-            face.innerText = "😐";
-            text.innerText = "보통이에요";
-            text.style.color = "#555555";
-        }
-        else if(v > 20) {
-            face.innerText = "😴";
-            text.innerText = "피곤해요";
-            text.style.color = "#9e9e9e";
-        }
-        else {
-            face.innerText = "💦";
-            text.innerText = "더워요";
-            text.style.color = "#00acc1"; 
-        }
-    }
+        let st;
+        if (v > 80) st = EMO_STATES[0];
+        else if (v > 60) st = EMO_STATES[1];
+        else if (v > 40) st = EMO_STATES[2];
+        else if (v > 20) st = EMO_STATES[3];
+        else st = EMO_STATES[4];
 
-    function generateEmoWord(el) {
-        const textDiv = el.nextElementSibling;
-        const emotionText = textDiv.innerText;
-        generateOrUpdateWord(6, 'emotion', emotionText);
+        face.innerText = st.face;
+        text.innerText = st.text;
+        text.style.color = st.color;
+        generateOrUpdateWord(6, 'emotion', st.text);
+        saveAppState();
     }
 
     function resetPuzzle(stepId) {
@@ -1212,28 +1308,6 @@
         }
     }
 
-    function resetStep(step) {
-        resetPuzzle(step);
-        
-        if (step === 1) {
-            document.querySelectorAll('#step1 .day').forEach(d => d.classList.remove('selected'));
-            document.getElementById('dateText').innerHTML = "날짜를 눌러주세요 👆";
-        } 
-        else if (step === 2) {
-            document.querySelectorAll('#step2 .w-item').forEach(d => d.classList.remove('active'));
-            document.getElementById('weatherText').innerHTML = "오늘의 날씨는? 👆";
-        } 
-        else if (step === 3) {
-            document.querySelectorAll('#step3 .drop-zone').forEach(d => {
-                d.innerText = "";
-                d.style.background = "#fafafa";
-                d.style.color = "#333";
-            });
-            document.querySelectorAll('#step3 .emoji-stamp span').forEach(s => s.classList.remove('selected'));
-            document.querySelectorAll('#step3 input[type="text"]').forEach(i => i.value = "");
-        } 
-    }
-
     let currentTargetMenuIndex = 0;
     
     function openCategoryModal(index) {
@@ -1249,6 +1323,7 @@
         document.getElementById('btn_m' + currentTargetMenuIndex + '_icon').innerHTML = emoji + ' 선택';
         document.getElementById('m' + currentTargetMenuIndex + '_emoji_val').value = emoji;
         closeCategoryModal();
+        saveAppState();
     }
 
     let mealMenus = [];
@@ -1269,6 +1344,7 @@
         document.getElementById('mealActivityView').classList.remove('hidden');
         renderMealTabs();
         selectMealMenu(0);
+        saveAppState();
     }
 
     function renderMealTabs() {
@@ -1290,6 +1366,7 @@
         renderMealTabs();
         speakMealMenu();
         renderMealCanvas();
+        saveAppState();
     }
 
     function setMealMode(mode) {
@@ -1398,13 +1475,9 @@
             const scTextEl = document.getElementById('scText');
             scTextEl.innerText = text;
             
-            if(text.length > 7) {
-                scTextEl.style.fontSize = "30px";
-            } else if(text.length > 5) {
-                scTextEl.style.fontSize = "40px";
-            } else {
-                scTextEl.style.fontSize = "55px";
-            }
+            if(text.length > 7) scTextEl.style.fontSize = "30px";
+            else if(text.length > 5) scTextEl.style.fontSize = "40px";
+            else scTextEl.style.fontSize = "55px";
             
             ctx.fillStyle = "#b0bec5";
             ctx.fillRect(0, 0, w, h);
@@ -1528,32 +1601,24 @@
     }
 
     function speakMealMenu() {
-        if ('speechSynthesis' in window && mealMenus[currentMealIndex]) {
-            window.speechSynthesis.cancel();
+        if (mealMenus[currentMealIndex]) {
             let cleanMenu = mealMenus[currentMealIndex].text.replace(/[^가-힣a-zA-Z0-9\s]/g, '').trim();
-            const utterance = new SpeechSynthesisUtterance(cleanMenu);
-            utterance.lang = 'ko-KR';
-            utterance.rate = 0.8;
-            utterance.pitch = 1.2;
-            window.speechSynthesis.speak(utterance);
+            speakText(cleanMenu);
         }
     }
 
-    function markMealDone() {
-        mealStatus[currentMealIndex] = true;
-        fireConfetti(40); 
-        renderMealTabs();
-        
+    function createMealDragChip(menuItem, index) {
         const mealPool = document.getElementById('meal-drag-pool');
         const placeholder = document.getElementById('meal-pool-placeholder');
         if(placeholder) placeholder.style.display = 'none';
 
         const dragItem = document.createElement('div');
         dragItem.className = 'drag-item pop-animation';
-        dragItem.style.cssText = "font-size: 1.3rem; padding: 10px 15px; background: white; border: 3px solid #ff9800; border-radius: 12px; cursor: grab; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1);";
+        dragItem.style.cssText = "font-size: 1.3rem; padding: 10px 15px; background: white; border: 3px solid #ff9800; border-radius: 12px; cursor: pointer; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1);";
         dragItem.draggable = true;
-        dragItem.innerText = mealMenus[currentMealIndex].emoji + " " + mealMenus[currentMealIndex].text;
-        dragItem.setAttribute('data-text', mealMenus[currentMealIndex].text);
+        dragItem.innerText = menuItem.emoji + " " + menuItem.text;
+        dragItem.setAttribute('data-text', menuItem.text);
+        dragItem.setAttribute('data-menu-idx', index);
         
         dragItem.ondragstart = function(ev) {
             draggedData = ev.target.innerText;
@@ -1563,6 +1628,14 @@
         };
         
         dragItem.onclick = function() {
+            const likeBasket = document.getElementById('basket-like');
+            const dislikeBasket = document.getElementById('basket-dislike');
+            if (this.parentElement.id === 'meal-drag-pool' || this.parentElement.id === 'basket-dislike') {
+                likeBasket.appendChild(this);
+            } else {
+                dislikeBasket.appendChild(this);
+            }
+
             generateOrUpdateWord(4, 'food', this.getAttribute('data-text'));
             
             document.querySelectorAll('#meal-drag-pool .drag-item, #basket-like .drag-item, #basket-dislike .drag-item').forEach(el => {
@@ -1573,13 +1646,25 @@
             this.style.backgroundColor = '#fff3e0';
             this.style.color = '#e65100';
             this.style.borderColor = '#e65100';
+            saveAppState();
         };
 
         mealPool.appendChild(dragItem);
+        return dragItem;
+    }
+
+    function markMealDone() {
+        if (mealStatus[currentMealIndex]) return;
+        mealStatus[currentMealIndex] = true;
+        fireConfetti(40); 
+        renderMealTabs();
+        
+        createMealDragChip(mealMenus[currentMealIndex], currentMealIndex);
+        saveAppState();
         
         let nextIndex = mealStatus.findIndex(s => s === false);
         if(nextIndex !== -1) {
-            setTimeout(() => selectMealMenu(nextIndex), 1500); 
+            setTimeout(() => selectMealMenu(nextIndex), 1200); 
         }
     }
 
@@ -1588,6 +1673,7 @@
         const targetType = ev.currentTarget.getAttribute('data-type');
         if (draggedType === 'meal' && targetType === 'meal' && draggedElement) {
             ev.currentTarget.appendChild(draggedElement);
+            saveAppState();
         }
     }
 
@@ -1605,6 +1691,7 @@
         for(let i=0; i<6; i++) {
             document.getElementById('pos' + i).innerHTML = `<span class="tray-emoji">${mealMenus[i].emoji}</span>${mealMenus[i].text}`;
         }
+        saveAppState();
     }
 
     function resetMealActivity() {
@@ -1618,12 +1705,14 @@
         document.getElementById('basket-like').innerHTML = '';
         document.getElementById('basket-dislike').innerHTML = '';
         const pool = document.getElementById('meal-drag-pool');
-        pool.innerHTML = '<span id="meal-pool-placeholder" style="color:#999; font-weight:bold;">메뉴를 완성하면 조각이 생겨요! 끌어다 바구니에 쏙! 담아보세요.</span>';
+        pool.innerHTML = '<span id="meal-pool-placeholder" style="color:#999; font-weight:bold;">메뉴를 완성하면 조각이 생겨요! 터치하거나 끌어다 바구니에 담아보세요.</span>';
 
         resetPuzzle(4);
+        saveAppState();
     }
 
     function fireConfetti(amount) {
+        if (isRestoringState) return;
         const colors = ['#f44336', '#e91e63', '#9c27b0', '#2196f3', '#4caf50', '#ffeb3b', '#ff9800'];
         for (let i = 0; i < amount; i++) {
             let confetti = document.createElement('div');
@@ -1674,6 +1763,11 @@
 
         let mealContainer = document.getElementById('trayContainer');
         if(mealStatus.some(s => s === true)) { 
+            for(let i=0; i<6; i++) {
+                if(mealMenus[i]) {
+                    document.getElementById('pos' + i).innerHTML = `<span class="tray-emoji">${mealMenus[i].emoji}</span>${mealMenus[i].text}`;
+                }
+            }
             let clonedTray = mealContainer.cloneNode(true);
             clonedTray.id = "summaryTray";
             clonedTray.style.width = "100%";
@@ -1691,12 +1785,10 @@
         const barContainer = document.getElementById('actionTimelineBar');
         barContainer.innerHTML = '';
         
-        currentDaySubjects.forEach((item, index) => {
+        currentDaySubjects.forEach((item) => {
             let chip = document.createElement('div');
-            // 초기 화면 렌더링 시에는 어떤 버튼도 active 시키지 않고 사용자의 첫 클릭을 기다립니다.
             chip.className = 'action-chip';
             
-            // ★ 글자를 모르는 아이들을 위해 과목 텍스트에서 이모지만 추출해서 크게 보여주기
             let emojiOnly = item.subject.match(/[\p{Emoji}\u200d]+/gu) || ["⭐"]; 
             let textOnly = item.subject.replace(/[\p{Emoji}\u200d]+/gu, '').trim();
             
@@ -1711,7 +1803,6 @@
                 <span style="font-size: 0.9rem; color: #555; font-weight:bold;">${textOnly}</span>
             `;
             
-            // 교시 버튼을 터치/클릭했을 때 사진 모달창 열기 및 음성 안내 실행
             chip.onclick = function() {
                 document.querySelectorAll('.action-chip').forEach(c => c.classList.remove('active-period'));
                 chip.classList.add('active-period');
@@ -1730,47 +1821,251 @@
                 }
 
                 let titleHtml = "";
-                let speakText = "";
+                let msg = "";
 
                 if (item.period.includes("점심")) {
                     titleHtml = `<span style="font-size: 3rem;">😋🚶‍♂️</span><br>즐거운 점심시간이에요! (급식실로 이동)`;
-                    speakText = `이제 즐거운 점심시간이에요. 손을 씻고 급식실로 이동하세요.`;
-                    
+                    msg = `이제 즐거운 점심시간이에요. 손을 씻고 급식실로 이동하세요.`;
                     document.getElementById('active-period-title').innerText = "사진을 보고 급식실로 이동해요!";
                     openLocationPhoto("급식실", titleHtml);
                 } else {
                     titleHtml = `<span style="font-size: 3rem;">${emojiOnly[0]}${actionEmoji}</span><br>${item.period} 수업을 시작해요!${locStr}`;
-                    
                     let cleanSubject = item.subject.replace(/[^가-힣a-zA-Z0-9\s]/g, '').trim();
-                    speakText = `이제 ${item.period}, ${cleanSubject} 수업을 시작해요.`;
+                    msg = `이제 ${item.period}, ${cleanSubject} 수업을 시작해요.`;
                     
                     if (item.location !== "-" && item.location !== "") {
                         if (item.location.includes("1-2반")) {
-                            speakText += ` 자리에 앉아서 준비하세요.`;
+                            msg += ` 자리에 앉아서 준비하세요.`;
                         } else {
-                            speakText += ` ${cleanLocation}로 이동하세요.`;
+                            msg += ` ${cleanLocation}로 이동하세요.`;
                         }
                     }
-                    
                     document.getElementById('active-period-title').innerText = "사진을 보고 수업 장소로 이동해요!";
                     openLocationPhoto(item.location, titleHtml);
                 }
                 
-                // 음성 안내 실행
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel();
-                    const utterance = new SpeechSynthesisUtterance(speakText);
-                    utterance.lang = 'ko-KR';
-                    window.speechSynthesis.speak(utterance);
-                }
+                speakText(msg);
             };
             barContainer.appendChild(chip);
         });
 
-        // 7단계 최초 진입 시 안내 문구 설정 (클릭은 하지 않음)
         if(currentDaySubjects.length > 0) {
             document.getElementById('active-period-title').innerText = "👈 준비할 교시의 그림을 콕! 눌러보세요";
         }
+    }
+
+    // 새로고침 시 데이터가 지워지지 않도록 로컬 스토리지에 자동 저장 및 복원
+    function saveAppState() {
+        if (isRestoringState) return;
+        try {
+            const subZones = Array.from(document.querySelectorAll('#step3 .drop-zone[data-type="sub"]')).map(z => ({
+                text: z.innerText, bg: z.style.background, color: z.style.color
+            }));
+            const locZones = Array.from(document.querySelectorAll('#step3 .drop-zone[data-type="loc"]')).map(z => ({
+                text: z.innerText, bg: z.style.background, color: z.style.color
+            }));
+            const notes = Array.from(document.querySelectorAll('#step3 .tt-note-input')).map(inp => inp.value);
+
+            const mealInputs = [];
+            for (let i = 0; i < 6; i++) {
+                mealInputs.push({
+                    text: document.getElementById('m' + i + '_text').value,
+                    emoji: document.getElementById('m' + i + '_emoji_val').value
+                });
+            }
+
+            let mealViewState = 'setup';
+            if (!document.getElementById('mealActivityView').classList.contains('hidden')) mealViewState = 'activity';
+            if (!document.getElementById('mealFinalView').classList.contains('hidden')) mealViewState = 'final';
+
+            const basketDistribution = {};
+            document.querySelectorAll('#meal-drag-pool .drag-item, #basket-like .drag-item, #basket-dislike .drag-item').forEach(item => {
+                const idx = item.getAttribute('data-menu-idx');
+                if (idx !== null) {
+                    basketDistribution[idx] = item.parentElement.id;
+                }
+            });
+
+            const emotions = {};
+            for (let i = 1; i <= 6; i++) {
+                const r = document.getElementById('r' + i);
+                if (r) emotions[i] = r.value;
+            }
+
+            const puzzles = {};
+            [1, 2, 3, 4, 6].forEach(stepId => {
+                const slots = Array.from(document.querySelectorAll(`#sentence${stepId} .word-slot`)).map(s => {
+                    if (s.children.length > 0) {
+                        const ch = s.children[0];
+                        return { text: ch.innerText, role: ch.getAttribute('data-role') || null };
+                    }
+                    return null;
+                });
+                puzzles[stepId] = slots;
+            });
+
+            const state = {
+                currentStep,
+                selectedCalendarDay,
+                selectedWeatherInfo,
+                subZones,
+                locZones,
+                notes,
+                mealInputs,
+                mealMenus,
+                mealStatus,
+                currentMealIndex,
+                mealViewState,
+                basketDistribution,
+                emotions,
+                studentEmoIndex,
+                puzzles
+            };
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+            console.error('자동 저장 중 오류:', e);
+        }
+    }
+
+    function loadAppState() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+
+        isRestoringState = true;
+        try {
+            const state = JSON.parse(raw);
+
+            // 1. 달력 날짜 복원
+            if (state.selectedCalendarDay) {
+                const dayEl = Array.from(document.querySelectorAll('#step1 .day')).find(el => parseInt(el.innerText.trim(), 10) === state.selectedCalendarDay);
+                if (dayEl) selectDay(dayEl, state.selectedCalendarDay);
+            }
+
+            // 2. 날씨 복원
+            if (state.selectedWeatherInfo && state.selectedWeatherInfo.text) {
+                const wEl = Array.from(document.querySelectorAll('#step2 .w-item')).find(el => el.innerText.includes(state.selectedWeatherInfo.text));
+                if (wEl) selectWeather(wEl, state.selectedWeatherInfo.text, state.selectedWeatherInfo.icon);
+            }
+
+            // 3. 시간표 및 메모 복원
+            if (state.subZones) {
+                const sZones = document.querySelectorAll('#step3 .drop-zone[data-type="sub"]');
+                state.subZones.forEach((item, idx) => {
+                    if (sZones[idx] && item.text) {
+                        sZones[idx].innerText = item.text;
+                        sZones[idx].style.background = item.bg;
+                        sZones[idx].style.color = item.color;
+                        generateOrUpdateWord(3, 'subject', item.text);
+                    }
+                });
+            }
+            if (state.locZones) {
+                const lZones = document.querySelectorAll('#step3 .drop-zone[data-type="loc"]');
+                state.locZones.forEach((item, idx) => {
+                    if (lZones[idx] && item.text) {
+                        lZones[idx].innerText = item.text;
+                        lZones[idx].style.background = item.bg;
+                        lZones[idx].style.color = item.color;
+                    }
+                });
+            }
+            if (state.notes) {
+                const nInputs = document.querySelectorAll('#step3 .tt-note-input');
+                state.notes.forEach((val, idx) => {
+                    if (nInputs[idx]) nInputs[idx].value = val;
+                });
+            }
+
+            // 4. 급식 입력값 및 진행 상태 복원
+            if (state.mealInputs) {
+                state.mealInputs.forEach((m, idx) => {
+                    const tInput = document.getElementById('m' + idx + '_text');
+                    const eInput = document.getElementById('m' + idx + '_emoji_val');
+                    const btnIcon = document.getElementById('btn_m' + idx + '_icon');
+                    if (tInput) tInput.value = m.text;
+                    if (eInput) eInput.value = m.emoji;
+                    if (btnIcon) btnIcon.innerHTML = m.emoji + ' 선택';
+                });
+            }
+
+            if (state.mealMenus && state.mealMenus.length === 6) {
+                mealMenus = state.mealMenus;
+                mealStatus = state.mealStatus || [false, false, false, false, false, false];
+                currentMealIndex = state.currentMealIndex || 0;
+
+                mealStatus.forEach((done, idx) => {
+                    if (done && mealMenus[idx]) {
+                        const chip = createMealDragChip(mealMenus[idx], idx);
+                        const targetBasketId = state.basketDistribution && state.basketDistribution[idx];
+                        if (targetBasketId && document.getElementById(targetBasketId)) {
+                            document.getElementById(targetBasketId).appendChild(chip);
+                        }
+                        generateOrUpdateWord(4, 'food', mealMenus[idx].text);
+                    }
+                });
+
+                if (state.mealViewState === 'activity') {
+                    document.getElementById('mealSetupView').classList.add('hidden');
+                    document.getElementById('mealActivityView').classList.remove('hidden');
+                    renderMealTabs();
+                    renderMealCanvas();
+                } else if (state.mealViewState === 'final') {
+                    document.getElementById('mealSetupView').classList.add('hidden');
+                    showMealFinalBoard();
+                }
+            }
+
+            // 5. 감정 온도계 복원
+            if (state.studentEmoIndex) studentEmoIndex = state.studentEmoIndex;
+            if (state.emotions) {
+                for (let i = 1; i <= 6; i++) {
+                    if (state.emotions[i] !== undefined) {
+                        const r = document.getElementById('r' + i);
+                        if (r) r.value = state.emotions[i];
+                        upEmo(state.emotions[i], i);
+                    }
+                }
+            }
+
+            // 6. 심화 문장 퍼즐 슬롯 복원
+            if (state.puzzles) {
+                [1, 2, 3, 4, 6].forEach(stepId => {
+                    const savedSlots = state.puzzles[stepId];
+                    if (!savedSlots) return;
+                    const pool = document.getElementById(`pool${stepId}`);
+                    const slotEls = document.querySelectorAll(`#sentence${stepId} .word-slot`);
+                    savedSlots.forEach((slotData, sIdx) => {
+                        if (!slotData || !slotEls[sIdx]) return;
+                        if (slotData.role) {
+                            generateOrUpdateWord(stepId, slotData.role, slotData.text);
+                        }
+                        const chip = Array.from(pool.children).find(c => {
+                            if (slotData.role) return c.getAttribute('data-role') === slotData.role;
+                            return c.innerText.trim() === slotData.text.trim();
+                        });
+                        if (chip) {
+                            slotEls[sIdx].appendChild(chip);
+                            slotEls[sIdx].classList.add('filled');
+                        }
+                    });
+                });
+            }
+
+            // 7. 마지막으로 보던 단계 화면으로 이동
+            if (state.currentStep) {
+                move(state.currentStep);
+            }
+        } catch (e) {
+            console.error('상태 복원 중 오류:', e);
+        } finally {
+            isRestoringState = false;
+        }
+    }
+
+    function clearSavedStateAndReload() {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
     }
 </script>
 </body>
